@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_test'.
  *
- * Model version                  : 1.23
+ * Model version                  : 1.31
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Sun Apr  3 04:38:57 2022
+ * C/C++ source code generated on : Sat Apr 16 03:16:23 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex

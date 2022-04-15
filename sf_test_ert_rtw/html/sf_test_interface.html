@@ -61,7 +61,7 @@ Prototype
 </td>
 <td width="75%" align="left" valign="top">
 <b>
-void sf_test_initialize(RT_MODEL_sf_test_T&nbsp;*const&nbsp;sf_test_M, real_T&nbsp;*sf_test_U_cam_line_angle, uint16_T&nbsp;*sf_test_U_cam_object_angle, real_T&nbsp;*sf_test_U_Iidar_angle_fov, real_T&nbsp;*sf_test_U_Iidar_dist_fov, boolean_T&nbsp;*sf_test_U_cam_bad_lane_flag, boolean_T&nbsp;*sf_test_U_cam_accident_flag, uint16_T&nbsp;*sf_test_U_uint16_cam_accident_location_an, real_T&nbsp;*sf_test_U_db_Iidar_angle_nfov, real_T&nbsp;*sf_test_U_db_Iidar_dist_nfov, boolean_T&nbsp;*sf_test_U_cam_car_check_flag, real_T&nbsp;*sf_test_U_db_prev_speed, real_T&nbsp;*sf_test_U_db_next_speed, real_T&nbsp;*sf_test_Y_db_steering_angle, real_T&nbsp;*sf_test_Y_front_car_speed, real_T&nbsp;*sf_test_Y_lane_change_flag, real_T&nbsp;*sf_test_Y_overfast_flag, uint16_T&nbsp;*sf_test_Y_uint16_normal_run_speed, real_T&nbsp;*sf_test_Y_bad_lane_flag, real_T&nbsp;*sf_test_Y_accident_flag)
+void sf_test_initialize(RT_MODEL_sf_test_T&nbsp;*const&nbsp;sf_test_M, LIDAR&nbsp;*sf_test_U_LIDAR_INPUT, CAM&nbsp;*sf_test_U_CAM_INPUT, CONTROL&nbsp;*sf_test_U_CONTROL_INPUT, real_T&nbsp;*sf_test_Y_db_steering_angle, real_T&nbsp;*sf_test_Y_front_car_speed, real_T&nbsp;*sf_test_Y_lane_change_flag, real_T&nbsp;*sf_test_Y_overfast_flag, uint16_T&nbsp;*sf_test_Y_uint16_normal_run_speed, real_T&nbsp;*sf_test_Y_bad_lane_flag, real_T&nbsp;*sf_test_Y_accident_flag)
 </b>
 
 </td>
@@ -138,13 +138,13 @@ RTModel
 2
 </td>
 <td align="left" valign="top">
-sf_test_U_cam_line_angle
+sf_test_U_LIDAR_INPUT
 </td>
 <td align="left" valign="top">
-real_T&nbsp;*
+LIDAR&nbsp;*
 </td>
 <td align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:11')" name="code2model" class="code2model">&lt;Root&gt;/db_cam_line_angle</a>
+<a href="matlab:coder.internal.code2model('sf_test:168')" name="code2model" class="code2model">&lt;Root&gt;/LIDAR_INPUT</a>
 </td>
 
 </tr>
@@ -153,13 +153,13 @@ real_T&nbsp;*
 3
 </td>
 <td align="left" valign="top">
-sf_test_U_cam_object_angle
+sf_test_U_CAM_INPUT
 </td>
 <td align="left" valign="top">
-uint16_T&nbsp;*
+CAM&nbsp;*
 </td>
 <td align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:12')" name="code2model" class="code2model">&lt;Root&gt;/uint16_cam_object_angle</a>
+<a href="matlab:coder.internal.code2model('sf_test:169')" name="code2model" class="code2model">&lt;Root&gt;/CAM_INPUT</a>
 </td>
 
 </tr>
@@ -168,154 +168,19 @@ uint16_T&nbsp;*
 4
 </td>
 <td align="left" valign="top">
-sf_test_U_Iidar_angle_fov
+sf_test_U_CONTROL_INPUT
 </td>
 <td align="left" valign="top">
-real_T&nbsp;*
+CONTROL&nbsp;*
 </td>
 <td align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:13')" name="code2model" class="code2model">&lt;Root&gt;/db_Iidar_angle_fov</a>
+<a href="matlab:coder.internal.code2model('sf_test:171')" name="code2model" class="code2model">&lt;Root&gt;/CONTROL_INPUT</a>
 </td>
 
 </tr>
 <tr class="even">
 <td align="right" valign="top">
 5
-</td>
-<td align="left" valign="top">
-sf_test_U_Iidar_dist_fov
-</td>
-<td align="left" valign="top">
-real_T&nbsp;*
-</td>
-<td align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:14')" name="code2model" class="code2model">&lt;Root&gt;/db_Iidar_dist_fov</a>
-</td>
-
-</tr>
-<tr class="odd">
-<td align="right" valign="top">
-6
-</td>
-<td align="left" valign="top">
-sf_test_U_cam_bad_lane_flag
-</td>
-<td align="left" valign="top">
-boolean_T&nbsp;*
-</td>
-<td align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:15')" name="code2model" class="code2model">&lt;Root&gt;/cam_bad_lane_flag</a>
-</td>
-
-</tr>
-<tr class="even">
-<td align="right" valign="top">
-7
-</td>
-<td align="left" valign="top">
-sf_test_U_cam_accident_flag
-</td>
-<td align="left" valign="top">
-boolean_T&nbsp;*
-</td>
-<td align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:16')" name="code2model" class="code2model">&lt;Root&gt;/cam_accident_flag</a>
-</td>
-
-</tr>
-<tr class="odd">
-<td align="right" valign="top">
-8
-</td>
-<td align="left" valign="top">
-sf_test_U_uint16_cam_accident_location_an
-</td>
-<td align="left" valign="top">
-uint16_T&nbsp;*
-</td>
-<td align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:17')" name="code2model" class="code2model">&lt;Root&gt;/uint16_cam_accident_location_angle</a>
-</td>
-
-</tr>
-<tr class="even">
-<td align="right" valign="top">
-9
-</td>
-<td align="left" valign="top">
-sf_test_U_db_Iidar_angle_nfov
-</td>
-<td align="left" valign="top">
-real_T&nbsp;*
-</td>
-<td align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:18')" name="code2model" class="code2model">&lt;Root&gt;/db_Iidar_angle_nfov</a>
-</td>
-
-</tr>
-<tr class="odd">
-<td align="right" valign="top">
-10
-</td>
-<td align="left" valign="top">
-sf_test_U_db_Iidar_dist_nfov
-</td>
-<td align="left" valign="top">
-real_T&nbsp;*
-</td>
-<td align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:19')" name="code2model" class="code2model">&lt;Root&gt;/db_Iidar_dist_nfov</a>
-</td>
-
-</tr>
-<tr class="even">
-<td align="right" valign="top">
-11
-</td>
-<td align="left" valign="top">
-sf_test_U_cam_car_check_flag
-</td>
-<td align="left" valign="top">
-boolean_T&nbsp;*
-</td>
-<td align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:20')" name="code2model" class="code2model">&lt;Root&gt;/cam_car_check_flag</a>
-</td>
-
-</tr>
-<tr class="odd">
-<td align="right" valign="top">
-12
-</td>
-<td align="left" valign="top">
-sf_test_U_db_prev_speed
-</td>
-<td align="left" valign="top">
-real_T&nbsp;*
-</td>
-<td align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:50')" name="code2model" class="code2model">&lt;Root&gt;/db_prev_speed</a>
-</td>
-
-</tr>
-<tr class="even">
-<td align="right" valign="top">
-13
-</td>
-<td align="left" valign="top">
-sf_test_U_db_next_speed
-</td>
-<td align="left" valign="top">
-real_T&nbsp;*
-</td>
-<td align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:81')" name="code2model" class="code2model">&lt;Root&gt;/db_next_speed</a>
-</td>
-
-</tr>
-<tr class="odd">
-<td align="right" valign="top">
-14
 </td>
 <td align="left" valign="top">
 sf_test_Y_db_steering_angle
@@ -328,9 +193,9 @@ real_T&nbsp;*
 </td>
 
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="right" valign="top">
-15
+6
 </td>
 <td align="left" valign="top">
 sf_test_Y_front_car_speed
@@ -343,9 +208,9 @@ real_T&nbsp;*
 </td>
 
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="right" valign="top">
-16
+7
 </td>
 <td align="left" valign="top">
 sf_test_Y_lane_change_flag
@@ -358,9 +223,9 @@ real_T&nbsp;*
 </td>
 
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="right" valign="top">
-17
+8
 </td>
 <td align="left" valign="top">
 sf_test_Y_overfast_flag
@@ -373,9 +238,9 @@ real_T&nbsp;*
 </td>
 
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="right" valign="top">
-18
+9
 </td>
 <td align="left" valign="top">
 sf_test_Y_uint16_normal_run_speed
@@ -388,9 +253,9 @@ uint16_T&nbsp;*
 </td>
 
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="right" valign="top">
-19
+10
 </td>
 <td align="left" valign="top">
 sf_test_Y_bad_lane_flag
@@ -403,9 +268,9 @@ real_T&nbsp;*
 </td>
 
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="right" valign="top">
-20
+11
 </td>
 <td align="left" valign="top">
 sf_test_Y_accident_flag
@@ -454,7 +319,7 @@ Prototype
 </td>
 <td width="75%" align="left" valign="top">
 <b>
-void sf_test_step(RT_MODEL_sf_test_T&nbsp;*const&nbsp;sf_test_M, real_T sf_test_U_cam_line_angle, boolean_T sf_test_U_cam_bad_lane_flag, boolean_T sf_test_U_cam_accident_flag, boolean_T sf_test_U_cam_car_check_flag, real_T sf_test_U_db_prev_speed, real_T sf_test_U_db_next_speed, real_T&nbsp;*sf_test_Y_db_steering_angle, real_T&nbsp;*sf_test_Y_front_car_speed, real_T&nbsp;*sf_test_Y_lane_change_flag, real_T&nbsp;*sf_test_Y_overfast_flag, uint16_T&nbsp;*sf_test_Y_uint16_normal_run_speed, real_T&nbsp;*sf_test_Y_bad_lane_flag, real_T&nbsp;*sf_test_Y_accident_flag)
+void sf_test_step(RT_MODEL_sf_test_T&nbsp;*const&nbsp;sf_test_M, real_T&nbsp;*sf_test_Y_db_steering_angle, real_T&nbsp;*sf_test_Y_front_car_speed, real_T&nbsp;*sf_test_Y_lane_change_flag, real_T&nbsp;*sf_test_Y_overfast_flag, uint16_T&nbsp;*sf_test_Y_uint16_normal_run_speed, real_T&nbsp;*sf_test_Y_bad_lane_flag, real_T&nbsp;*sf_test_Y_accident_flag)
 </b>
 
 </td>
@@ -531,96 +396,6 @@ RTModel
 2
 </td>
 <td align="left" valign="top">
-sf_test_U_cam_line_angle
-</td>
-<td align="left" valign="top">
-real_T
-</td>
-<td align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:11')" name="code2model" class="code2model">&lt;Root&gt;/db_cam_line_angle</a>
-</td>
-
-</tr>
-<tr class="even">
-<td align="right" valign="top">
-3
-</td>
-<td align="left" valign="top">
-sf_test_U_cam_bad_lane_flag
-</td>
-<td align="left" valign="top">
-boolean_T
-</td>
-<td align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:15')" name="code2model" class="code2model">&lt;Root&gt;/cam_bad_lane_flag</a>
-</td>
-
-</tr>
-<tr class="odd">
-<td align="right" valign="top">
-4
-</td>
-<td align="left" valign="top">
-sf_test_U_cam_accident_flag
-</td>
-<td align="left" valign="top">
-boolean_T
-</td>
-<td align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:16')" name="code2model" class="code2model">&lt;Root&gt;/cam_accident_flag</a>
-</td>
-
-</tr>
-<tr class="even">
-<td align="right" valign="top">
-5
-</td>
-<td align="left" valign="top">
-sf_test_U_cam_car_check_flag
-</td>
-<td align="left" valign="top">
-boolean_T
-</td>
-<td align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:20')" name="code2model" class="code2model">&lt;Root&gt;/cam_car_check_flag</a>
-</td>
-
-</tr>
-<tr class="odd">
-<td align="right" valign="top">
-6
-</td>
-<td align="left" valign="top">
-sf_test_U_db_prev_speed
-</td>
-<td align="left" valign="top">
-real_T
-</td>
-<td align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:50')" name="code2model" class="code2model">&lt;Root&gt;/db_prev_speed</a>
-</td>
-
-</tr>
-<tr class="even">
-<td align="right" valign="top">
-7
-</td>
-<td align="left" valign="top">
-sf_test_U_db_next_speed
-</td>
-<td align="left" valign="top">
-real_T
-</td>
-<td align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:81')" name="code2model" class="code2model">&lt;Root&gt;/db_next_speed</a>
-</td>
-
-</tr>
-<tr class="odd">
-<td align="right" valign="top">
-8
-</td>
-<td align="left" valign="top">
 sf_test_Y_db_steering_angle
 </td>
 <td align="left" valign="top">
@@ -633,7 +408,7 @@ real_T&nbsp;*
 </tr>
 <tr class="even">
 <td align="right" valign="top">
-9
+3
 </td>
 <td align="left" valign="top">
 sf_test_Y_front_car_speed
@@ -648,7 +423,7 @@ real_T&nbsp;*
 </tr>
 <tr class="odd">
 <td align="right" valign="top">
-10
+4
 </td>
 <td align="left" valign="top">
 sf_test_Y_lane_change_flag
@@ -663,7 +438,7 @@ real_T&nbsp;*
 </tr>
 <tr class="even">
 <td align="right" valign="top">
-11
+5
 </td>
 <td align="left" valign="top">
 sf_test_Y_overfast_flag
@@ -678,7 +453,7 @@ real_T&nbsp;*
 </tr>
 <tr class="odd">
 <td align="right" valign="top">
-12
+6
 </td>
 <td align="left" valign="top">
 sf_test_Y_uint16_normal_run_speed
@@ -693,7 +468,7 @@ uint16_T&nbsp;*
 </tr>
 <tr class="even">
 <td align="right" valign="top">
-13
+7
 </td>
 <td align="left" valign="top">
 sf_test_Y_bad_lane_flag
@@ -708,7 +483,7 @@ real_T&nbsp;*
 </tr>
 <tr class="odd">
 <td align="right" valign="top">
-14
+8
 </td>
 <td align="left" valign="top">
 sf_test_Y_accident_flag
@@ -891,7 +666,7 @@ Dimension
 </tr>
 <tr class="even">
 <td width="42%" align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:11')" name="code2model" class="code2model">&lt;Root&gt;/db_cam_line_angle</a>
+<a href="matlab:coder.internal.code2model('sf_test:168')" name="code2model" class="code2model">&lt;Root&gt;/LIDAR_INPUT</a>
 </td>
 <td width="26%" align="left" valign="top">
 <i>
@@ -900,7 +675,7 @@ Defined externally
 
 </td>
 <td width="21%" align="left" valign="top">
-real_T
+LIDAR
 </td>
 <td width="10%" align="right" valign="top">
 1
@@ -909,7 +684,7 @@ real_T
 </tr>
 <tr class="odd">
 <td width="42%" align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:12')" name="code2model" class="code2model">&lt;Root&gt;/uint16_cam_object_angle</a>
+<a href="matlab:coder.internal.code2model('sf_test:169')" name="code2model" class="code2model">&lt;Root&gt;/CAM_INPUT</a>
 </td>
 <td width="26%" align="left" valign="top">
 <i>
@@ -918,7 +693,7 @@ Defined externally
 
 </td>
 <td width="21%" align="left" valign="top">
-uint16_T
+CAM
 </td>
 <td width="10%" align="right" valign="top">
 1
@@ -927,7 +702,7 @@ uint16_T
 </tr>
 <tr class="even">
 <td width="42%" align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:13')" name="code2model" class="code2model">&lt;Root&gt;/db_Iidar_angle_fov</a>
+<a href="matlab:coder.internal.code2model('sf_test:171')" name="code2model" class="code2model">&lt;Root&gt;/CONTROL_INPUT</a>
 </td>
 <td width="26%" align="left" valign="top">
 <i>
@@ -936,169 +711,7 @@ Defined externally
 
 </td>
 <td width="21%" align="left" valign="top">
-real_T
-</td>
-<td width="10%" align="right" valign="top">
-1
-</td>
-
-</tr>
-<tr class="odd">
-<td width="42%" align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:14')" name="code2model" class="code2model">&lt;Root&gt;/db_Iidar_dist_fov</a>
-</td>
-<td width="26%" align="left" valign="top">
-<i>
-Defined externally
-</i>
-
-</td>
-<td width="21%" align="left" valign="top">
-real_T
-</td>
-<td width="10%" align="right" valign="top">
-1
-</td>
-
-</tr>
-<tr class="even">
-<td width="42%" align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:15')" name="code2model" class="code2model">&lt;Root&gt;/cam_bad_lane_flag</a>
-</td>
-<td width="26%" align="left" valign="top">
-<i>
-Defined externally
-</i>
-
-</td>
-<td width="21%" align="left" valign="top">
-boolean_T
-</td>
-<td width="10%" align="right" valign="top">
-1
-</td>
-
-</tr>
-<tr class="odd">
-<td width="42%" align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:16')" name="code2model" class="code2model">&lt;Root&gt;/cam_accident_flag</a>
-</td>
-<td width="26%" align="left" valign="top">
-<i>
-Defined externally
-</i>
-
-</td>
-<td width="21%" align="left" valign="top">
-boolean_T
-</td>
-<td width="10%" align="right" valign="top">
-1
-</td>
-
-</tr>
-<tr class="even">
-<td width="42%" align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:17')" name="code2model" class="code2model">&lt;Root&gt;/uint16_cam_accident_location_angle</a>
-</td>
-<td width="26%" align="left" valign="top">
-<i>
-Defined externally
-</i>
-
-</td>
-<td width="21%" align="left" valign="top">
-uint16_T
-</td>
-<td width="10%" align="right" valign="top">
-1
-</td>
-
-</tr>
-<tr class="odd">
-<td width="42%" align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:18')" name="code2model" class="code2model">&lt;Root&gt;/db_Iidar_angle_nfov</a>
-</td>
-<td width="26%" align="left" valign="top">
-<i>
-Defined externally
-</i>
-
-</td>
-<td width="21%" align="left" valign="top">
-real_T
-</td>
-<td width="10%" align="right" valign="top">
-1
-</td>
-
-</tr>
-<tr class="even">
-<td width="42%" align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:19')" name="code2model" class="code2model">&lt;Root&gt;/db_Iidar_dist_nfov</a>
-</td>
-<td width="26%" align="left" valign="top">
-<i>
-Defined externally
-</i>
-
-</td>
-<td width="21%" align="left" valign="top">
-real_T
-</td>
-<td width="10%" align="right" valign="top">
-1
-</td>
-
-</tr>
-<tr class="odd">
-<td width="42%" align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:20')" name="code2model" class="code2model">&lt;Root&gt;/cam_car_check_flag</a>
-</td>
-<td width="26%" align="left" valign="top">
-<i>
-Defined externally
-</i>
-
-</td>
-<td width="21%" align="left" valign="top">
-boolean_T
-</td>
-<td width="10%" align="right" valign="top">
-1
-</td>
-
-</tr>
-<tr class="even">
-<td width="42%" align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:50')" name="code2model" class="code2model">&lt;Root&gt;/db_prev_speed</a>
-</td>
-<td width="26%" align="left" valign="top">
-<i>
-Defined externally
-</i>
-
-</td>
-<td width="21%" align="left" valign="top">
-real_T
-</td>
-<td width="10%" align="right" valign="top">
-1
-</td>
-
-</tr>
-<tr class="odd">
-<td width="42%" align="left" valign="top">
-<a href="matlab:coder.internal.code2model('sf_test:81')" name="code2model" class="code2model">&lt;Root&gt;/db_next_speed</a>
-</td>
-<td width="26%" align="left" valign="top">
-<i>
-Defined externally
-</i>
-
-</td>
-<td width="21%" align="left" valign="top">
-real_T
+CONTROL
 </td>
 <td width="10%" align="right" valign="top">
 1

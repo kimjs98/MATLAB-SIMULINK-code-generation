@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_test'.
  *
- * Model version                  : 1.23
+ * Model version                  : 1.31
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Sun Apr  3 04:38:57 2022
+ * C/C++ source code generated on : Sat Apr 16 03:16:23 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -82,22 +82,19 @@ struct tag_RTM_sf_test_T {
   DW_sf_test_T *dwork;
 };
 
+/* External data declarations for dependent source files */
+extern const LIDAR sf_test_rtZLIDAR;   /* LIDAR ground */
+extern const CAM sf_test_rtZCAM;       /* CAM ground */
+extern const CONTROL sf_test_rtZCONTROL;/* CONTROL ground */
+
 /* Model entry point functions */
-extern void sf_test_initialize(RT_MODEL_sf_test_T *const sf_test_M, real_T
-  *sf_test_U_cam_line_angle, uint16_T *sf_test_U_cam_object_angle, real_T
-  *sf_test_U_Iidar_angle_fov, real_T *sf_test_U_Iidar_dist_fov, boolean_T
-  *sf_test_U_cam_bad_lane_flag, boolean_T *sf_test_U_cam_accident_flag, uint16_T
-  *sf_test_U_uint16_cam_accident_location_an, real_T
-  *sf_test_U_db_Iidar_angle_nfov, real_T *sf_test_U_db_Iidar_dist_nfov,
-  boolean_T *sf_test_U_cam_car_check_flag, real_T *sf_test_U_db_prev_speed,
-  real_T *sf_test_U_db_next_speed, real_T *sf_test_Y_db_steering_angle, real_T
+extern void sf_test_initialize(RT_MODEL_sf_test_T *const sf_test_M, LIDAR
+  *sf_test_U_LIDAR_INPUT, CAM *sf_test_U_CAM_INPUT, CONTROL
+  *sf_test_U_CONTROL_INPUT, real_T *sf_test_Y_db_steering_angle, real_T
   *sf_test_Y_front_car_speed, real_T *sf_test_Y_lane_change_flag, real_T
   *sf_test_Y_overfast_flag, uint16_T *sf_test_Y_uint16_normal_run_speed, real_T *
   sf_test_Y_bad_lane_flag, real_T *sf_test_Y_accident_flag);
 extern void sf_test_step(RT_MODEL_sf_test_T *const sf_test_M, real_T
-  sf_test_U_cam_line_angle, boolean_T sf_test_U_cam_bad_lane_flag, boolean_T
-  sf_test_U_cam_accident_flag, boolean_T sf_test_U_cam_car_check_flag, real_T
-  sf_test_U_db_prev_speed, real_T sf_test_U_db_next_speed, real_T
   *sf_test_Y_db_steering_angle, real_T *sf_test_Y_front_car_speed, real_T
   *sf_test_Y_lane_change_flag, real_T *sf_test_Y_overfast_flag, uint16_T
   *sf_test_Y_uint16_normal_run_speed, real_T *sf_test_Y_bad_lane_flag, real_T

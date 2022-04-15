@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_test'.
  *
- * Model version                  : 1.10
+ * Model version                  : 1.31
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Sat Apr  2 15:10:50 2022
+ * C/C++ source code generated on : Sat Apr 16 03:16:23 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -26,44 +26,17 @@ static RT_MODEL_sf_test_T sf_test_M_;
 static RT_MODEL_sf_test_T *const sf_test_MPtr = &sf_test_M_;/* Real-time model */
 static DW_sf_test_T sf_test_DW;        /* Observable states */
 
-/* '<Root>/cam_line_angle' */
-static real_T sf_test_U_cam_line_angle;
+/* '<Root>/LIDAR_INPUT' */
+static LIDAR sf_test_U_LIDAR_INPUT;
 
-/* '<Root>/cam_object_angle' */
-static real_T sf_test_U_cam_object_angle;
+/* '<Root>/CAM_INPUT' */
+static CAM sf_test_U_CAM_INPUT;
 
-/* '<Root>/Iidar_angle_fov' */
-static real_T sf_test_U_Iidar_angle_fov;
+/* '<Root>/CONTROL_INPUT' */
+static CONTROL sf_test_U_CONTROL_INPUT;
 
-/* '<Root>/Iidar_dist_fov' */
-static real_T sf_test_U_Iidar_dist_fov;
-
-/* '<Root>/cam_bad_lane_flag' */
-static real_T sf_test_U_cam_bad_lane_flag;
-
-/* '<Root>/cam_accident_flag' */
-static real_T sf_test_U_cam_accident_flag;
-
-/* '<Root>/cam_accident_location_angle' */
-static real_T sf_test_U_cam_accident_location_angle;
-
-/* '<Root>/Iidar_angle_nfov' */
-static real_T sf_test_U_Iidar_angle_nfov;
-
-/* '<Root>/Iidar_dist_nfov' */
-static real_T sf_test_U_Iidar_dist_nfov;
-
-/* '<Root>/cam_car_check_flag' */
-static real_T sf_test_U_cam_car_check_flag;
-
-/* '<Root>/prev_speed' */
-static real_T sf_test_U_prev_speed;
-
-/* '<Root>/next_speed' */
-static real_T sf_test_U_next_speed;
-
-/* '<Root>/steering_angle' */
-static real_T sf_test_Y_steering_angle;
+/* '<Root>/db_steering_angle' */
+static real_T sf_test_Y_db_steering_angle;
 
 /* '<Root>/front_car_speed' */
 static real_T sf_test_Y_front_car_speed;
@@ -73,6 +46,15 @@ static real_T sf_test_Y_lane_change_flag;
 
 /* '<Root>/overfast_flag' */
 static real_T sf_test_Y_overfast_flag;
+
+/* '<Root>/uint16_normal_run_speed' */
+static uint16_T sf_test_Y_uint16_normal_run_speed;
+
+/* '<Root>/bad_lane_flag' */
+static real_T sf_test_Y_bad_lane_flag;
+
+/* '<Root>/accident_flag' */
+static real_T sf_test_Y_accident_flag;
 
 /*
  * Associating rt_OneStep with a real-time clock or interrupt service routine
@@ -105,11 +87,10 @@ void rt_OneStep(RT_MODEL_sf_test_T *const sf_test_M)
   /* Set model inputs here */
 
   /* Step the model */
-  sf_test_step(sf_test_M, sf_test_U_cam_line_angle, sf_test_U_cam_bad_lane_flag,
-               sf_test_U_cam_accident_flag, sf_test_U_cam_car_check_flag,
-               sf_test_U_prev_speed, sf_test_U_next_speed,
-               &sf_test_Y_steering_angle, &sf_test_Y_front_car_speed,
-               &sf_test_Y_lane_change_flag, &sf_test_Y_overfast_flag);
+  sf_test_step(sf_test_M, &sf_test_Y_db_steering_angle,
+               &sf_test_Y_front_car_speed, &sf_test_Y_lane_change_flag,
+               &sf_test_Y_overfast_flag, &sf_test_Y_uint16_normal_run_speed,
+               &sf_test_Y_bad_lane_flag, &sf_test_Y_accident_flag);
 
   /* Get model outputs here */
 
@@ -139,16 +120,12 @@ int_T main(int_T argc, const char *argv[])
   sf_test_M->dwork = &sf_test_DW;
 
   /* Initialize model */
-  sf_test_initialize(sf_test_M, &sf_test_U_cam_line_angle,
-                     &sf_test_U_cam_object_angle, &sf_test_U_Iidar_angle_fov,
-                     &sf_test_U_Iidar_dist_fov, &sf_test_U_cam_bad_lane_flag,
-                     &sf_test_U_cam_accident_flag,
-                     &sf_test_U_cam_accident_location_angle,
-                     &sf_test_U_Iidar_angle_nfov, &sf_test_U_Iidar_dist_nfov,
-                     &sf_test_U_cam_car_check_flag, &sf_test_U_prev_speed,
-                     &sf_test_U_next_speed, &sf_test_Y_steering_angle,
+  sf_test_initialize(sf_test_M, &sf_test_U_LIDAR_INPUT, &sf_test_U_CAM_INPUT,
+                     &sf_test_U_CONTROL_INPUT, &sf_test_Y_db_steering_angle,
                      &sf_test_Y_front_car_speed, &sf_test_Y_lane_change_flag,
-                     &sf_test_Y_overfast_flag);
+                     &sf_test_Y_overfast_flag,
+                     &sf_test_Y_uint16_normal_run_speed,
+                     &sf_test_Y_bad_lane_flag, &sf_test_Y_accident_flag);
 
   /* Attach rt_OneStep to a timer or interrupt service routine with
    * period 0.2 seconds (the model's base sample time) here.  The
