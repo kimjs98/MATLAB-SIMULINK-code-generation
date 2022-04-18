@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_test'.
  *
- * Model version                  : 1.31
+ * Model version                  : 1.49
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Sat Apr 16 03:16:23 2022
+ * C/C++ source code generated on : Mon Apr 18 20:37:06 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -65,7 +65,7 @@ void sf_test_cruise_flowchart_Init(DW_cruise_flowchart_sf_test_T *localDW)
 }
 
 /* Output and update for atomic system: '<S2>/cruise_flowchart' */
-void sf_test_cruise_flowchart(real_T rtu_cam_line_angle, real_T
+void sf_test_cruise_flowchart(real_T rtu_cam_line_angle, uint16_T
   rtu_cam_car_check_flag, real_T rtu_prev_speed, real_T rtu_next_speed, real_T
   *rty_steering_angle, real_T *rty_front_car_speed, real_T *rty_lane_change_flag,
   real_T *rty_overfast_flag, uint16_T *rty_normal_run_speed,
@@ -134,7 +134,7 @@ void sf_test_cruise_flowchart(real_T rtu_cam_line_angle, real_T
     }
   } else {
     /* During 'normal_run': '<S4>:8' */
-    if ((rtu_cam_car_check_flag == 1.0) || (localDW->car_check == 1.0)) {
+    if ((rtu_cam_car_check_flag == 1) || (localDW->car_check == 1.0)) {
       /* Transition: '<S4>:15' */
       /* Transition: '<S4>:43' */
       /* Exit 'normal_run': '<S4>:8' */
@@ -165,17 +165,17 @@ void sf_test_cruise_mode_Init(DW_cruise_mode_sf_test_T *localDW)
 }
 
 /* Output and update for atomic system: '<S1>/cruise_mode' */
-void sf_test_cruise_mode(real_T rtu_cam_line_angle, real_T
-  rtu_cam_car_check_flag, real_T rtu_prev_speed, real_T rtu_next_speed, real_T
-  *rty_steering_angle, real_T *rty_front_car_speed, real_T *rty_lane_change_flag,
-  real_T *rty_overfast_flag, uint16_T *rty_normal_run_speed,
-  DW_cruise_mode_sf_test_T *localDW)
+void sf_test_cruise_mode(real_T rtu_input_CAM_VALUE, uint16_T
+  rtu_input_CAM_car_check_flag, real_T rtu_input_CONTROL_VEL, real_T
+  rtu_input_CONTROL_VEL_j, real_T *rty_steering_angle, real_T
+  *rty_front_car_speed, real_T *rty_lane_change_flag, real_T *rty_overfast_flag,
+  uint16_T *rty_normal_run_speed, DW_cruise_mode_sf_test_T *localDW)
 {
   /* Chart: '<S2>/cruise_flowchart' */
-  sf_test_cruise_flowchart(rtu_cam_line_angle, rtu_cam_car_check_flag,
-    rtu_prev_speed, rtu_next_speed, rty_steering_angle, rty_front_car_speed,
-    rty_lane_change_flag, rty_overfast_flag, rty_normal_run_speed,
-    &localDW->sf_cruise_flowchart);
+  sf_test_cruise_flowchart(rtu_input_CAM_VALUE, rtu_input_CAM_car_check_flag,
+    rtu_input_CONTROL_VEL, rtu_input_CONTROL_VEL_j, rty_steering_angle,
+    rty_front_car_speed, rty_lane_change_flag, rty_overfast_flag,
+    rty_normal_run_speed, &localDW->sf_cruise_flowchart);
 }
 
 /* System initialize for atomic system: '<S3>/submission_flowchart' */
@@ -187,8 +187,8 @@ void sf_te_submission_flowchart_Init(DW_submission_flowchart_sf_te_T *localDW)
 }
 
 /* Output and update for atomic system: '<S3>/submission_flowchart' */
-void sf_test_submission_flowchart(real_T rtu_cam_bad_lane_flag, real_T
-  rtu_cam_car_check_flag, real_T rtu_cam_accident_flag, real_T
+void sf_test_submission_flowchart(uint16_T rtu_cam_bad_lane_flag, uint16_T
+  rtu_cam_car_check_flag, uint16_T rtu_cam_accident_flag, real_T
   rtu_lane_change_flag, real_T *rty_bad_lane_flag, real_T *rty_accident_flag,
   DW_submission_flowchart_sf_te_T *localDW)
 {
@@ -225,13 +225,13 @@ void sf_test_submission_flowchart(real_T rtu_cam_bad_lane_flag, real_T
       /* During 'init_func': '<S5>:11' */
       if (localDW->is_init_func == sf_test_IN_init) {
         /* During 'init': '<S5>:35' */
-        if (rtu_cam_car_check_flag == 1.0) {
+        if (rtu_cam_car_check_flag == 1) {
           /* Transition: '<S5>:38' */
           localDW->is_init_func = sf_test_IN_local_variable_init;
 
           /* Entry 'local_variable_init': '<S5>:37' */
         } else {
-          if (rtu_cam_bad_lane_flag == 1.0) {
+          if (rtu_cam_bad_lane_flag == 1) {
             /* Transition: '<S5>:20' */
             localDW->is_init_func = sf_test_IN_NO_ACTIVE_CHILD_j;
             localDW->is_c1_sf_test = sf_test_IN_bad_lane_func;
@@ -242,7 +242,7 @@ void sf_test_submission_flowchart(real_T rtu_cam_bad_lane_flag, real_T
         }
       } else {
         /* During 'local_variable_init': '<S5>:37' */
-        if (rtu_cam_accident_flag == 1.0) {
+        if (rtu_cam_accident_flag == 1) {
           /* Transition: '<S5>:19' */
           localDW->is_init_func = sf_test_IN_NO_ACTIVE_CHILD_j;
           localDW->is_c1_sf_test = sf_test_IN_accident_func;
@@ -278,14 +278,14 @@ void sf_test_submission_mode_Init(DW_submission_mode_sf_test_T *localDW)
 }
 
 /* Output and update for atomic system: '<S1>/submission_mode' */
-void sf_test_submission_mode(real_T rtu_cam_bad_lane_flag, real_T
-  rtu_cam_car_check_flag, real_T rtu_cam_accident_flag, real_T
+void sf_test_submission_mode(uint16_T rtu_input_CAM_FLAG, uint16_T
+  rtu_input_CAM_FLAG_p, uint16_T rtu_input_CAM_FLAG_j, real_T
   rtu_lane_change_flag, real_T *rty_bad_lane_flag, real_T *rty_accident_flag,
   DW_submission_mode_sf_test_T *localDW)
 {
   /* Chart: '<S3>/submission_flowchart' */
-  sf_test_submission_flowchart(rtu_cam_bad_lane_flag, rtu_cam_car_check_flag,
-    rtu_cam_accident_flag, rtu_lane_change_flag, rty_bad_lane_flag,
+  sf_test_submission_flowchart(rtu_input_CAM_FLAG, rtu_input_CAM_FLAG_p,
+    rtu_input_CAM_FLAG_j, rtu_lane_change_flag, rty_bad_lane_flag,
     rty_accident_flag, &localDW->sf_submission_flowchart);
 }
 
@@ -304,13 +304,15 @@ void sf_test_sensor_fusion_Init(DW_sensor_fusion_sf_test_T *localDW)
 }
 
 /* Output and update for atomic system: '<Root>/sensor_fusion' */
-void sf_test_sensor_fusion(real_T *rty_steering_angle, real_T
-  *rty_front_car_speed, real_T *rty_lane_change_flag, real_T *rty_overfast_flag,
-  uint16_T *rty_normal_run_speed, real_T *rty_bad_lane_flag, real_T
-  *rty_accident_flag, DW_sensor_fusion_sf_test_T *localDW)
+void sf_test_sensor_fusion(real_T rtu_In1, uint16_T rtu_In2, uint16_T rtu_In2_k,
+  uint16_T rtu_In2_l, real_T rtu_In5, real_T rtu_In5_k, real_T
+  *rty_steering_angle, real_T *rty_front_car_speed, real_T *rty_lane_change_flag,
+  real_T *rty_overfast_flag, uint16_T *rty_normal_run_speed, real_T
+  *rty_bad_lane_flag, real_T *rty_accident_flag, DW_sensor_fusion_sf_test_T
+  *localDW)
 {
   /* Outputs for Atomic SubSystem: '<S1>/cruise_mode' */
-  sf_test_cruise_mode(0.0, 0.0, 0.0, 0.0, rty_steering_angle,
+  sf_test_cruise_mode(rtu_In1, rtu_In2, rtu_In5, rtu_In5_k, rty_steering_angle,
                       rty_front_car_speed, rty_lane_change_flag,
                       rty_overfast_flag, rty_normal_run_speed,
                       &localDW->cruise_mode);
@@ -318,14 +320,15 @@ void sf_test_sensor_fusion(real_T *rty_steering_angle, real_T
   /* End of Outputs for SubSystem: '<S1>/cruise_mode' */
 
   /* Outputs for Atomic SubSystem: '<S1>/submission_mode' */
-  sf_test_submission_mode(0.0, 0.0, 0.0, *rty_lane_change_flag,
+  sf_test_submission_mode(rtu_In2_k, rtu_In2, rtu_In2_l, *rty_lane_change_flag,
     rty_bad_lane_flag, rty_accident_flag, &localDW->submission_mode);
 
   /* End of Outputs for SubSystem: '<S1>/submission_mode' */
 }
 
 /* Model step function */
-void sf_test_step(RT_MODEL_sf_test_T *const sf_test_M, real_T
+void sf_test_step(RT_MODEL_sf_test_T *const sf_test_M, CAM *sf_test_U_CAM_INPUT,
+                  CONTROL *sf_test_U_CONTROL_INPUT, real_T
                   *sf_test_Y_db_steering_angle, real_T
                   *sf_test_Y_front_car_speed, real_T *sf_test_Y_lane_change_flag,
                   real_T *sf_test_Y_overfast_flag, uint16_T
@@ -336,15 +339,23 @@ void sf_test_step(RT_MODEL_sf_test_T *const sf_test_M, real_T
 
   /* Outputs for Atomic SubSystem: '<Root>/sensor_fusion' */
 
-  /* Outport: '<Root>/db_steering_angle' incorporates:
+  /* Inport: '<Root>/CAM_INPUT' incorporates:
+   *  Inport: '<Root>/CONTROL_INPUT'
    *  Outport: '<Root>/accident_flag'
    *  Outport: '<Root>/bad_lane_flag'
+   *  Outport: '<Root>/db_steering_angle'
    *  Outport: '<Root>/front_car_speed'
    *  Outport: '<Root>/lane_change_flag'
    *  Outport: '<Root>/overfast_flag'
    *  Outport: '<Root>/uint16_normal_run_speed'
    */
-  sf_test_sensor_fusion(sf_test_Y_db_steering_angle, sf_test_Y_front_car_speed,
+  sf_test_sensor_fusion(sf_test_U_CAM_INPUT->input_CAM_line_angle,
+                        sf_test_U_CAM_INPUT->input_CAM_car_check_flag,
+                        sf_test_U_CAM_INPUT->input_CAM_bad_lane_flag,
+                        sf_test_U_CAM_INPUT->input_CAM_accident_flag,
+                        sf_test_U_CONTROL_INPUT->input_CTR_prev_speed,
+                        sf_test_U_CONTROL_INPUT->input_CTR_next_speed,
+                        sf_test_Y_db_steering_angle, sf_test_Y_front_car_speed,
                         sf_test_Y_lane_change_flag, sf_test_Y_overfast_flag,
                         sf_test_Y_uint16_normal_run_speed,
                         sf_test_Y_bad_lane_flag, sf_test_Y_accident_flag,

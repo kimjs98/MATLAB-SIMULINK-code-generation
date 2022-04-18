@@ -319,7 +319,7 @@ Prototype
 </td>
 <td width="75%" align="left" valign="top">
 <b>
-void sf_test_step(RT_MODEL_sf_test_T&nbsp;*const&nbsp;sf_test_M, real_T&nbsp;*sf_test_Y_db_steering_angle, real_T&nbsp;*sf_test_Y_front_car_speed, real_T&nbsp;*sf_test_Y_lane_change_flag, real_T&nbsp;*sf_test_Y_overfast_flag, uint16_T&nbsp;*sf_test_Y_uint16_normal_run_speed, real_T&nbsp;*sf_test_Y_bad_lane_flag, real_T&nbsp;*sf_test_Y_accident_flag)
+void sf_test_step(RT_MODEL_sf_test_T&nbsp;*const&nbsp;sf_test_M, CAM&nbsp;*sf_test_U_CAM_INPUT, CONTROL&nbsp;*sf_test_U_CONTROL_INPUT, real_T&nbsp;*sf_test_Y_db_steering_angle, real_T&nbsp;*sf_test_Y_front_car_speed, real_T&nbsp;*sf_test_Y_lane_change_flag, real_T&nbsp;*sf_test_Y_overfast_flag, uint16_T&nbsp;*sf_test_Y_uint16_normal_run_speed, real_T&nbsp;*sf_test_Y_bad_lane_flag, real_T&nbsp;*sf_test_Y_accident_flag)
 </b>
 
 </td>
@@ -396,6 +396,36 @@ RTModel
 2
 </td>
 <td align="left" valign="top">
+sf_test_U_CAM_INPUT
+</td>
+<td align="left" valign="top">
+CAM&nbsp;*
+</td>
+<td align="left" valign="top">
+<a href="matlab:coder.internal.code2model('sf_test:169')" name="code2model" class="code2model">&lt;Root&gt;/CAM_INPUT</a>
+</td>
+
+</tr>
+<tr class="even">
+<td align="right" valign="top">
+3
+</td>
+<td align="left" valign="top">
+sf_test_U_CONTROL_INPUT
+</td>
+<td align="left" valign="top">
+CONTROL&nbsp;*
+</td>
+<td align="left" valign="top">
+<a href="matlab:coder.internal.code2model('sf_test:171')" name="code2model" class="code2model">&lt;Root&gt;/CONTROL_INPUT</a>
+</td>
+
+</tr>
+<tr class="odd">
+<td align="right" valign="top">
+4
+</td>
+<td align="left" valign="top">
 sf_test_Y_db_steering_angle
 </td>
 <td align="left" valign="top">
@@ -408,7 +438,7 @@ real_T&nbsp;*
 </tr>
 <tr class="even">
 <td align="right" valign="top">
-3
+5
 </td>
 <td align="left" valign="top">
 sf_test_Y_front_car_speed
@@ -423,7 +453,7 @@ real_T&nbsp;*
 </tr>
 <tr class="odd">
 <td align="right" valign="top">
-4
+6
 </td>
 <td align="left" valign="top">
 sf_test_Y_lane_change_flag
@@ -438,7 +468,7 @@ real_T&nbsp;*
 </tr>
 <tr class="even">
 <td align="right" valign="top">
-5
+7
 </td>
 <td align="left" valign="top">
 sf_test_Y_overfast_flag
@@ -453,7 +483,7 @@ real_T&nbsp;*
 </tr>
 <tr class="odd">
 <td align="right" valign="top">
-6
+8
 </td>
 <td align="left" valign="top">
 sf_test_Y_uint16_normal_run_speed
@@ -468,7 +498,7 @@ uint16_T&nbsp;*
 </tr>
 <tr class="even">
 <td align="right" valign="top">
-7
+9
 </td>
 <td align="left" valign="top">
 sf_test_Y_bad_lane_flag
@@ -483,7 +513,7 @@ real_T&nbsp;*
 </tr>
 <tr class="odd">
 <td align="right" valign="top">
-8
+10
 </td>
 <td align="left" valign="top">
 sf_test_Y_accident_flag

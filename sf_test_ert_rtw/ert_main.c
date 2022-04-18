@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_test'.
  *
- * Model version                  : 1.31
+ * Model version                  : 1.49
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Sat Apr 16 03:16:23 2022
+ * C/C++ source code generated on : Mon Apr 18 20:37:06 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -87,10 +87,11 @@ void rt_OneStep(RT_MODEL_sf_test_T *const sf_test_M)
   /* Set model inputs here */
 
   /* Step the model */
-  sf_test_step(sf_test_M, &sf_test_Y_db_steering_angle,
-               &sf_test_Y_front_car_speed, &sf_test_Y_lane_change_flag,
-               &sf_test_Y_overfast_flag, &sf_test_Y_uint16_normal_run_speed,
-               &sf_test_Y_bad_lane_flag, &sf_test_Y_accident_flag);
+  sf_test_step(sf_test_M, &sf_test_U_CAM_INPUT, &sf_test_U_CONTROL_INPUT,
+               &sf_test_Y_db_steering_angle, &sf_test_Y_front_car_speed,
+               &sf_test_Y_lane_change_flag, &sf_test_Y_overfast_flag,
+               &sf_test_Y_uint16_normal_run_speed, &sf_test_Y_bad_lane_flag,
+               &sf_test_Y_accident_flag);
 
   /* Get model outputs here */
 
