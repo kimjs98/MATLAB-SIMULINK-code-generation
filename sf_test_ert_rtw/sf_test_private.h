@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_test'.
  *
- * Model version                  : 1.49
+ * Model version                  : 1.54
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Mon Apr 18 20:37:06 2022
+ * C/C++ source code generated on : Mon Apr 18 21:15:58 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -31,9 +31,9 @@ extern void sf_test_cruise_flowchart(real_T rtu_cam_line_angle, uint16_T
 extern void sf_test_cruise_mode_Init(DW_cruise_mode_sf_test_T *localDW);
 extern void sf_test_cruise_mode(real_T rtu_input_CAM_VALUE, uint16_T
   rtu_input_CAM_car_check_flag, real_T rtu_input_CONTROL_VEL, real_T
-  rtu_input_CONTROL_VEL_j, real_T *rty_steering_angle, real_T
-  *rty_front_car_speed, real_T *rty_lane_change_flag, real_T *rty_overfast_flag,
-  uint16_T *rty_normal_run_speed, DW_cruise_mode_sf_test_T *localDW);
+  rtu_input_CONTROL_VEL_j, real_T *rty_Output, real_T *rty_Output1, real_T
+  *rty_Output2, real_T *rty_Output3, uint16_T *rty_Output4,
+  DW_cruise_mode_sf_test_T *localDW);
 extern void sf_te_submission_flowchart_Init(DW_submission_flowchart_sf_te_T
   *localDW);
 extern void sf_test_submission_flowchart(uint16_T rtu_cam_bad_lane_flag,
