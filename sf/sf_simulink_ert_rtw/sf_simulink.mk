@@ -1,622 +1,319 @@
-###########################################################################
-## Makefile generated for Simulink model 'sf_simulink'. 
-## 
-## Makefile     : sf_simulink.mk
-## Generated on : Sun Jun 26 00:37:21 2022
-## MATLAB Coder version: 5.0 (R2020a)
-## 
-## Build Info:
-## 
-## Final product: $(RELATIVE_PATH_TO_ANCHOR)/sf_simulink.elf
-## Product type : executable
-## Build type   : Top-Level Standalone Executable
-## 
-###########################################################################
+# Copyright 1994-2019 The MathWorks, Inc.
+#
+# File    : ert_lcc64.tmf   
+#
+# Abstract:
+#       Template makefile for building a PC-based stand-alone embedded real-time 
+#       version of Simulink model using generated C code and 
+#			LCC compiler Version 2.4
+#
+#       This makefile attempts to conform to the guidelines specified in the
+#       IEEE Std 1003.2-1992 (POSIX) standard. It is designed to be used
+#       with GNU Make (gmake) which is located in matlabroot/bin/win64.
+#
+#       Note that this template is automatically customized by the build 
+#       procedure to create "<model>.mk"
+#
+#       The following defines can be used to modify the behavior of the
+#       build:
+#         OPT_OPTS       - Optimization options. Default is none. To enable 
+#                          debugging specify as OPT_OPTS=-g4. 
+#         OPTS           - User specific compile options.
+#         USER_SRCS      - Additional user sources, such as files needed by
+#                          S-functions.
+#         USER_INCLUDES  - Additional include paths 
+#                          (i.e. USER_INCLUDES="-Iwhere-ever -Iwhere-ever2")
+#                          (For Lcc, have a '/'as file separator before the 
+#                          file name instead of a '\' . 
+#                          i.e.,  d:\work\proj1/myfile.c - reqd for 'gmake')
+#       This template makefile is designed to be used with a system target
+#       file that contains 'rtwgensettings.BuildDirSuffix' see ert.tlc
 
-###########################################################################
-## MACROS
-###########################################################################
+#------------------------ Macros read by make_rtw ------------------------------
+#
+# The following macros are read by the build procedure:
+#
+#  MAKECMD         - This is the command used to invoke the make utility
+#  HOST            - What platform this template makefile is targeted for
+#                    (i.e. PC or UNIX)
+#  BUILD           - Invoke make from the build procedure (yes/no)?
+#  SYS_TARGET_FILE - Name of system target file.
 
-# Macro Descriptions:
-# PRODUCT_NAME            Name of the system to build
-# MAKEFILE                Name of this makefile
-# COMPILER_COMMAND_FILE   Compiler command listing model reference header paths
-# CMD_FILE                Command file
+MAKECMD         = "%MATLAB%\bin\win64\gmake"
+SHELL           = cmd
+HOST            = PC
+BUILD           = yes
+SYS_TARGET_FILE = any
 
-PRODUCT_NAME              = sf_simulink
-MAKEFILE                  = sf_simulink.mk
-MATLAB_ROOT               = C:/PROGRA~1/MATLAB/R2020a
-MATLAB_BIN                = C:/PROGRA~1/MATLAB/R2020a/bin
-MATLAB_ARCH_BIN           = $(MATLAB_BIN)/win64
-MASTER_ANCHOR_DIR         = 
-START_DIR                 = C:/a_exhibition_2022/matlab/sf
-SOLVER                    = 
-SOLVER_OBJ                = 
-CLASSIC_INTERFACE         = 0
-TGT_FCN_LIB               = GNU
+# Opt in to simplified format by specifying compatible Toolchain
+TOOLCHAIN_NAME = "LCC-win64 v2.4.1 | gmake (64-bit Windows)"
+
+MAKEFILE_FILESEP = /
+
+#---------------------- Tokens expanded by make_rtw ----------------------------
+#
+# The following tokens, when wrapped with "|>" and "<|" are expanded by the
+# build procedure.
+#
+#  MODEL_NAME          - Name of the Simulink block diagram
+#  MODEL_MODULES       - Any additional generated source modules
+#  MAKEFILE_NAME       - Name of makefile created from template makefile <model>.mk
+#  MATLAB_ROOT         - Path to where MATLAB is installed.
+#  MATLAB_BIN          - Path to MATLAB executable.
+#  S_FUNCTIONS_LIB     - List of S-functions libraries to link. 
+#  NUMST               - Number of sample times
+#  NCSTATES            - Number of continuous states
+#  BUILDARGS           - Options passed in at the command line.
+#  MULTITASKING        - yes (1) or no (0): Is solver mode multitasking
+#  INTEGER_CODE        - yes (1) or no (0): Is generated code purely integer
+#  MAT_FILE            - yes (1) or no (0): Should mat file logging be done,
+#                        if 0, the generated code runs indefinitely
+#  MULTI_INSTANCE_CODE - Is the generated code multi instantiable (1/0)?
+#  SHRLIBTARGET        - Is this build intended for generation of a shared library instead 
+#                        of executable (1/0)?
+#  MAKEFILEBUILDER_TGT - Is this build performed by the MakefileBuilder class
+#                        e.g. to create a PIL executable?
+#  STANDALONE_SUPPRESS_EXE - Build the standalone target but only create object code modules 
+#                            and do not build an executable
+
+MODEL                = sf_simulink
+MODULES              = ert_main.c rtGetInf.c rtGetNaN.c rt_nonfinite.c sf_simulink.c
+PRODUCT              = $(RELATIVE_PATH_TO_ANCHOR)/sf_simulink.exe
+MAKEFILE             = sf_simulink.mk
+MATLAB_ROOT          = C:/Program Files/MATLAB/R2020a
+ALT_MATLAB_ROOT      = C:/PROGRA~1/MATLAB/R2020a
+MATLAB_BIN           = C:/Program Files/MATLAB/R2020a/bin
+ALT_MATLAB_BIN       = C:/PROGRA~1/MATLAB/R2020a/bin
+MASTER_ANCHOR_DIR    = 
+START_DIR            = C:/a_exhibition_2022/matlab/sf
+S_FUNCTIONS_LIB      = 
+NUMST                = 1
+NCSTATES             = 0
+BUILDARGS            =  GENERATE_ERT_S_FUNCTION=0 GENERATE_ASAP2=0 EXTMODE_STATIC_ALLOC=0 EXTMODE_STATIC_ALLOC_SIZE=1000000 EXTMODE_TRANSPORT=0 TMW_EXTMODE_TESTING=0 OPTS="-DRT_MALLOC -DTID01EQ=0"
+MULTITASKING         = 0
+INTEGER_CODE         = 0
+MAT_FILE             = 0
+ALLOCATIONFCN        = 1
+ONESTEPFCN           = 1
+TERMFCN              = 1
+MULTI_INSTANCE_CODE  = 1
+CLASSIC_INTERFACE    = 0
+MODELREFS            = 
+SHRLIBTARGET         = 0
+MAKEFILEBUILDER_TGT  = 0
+ENABLE_SLEXEC_SSBRIDGE  = 0
+STANDALONE_SUPPRESS_EXE = 0
+OPTIMIZATION_FLAGS      = 
+ADDITIONAL_LDFLAGS      = 
+DEFINES_CUSTOM          = 
+SYSTEM_LIBS             = 
 MODEL_HAS_DYNAMICALLY_LOADED_SFCNS = 0
+
+#--------------------------- Model and reference models -----------------------
+MODELLIB                  = 
+MODELREF_LINK_LIBS        = 
+MODELREF_LINK_RSPFILE     = sf_simulink_ref.rsp
 RELATIVE_PATH_TO_ANCHOR   = ..
-COMPILER_COMMAND_FILE     = sf_simulink_comp.rsp
-CMD_FILE                  = sf_simulink.rsp
-C_STANDARD_OPTS           = 
-CPP_STANDARD_OPTS         = 
-
-###########################################################################
-## TOOLCHAIN SPECIFICATIONS
-###########################################################################
-
-# Toolchain Name:          GNU Tools for ARM Embedded Processors
-# Supported Version(s):    
-# ToolchainInfo Version:   2020a
-# Specification Revision:  1.0
-# 
-#-------------------------------------------
-# Macros assumed to be defined elsewhere
-#-------------------------------------------
-
-# TARGET_LOAD_CMD_ARGS
-# TARGET_LOAD_CMD
-# MW_GNU_ARM_TOOLS_PATH
-# FDATASECTIONS_FLG
-
-#-----------
-# MACROS
-#-----------
-
-LIBGCC                = ${shell $(MW_GNU_ARM_TOOLS_PATH)/arm-none-eabi-gcc ${CFLAGS} -print-libgcc-file-name}
-LIBC                  = ${shell $(MW_GNU_ARM_TOOLS_PATH)/arm-none-eabi-gcc ${CFLAGS} -print-file-name=libc.a}
-LIBM                  = ${shell $(MW_GNU_ARM_TOOLS_PATH)/arm-none-eabi-gcc ${CFLAGS} -print-file-name=libm.a}
-PRODUCT_BIN           = $(RELATIVE_PATH_TO_ANCHOR)/$(PRODUCT_NAME).bin
-PRODUCT_HEX           = $(RELATIVE_PATH_TO_ANCHOR)/$(PRODUCT_NAME).hex
-CPFLAGS               = -O binary
-SHELL                 = %SystemRoot%/system32/cmd.exe
-
-TOOLCHAIN_SRCS = 
-TOOLCHAIN_INCS = 
-TOOLCHAIN_LIBS = -lm
-
-#------------------------
-# BUILD TOOL COMMANDS
-#------------------------
-
-# Assembler: GNU ARM Assembler
-AS_PATH = $(MW_GNU_ARM_TOOLS_PATH)
-AS = "$(AS_PATH)/arm-none-eabi-gcc"
-
-# C Compiler: GNU ARM C Compiler
-CC_PATH = $(MW_GNU_ARM_TOOLS_PATH)
-CC = "$(CC_PATH)/arm-none-eabi-gcc"
-
-# Linker: GNU ARM Linker
-LD_PATH = $(MW_GNU_ARM_TOOLS_PATH)
-LD = "$(LD_PATH)/arm-none-eabi-g++"
-
-# C++ Compiler: GNU ARM C++ Compiler
-CPP_PATH = $(MW_GNU_ARM_TOOLS_PATH)
-CPP = "$(CPP_PATH)/arm-none-eabi-g++"
-
-# C++ Linker: GNU ARM C++ Linker
-CPP_LD_PATH = $(MW_GNU_ARM_TOOLS_PATH)
-CPP_LD = "$(CPP_LD_PATH)/arm-none-eabi-g++"
-
-# Archiver: GNU ARM Archiver
-AR_PATH = $(MW_GNU_ARM_TOOLS_PATH)
-AR = "$(AR_PATH)/arm-none-eabi-ar"
-
-# MEX Tool: MEX Tool
-MEX_PATH = $(MATLAB_ARCH_BIN)
-MEX = "$(MEX_PATH)/mex"
-
-# Binary Converter: Binary Converter
-OBJCOPYPATH = $(MW_GNU_ARM_TOOLS_PATH)
-OBJCOPY = "$(OBJCOPYPATH)/arm-none-eabi-objcopy"
-
-# Hex Converter: Hex Converter
-OBJCOPYPATH = $(MW_GNU_ARM_TOOLS_PATH)
-OBJCOPY = "$(OBJCOPYPATH)/arm-none-eabi-objcopy"
-
-# Executable Size: Executable Size
-EXESIZEPATH = $(MW_GNU_ARM_TOOLS_PATH)
-EXESIZE = "$(EXESIZEPATH)/arm-none-eabi-size"
-
-# Download: Download
-DOWNLOAD =
-
-# Execute: Execute
-EXECUTE = $(PRODUCT)
-
-# Builder: GMAKE Utility
-MAKE_PATH = %MATLAB%\bin\win64
-MAKE = "$(MAKE_PATH)/gmake"
-
-
-#-------------------------
-# Directives/Utilities
-#-------------------------
-
-ASDEBUG             = -g
-AS_OUTPUT_FLAG      = -o
-CDEBUG              = -g
-C_OUTPUT_FLAG       = -o
-LDDEBUG             = -g
-OUTPUT_FLAG         = -o
-CPPDEBUG            = -g
-CPP_OUTPUT_FLAG     = -o
-CPPLDDEBUG          = -g
-OUTPUT_FLAG         = -o
-ARDEBUG             =
-STATICLIB_OUTPUT_FLAG =
-MEX_DEBUG           = -g
-RM                  = @del /f/q
-ECHO                = @echo
-MV                  = @move
-RUN                 =
-
-#----------------------------------------
-# "Faster Builds" Build Configuration
-#----------------------------------------
-
-ARFLAGS              = ruvs
-ASFLAGS              = -MMD -MP -MF"$(@:%.o=%.dep)" -MT"$@"  \
-                       -Wall \
-                       -x assembler-with-cpp \
-                       $(ASFLAGS_ADDITIONAL) \
-                       $(DEFINES) \
-                       $(INCLUDES) \
-                       -c
-OBJCOPYFLAGS_BIN     = -O binary $(PRODUCT) $(PRODUCT_BIN)
-CFLAGS               = $(FDATASECTIONS_FLG) \
-                       -Wall \
-                       -MMD -MP -MF"$(@:%.o=%.dep)" -MT"$@"  \
-                       -c \
-                       -O0
-CPPFLAGS             = -std=gnu++14 \
-                       -fno-rtti \
-                       -fno-exceptions \
-                       $(FDATASECTIONS_FLG) \
-                       -Wall \
-                       -MMD -MP -MF"$(@:%.o=%.dep)" -MT"$@"  \
-                       -c \
-                       -O0
-CPP_LDFLAGS          = -Wl,--gc-sections \
-                       -Wl,-Map="$(PRODUCT_NAME).map"
-CPP_SHAREDLIB_LDFLAGS  =
-DOWNLOAD_FLAGS       =
-EXESIZE_FLAGS        = $(PRODUCT)
-EXECUTE_FLAGS        =
-OBJCOPYFLAGS_HEX     = -O ihex $(PRODUCT) $(PRODUCT_HEX)
-LDFLAGS              = -Wl,--gc-sections \
-                       -Wl,-Map="$(PRODUCT_NAME).map"
-MEX_CPPFLAGS         =
-MEX_CPPLDFLAGS       =
-MEX_CFLAGS           =
-MEX_LDFLAGS          =
-MAKE_FLAGS           = -f $(MAKEFILE)
-SHAREDLIB_LDFLAGS    =
-
-
-
-###########################################################################
-## OUTPUT INFO
-###########################################################################
-
-PRODUCT = $(RELATIVE_PATH_TO_ANCHOR)/sf_simulink.elf
-PRODUCT_TYPE = "executable"
-BUILD_TYPE = "Top-Level Standalone Executable"
-
-###########################################################################
-## INCLUDE PATHS
-###########################################################################
-
-INCLUDES_BUILDINFO = 
-
-INCLUDES = $(INCLUDES_BUILDINFO)
-
-###########################################################################
-## DEFINES
-###########################################################################
-
-DEFINES_BUILD_ARGS = -DCLASSIC_INTERFACE=0 -DALLOCATIONFCN=1 -DTERMFCN=1 -DONESTEPFCN=1 -DMAT_FILE=0 -DMULTI_INSTANCE_CODE=1 -DINTEGER_CODE=0 -DMT=0
-DEFINES_CUSTOM = 
-DEFINES_OPTS = -DRT_MALLOC -DTID01EQ=0
-DEFINES_STANDARD = -DMODEL=sf_simulink -DNUMST=1 -DNCSTATES=0 -DHAVESTDIO -DMODEL_HAS_DYNAMICALLY_LOADED_SFCNS=0
-
-DEFINES = $(DEFINES_BUILD_ARGS) $(DEFINES_CUSTOM) $(DEFINES_OPTS) $(DEFINES_STANDARD)
-
-###########################################################################
-## SOURCE FILES
-###########################################################################
-
-SRCS = $(START_DIR)/sf_simulink_ert_rtw/rtGetInf.c $(START_DIR)/sf_simulink_ert_rtw/rtGetNaN.c $(START_DIR)/sf_simulink_ert_rtw/rt_nonfinite.c $(START_DIR)/sf_simulink_ert_rtw/sf_simulink.c
-
-MAIN_SRC = $(START_DIR)/sf_simulink_ert_rtw/ert_main.c
-
-ALL_SRCS = $(SRCS) $(MAIN_SRC)
-
-###########################################################################
-## OBJECTS
-###########################################################################
-
-OBJS = rtGetInf.o rtGetNaN.o rt_nonfinite.o sf_simulink.o
-
-MAIN_OBJ = ert_main.o
-
-ALL_OBJS = $(OBJS) $(MAIN_OBJ)
-
-###########################################################################
-## PREBUILT OBJECT FILES
-###########################################################################
-
-PREBUILT_OBJS = 
-
-###########################################################################
-## LIBRARIES
-###########################################################################
-
-LIBS = 
-
-###########################################################################
-## SYSTEM LIBRARIES
-###########################################################################
-
-SYSTEM_LIBS = 
-
-###########################################################################
-## ADDITIONAL TOOLCHAIN FLAGS
-###########################################################################
-
-#---------------
-# C Compiler
-#---------------
-
-CFLAGS_BASIC = $(DEFINES) $(INCLUDES) @$(COMPILER_COMMAND_FILE)
-
-CFLAGS += $(CFLAGS_BASIC)
-
-#-----------------
-# C++ Compiler
-#-----------------
-
-CPPFLAGS_BASIC = $(DEFINES) $(INCLUDES) @$(COMPILER_COMMAND_FILE)
-
-CPPFLAGS += $(CPPFLAGS_BASIC)
-
-#---------------------
-# MEX C++ Compiler
-#---------------------
-
-MEX_CPP_Compiler_BASIC =  @$(COMPILER_COMMAND_FILE)
-
-MEX_CPPFLAGS += $(MEX_CPP_Compiler_BASIC)
-
-#-----------------
-# MEX Compiler
-#-----------------
-
-MEX_Compiler_BASIC =  @$(COMPILER_COMMAND_FILE)
-
-MEX_CFLAGS += $(MEX_Compiler_BASIC)
-
-###########################################################################
-## INLINED COMMANDS
-###########################################################################
-
-
-ALL_DEPS:=$(patsubst %.o,%.dep,$(ALL_OBJS))
-all:
-
-ifndef DISABLE_GCC_FUNCTION_DATA_SECTIONS
-FDATASECTIONS_FLG := -ffunction-sections -fdata-sections
+FMT_RELATIVE_PATH_TO_ANCHOR   = $(subst /,\,$(RELATIVE_PATH_TO_ANCHOR))
+# NONE: standalone, SIM: modelref sim, RTW: modelref coder target
+MODELREF_TARGET_TYPE       = NONE
+MODELREF_SFCN_SUFFIX       = _msf
+ISPROTECTINGMODEL          = NOTPROTECTING
+PROT_CAPIC_SUFFIX          = _capi.c
+PROT_CAPIO_SUFFIX          = _capi_host.obj
+
+
+#-- In the case when directory name contains space ---
+ifneq ($(MATLAB_ROOT),$(ALT_MATLAB_ROOT))
+MATLAB_ROOT := $(ALT_MATLAB_ROOT)
+endif
+ifneq ($(MATLAB_BIN),$(ALT_MATLAB_BIN))
+MATLAB_BIN := $(ALT_MATLAB_BIN)
 endif
 
+#--------------------------- Tool Specifications -------------------------------
 
+LCC = $(MATLAB_ROOT)\sys\lcc64\lcc64
+include $(MATLAB_ROOT)\rtw\c\tools\lcc64tools.mak
 
--include codertarget_assembly_flags.mk
--include ../codertarget_assembly_flags.mk
--include ../../codertarget_assembly_flags.mk
--include $(ALL_DEPS)
+CMD_FILE             = $(MODEL).rsp
 
+#------------------------------ Include Path -----------------------------------
 
-###########################################################################
-## PHONY TARGETS
-###########################################################################
+# Additional includes 
 
-.PHONY : all build buildobj clean info prebuild postbuild download execute
+ADD_INCLUDES = \
+	-I$(START_DIR) \
+	-I$(START_DIR)/sf_simulink_ert_rtw \
+	-I$(MATLAB_ROOT)/extern/include \
+	-I$(MATLAB_ROOT)/simulink/include \
+	-I$(MATLAB_ROOT)/rtw/c/src \
+	-I$(MATLAB_ROOT)/rtw/c/src/ext_mode/common \
+	-I$(MATLAB_ROOT)/rtw/c/ert \
+
+
+# see COMPILER_INCLUDES from lcctool.mak
+
+INCLUDES = -I. -I$(RELATIVE_PATH_TO_ANCHOR) $(ADD_INCLUDES) \
+           $(COMPILER_INCLUDES) $(USER_INCLUDES)
+
+#-------------------------------- C Flags --------------------------------------
+
+# Optimization Options
+OPT_OPTS = $(DEFAULT_OPT_OPTS)
+
+# General User Options
+OPTS =
+
+# Compiler options, etc:
+ifneq ($(OPTIMIZATION_FLAGS),)
+CC_OPTS = $(OPTS) $(ANSI_OPTS)  $(OPTIMIZATION_FLAGS)
+else
+CC_OPTS = $(OPT_OPTS) $(OPTS) $(ANSI_OPTS) 
+endif
+
+CPP_REQ_DEFINES = -DMODEL=$(MODEL) -DNUMST=$(NUMST) -DNCSTATES=$(NCSTATES) \
+		  -DMAT_FILE=$(MAT_FILE) -DINTEGER_CODE=$(INTEGER_CODE) \
+		  -DONESTEPFCN=$(ONESTEPFCN) -DTERMFCN=$(TERMFCN) \
+		  -DHAVESTDIO -DMULTI_INSTANCE_CODE=$(MULTI_INSTANCE_CODE) \
+		  -DCLASSIC_INTERFACE=$(CLASSIC_INTERFACE) \
+		  -DALLOCATIONFCN=$(ALLOCATIONFCN)
+
+ifeq ($(MODELREF_TARGET_TYPE),SIM)
+CPP_REQ_DEFINES += -DMDL_REF_SIM_TGT=1 
+ifneq ($(ENABLE_SLEXEC_SSBRIDGE), 0)
+CPP_REQ_DEFINES += -DENABLE_SLEXEC_SSBRIDGE=$(ENABLE_SLEXEC_SSBRIDGE)
+endif
+else
+CPP_REQ_DEFINES += -DMT=$(MULTITASKING)
+endif
+
+CPP_REQ_DEFINES += -DMODEL_HAS_DYNAMICALLY_LOADED_SFCNS=$(MODEL_HAS_DYNAMICALLY_LOADED_SFCNS)
+
+CFLAGS = $(DEFAULT_CFLAGS) $(CC_OPTS) $(DEFINES_CUSTOM) $(CPP_REQ_DEFINES) $(INCLUDES) -w -noregistrylookup 
+
+CPP_REQ_DEFINES += -DMODEL_HAS_DYNAMICALLY_LOADED_SFCNS=$(MODEL_HAS_DYNAMICALLY_LOADED_SFCNS)
+
+ifeq ($(OPT_OPTS),$(DEFAULT_OPT_OPTS))
+LDFLAGS = -s -L$(LIB)
+else
+LDFLAGS = -L$(LIB)
+endif
+
+#-------------------------- Additional Libraries ------------------------------
+
+LIBS =
+
+
+LIBS +=  $(S_FUNCTIONS_LIB)
+
+#----------------------------- Source Files ------------------------------------
+ADD_SRCS =
 
+SRCS = $(ADD_SRCS) $(MODULES)
 
-all : build postbuild
-	@echo "### Successfully generated all binary outputs."
+USER_SRCS =
 
+USER_OBJS       = $(USER_SRCS:.c=.obj)
+LOCAL_USER_OBJS = $(notdir $(USER_OBJS))
 
-build : prebuild $(PRODUCT)
+OBJS      = $(SRCS:.c=.obj) $(USER_OBJS)
+PROT_CAPIC  = $(addsuffix $(PROT_CAPIC_SUFFIX), $(MODEL))
+PROT_CAPIO  = $(addsuffix $(PROT_CAPIO_SUFFIX), $(MODEL))
 
+DEF_FILE = $(MODEL).def
 
-buildobj : prebuild $(OBJS) $(PREBUILT_OBJS)
-	@echo "### Successfully generated all binary outputs."
+#--------------------------------- Rules ---------------------------------------
+BIN_SETTING        = $(LD) $(LDFLAGS) $(ADDITIONAL_LDFLAGS) -o $(PRODUCT)
+ifeq ($(MODELREF_TARGET_TYPE),NONE)
+  ifeq ($(SHRLIBTARGET),1)
+    BIN_SETTING        = $(LD) $(LDFLAGS) $(ADDITIONAL_LDFLAGS) -dll -entry LibMain -o $(PRODUCT)
+    $(PRODUCT) : $(OBJS) $(LIBS) $(MODELREF_LINK_LIBS)
+	$(BIN_SETTING) @$(CMD_FILE) $(LOCAL_USER_OBJS) @$(MODELREF_LINK_RSPFILE) $(LIBS) $(MODEL).def
+	@cmd /C "echo ### Created dynamically linked library: $@"
+  else
+    ifeq ($(MAKEFILEBUILDER_TGT),1)
+      PREBUILT_OBJS       = $(MODULES:.c=.obj)
+      $(PRODUCT) : $(PREBUILT_OBJS) $(OBJS) $(MODELLIB) $(LIBS) $(MODELREF_LINK_LIBS)
+	$(BIN_SETTING) $(PREBUILT_OBJS) @$(CMD_FILE) $(LOCAL_USER_OBJS) $(MODELLIB) @$(MODELREF_LINK_RSPFILE) $(LIBS)
+	@cmd /C "echo ### Created executable: $@"
+    else
+      ifeq ($(STANDALONE_SUPPRESS_EXE), 1)
+        .PHONY: $(PRODUCT)
+        $(PRODUCT) : $(OBJS) $(LIBS) $(MODELREF_LINK_LIBS)
+	@cmd /C "echo ### Created object modules $@"
+      else
+        $(PRODUCT) : $(OBJS) $(LIBS) $(MODELREF_LINK_LIBS)
+	$(BIN_SETTING) @$(CMD_FILE) $(LOCAL_USER_OBJS) @$(MODELREF_LINK_RSPFILE) $(LIBS) $(SYSTEM_LIBS)
+	@cmd /C "echo ### Created executable: $@"
+      endif
+    endif
+  endif
+else
+ ifeq ($(MODELREF_TARGET_TYPE),SIM)
+  ifeq ($(ISPROTECTINGMODEL),PROTECTING)
+  all : $(PRODUCT) $(PROT_CAPIO)
+  endif
+  $(PRODUCT) : $(OBJS) $(LIBS)
+	@if exist $(MODELLIB) del "$(MODELLIB)"
+	$(LIBCMD) /out:$(MODELLIB) @$(CMD_FILE) $(LOCAL_USER_OBJS)
+	@cmd /C "echo ### Created $(MODELLIB)"
+  ifeq ($(ISPROTECTINGMODEL),PROTECTING)
+  $(PROT_CAPIO) : $(PROT_CAPIC)
+	$(CC) -c $(CFLAGS) -DHOST_CAPI_BUILD $(PROT_CAPIC) /Fo$(PROT_CAPIO)
+  endif
+ else
+  $(PRODUCT) : $(OBJS)
+	@if exist $(MODELLIB) del "$(MODELLIB)"
+	$(LIBCMD) /out:$(MODELLIB) @$(CMD_FILE) $(LOCAL_USER_OBJS)
+	@cmd /C "echo ### Created $(MODELLIB)"
+	@cmd /C "echo ### Created library: $@"
+ endif
+endif
 
+%.obj : %.c
+	$(CC) -c -Fo$(@F) $(CFLAGS) $<
 
-prebuild : 
+%.obj : %.C
+	$(CC) -c -Fo$(@F) $(CFLAGS) $<
 
+%.obj : $(RELATIVE_PATH_TO_ANCHOR)/%.c
+	$(CC) -c -Fo$(@F) $(CFLAGS) $<
 
-postbuild : $(PRODUCT)
-	@echo "### Invoking postbuild tool "Binary Converter" ..."
-	$(OBJCOPY) $(OBJCOPYFLAGS_BIN)
-	@echo "### Done invoking postbuild tool."
-	@echo "### Invoking postbuild tool "Hex Converter" ..."
-	$(OBJCOPY) $(OBJCOPYFLAGS_HEX)
-	@echo "### Done invoking postbuild tool."
-	@echo "### Invoking postbuild tool "Executable Size" ..."
-	$(EXESIZE) $(EXESIZE_FLAGS)
-	@echo "### Done invoking postbuild tool."
+%.obj : $(RELATIVE_PATH_TO_ANCHOR)/%.C
+	$(CC) -c -Fo$(@F) $(CFLAGS) $<
 
+%.obj : $(MATLAB_ROOT)/rtw/c/ert/%.C
+	$(CC) -c -Fo$(@F) $(CFLAGS) $<
 
-download : postbuild
+%.obj : $(MATLAB_ROOT)/rtw/c/src/%.c
+	$(CC) -c -Fo$(@F) $(CFLAGS) $<
 
+%.obj : $(MATLAB_ROOT)/rtw/c/src/%.C
+	$(CC) -c -Fo$(@F) $(CFLAGS) $<
 
-execute : download
-	@echo "### Invoking postbuild tool "Execute" ..."
-	$(EXECUTE) $(EXECUTE_FLAGS)
-	@echo "### Done invoking postbuild tool."
+%.obj : $(MATLAB_ROOT)/rtw/c/src/%.c
+	$(CC) -c -Fo$(@F) $(CFLAGS) $<
 
+%.obj : $(MATLAB_ROOT)/simulink/src/%.c
+	$(CC) -c -Fo$(@F) $(CFLAGS) $<
 
-###########################################################################
-## FINAL TARGET
-###########################################################################
 
-#-------------------------------------------
-# Create a standalone executable            
-#-------------------------------------------
 
-$(PRODUCT) : $(OBJS) $(PREBUILT_OBJS) $(MAIN_OBJ)
-	@echo "### Creating standalone executable "$(PRODUCT)" ..."
-	$(CPP_LD) $(CPP_LDFLAGS) -o $(PRODUCT) @$(CMD_FILE) $(SYSTEM_LIBS) $(TOOLCHAIN_LIBS)
-	@echo "### Created: $(PRODUCT)"
+%.obj : $(MATLAB_ROOT)/rtw/c/src/%.C
+	$(CC) -c -Fo$(@F) $(CFLAGS) $<
 
+%.obj : $(MATLAB_ROOT)/simulink/src/%.C
+	$(CC) -c -Fo$(@F) $(CFLAGS) $<
 
-###########################################################################
-## INTERMEDIATE TARGETS
-###########################################################################
 
-#---------------------
-# SOURCE-TO-OBJECT
-#---------------------
 
-%.o : %.c
-	$(CC) $(CFLAGS) -o "$@" "$<"
+# Libraries:
 
 
-%.o : %.s
-	$(AS) $(ASFLAGS) -o "$@" "$<"
 
 
-%.o : %.S
-	$(AS) $(ASFLAGS) -o "$@" "$<"
 
+#----------------------------- Dependencies ------------------------------------
 
-%.o : %.cpp
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : %.cc
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : %.C
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : %.cxx
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.c
-	$(CC) $(CFLAGS) -o "$@" "$<"
-
-
-%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.s
-	$(AS) $(ASFLAGS) -o "$@" "$<"
-
-
-%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.S
-	$(AS) $(ASFLAGS) -o "$@" "$<"
-
-
-%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.cpp
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.cc
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.C
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.cxx
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : $(START_DIR)/%.c
-	$(CC) $(CFLAGS) -o "$@" "$<"
-
-
-%.o : $(START_DIR)/%.s
-	$(AS) $(ASFLAGS) -o "$@" "$<"
-
-
-%.o : $(START_DIR)/%.S
-	$(AS) $(ASFLAGS) -o "$@" "$<"
-
-
-%.o : $(START_DIR)/%.cpp
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : $(START_DIR)/%.cc
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : $(START_DIR)/%.C
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : $(START_DIR)/%.cxx
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : $(START_DIR)/sf_simulink_ert_rtw/%.c
-	$(CC) $(CFLAGS) -o "$@" "$<"
-
-
-%.o : $(START_DIR)/sf_simulink_ert_rtw/%.s
-	$(AS) $(ASFLAGS) -o "$@" "$<"
-
-
-%.o : $(START_DIR)/sf_simulink_ert_rtw/%.S
-	$(AS) $(ASFLAGS) -o "$@" "$<"
-
-
-%.o : $(START_DIR)/sf_simulink_ert_rtw/%.cpp
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : $(START_DIR)/sf_simulink_ert_rtw/%.cc
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : $(START_DIR)/sf_simulink_ert_rtw/%.C
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : $(START_DIR)/sf_simulink_ert_rtw/%.cxx
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : $(MATLAB_ROOT)/rtw/c/src/%.c
-	$(CC) $(CFLAGS) -o "$@" "$<"
-
-
-%.o : $(MATLAB_ROOT)/rtw/c/src/%.s
-	$(AS) $(ASFLAGS) -o "$@" "$<"
-
-
-%.o : $(MATLAB_ROOT)/rtw/c/src/%.S
-	$(AS) $(ASFLAGS) -o "$@" "$<"
-
-
-%.o : $(MATLAB_ROOT)/rtw/c/src/%.cpp
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : $(MATLAB_ROOT)/rtw/c/src/%.cc
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : $(MATLAB_ROOT)/rtw/c/src/%.C
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : $(MATLAB_ROOT)/rtw/c/src/%.cxx
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : $(MATLAB_ROOT)/simulink/src/%.c
-	$(CC) $(CFLAGS) -o "$@" "$<"
-
-
-%.o : $(MATLAB_ROOT)/simulink/src/%.s
-	$(AS) $(ASFLAGS) -o "$@" "$<"
-
-
-%.o : $(MATLAB_ROOT)/simulink/src/%.S
-	$(AS) $(ASFLAGS) -o "$@" "$<"
-
-
-%.o : $(MATLAB_ROOT)/simulink/src/%.cpp
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : $(MATLAB_ROOT)/simulink/src/%.cc
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : $(MATLAB_ROOT)/simulink/src/%.C
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-%.o : $(MATLAB_ROOT)/simulink/src/%.cxx
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-ert_main.o : $(START_DIR)/sf_simulink_ert_rtw/ert_main.c
-	$(CC) $(CFLAGS) -o "$@" "$<"
-
-
-rtGetInf.o : $(START_DIR)/sf_simulink_ert_rtw/rtGetInf.c
-	$(CC) $(CFLAGS) -o "$@" "$<"
-
-
-rtGetNaN.o : $(START_DIR)/sf_simulink_ert_rtw/rtGetNaN.c
-	$(CC) $(CFLAGS) -o "$@" "$<"
-
-
-rt_nonfinite.o : $(START_DIR)/sf_simulink_ert_rtw/rt_nonfinite.c
-	$(CC) $(CFLAGS) -o "$@" "$<"
-
-
-sf_simulink.o : $(START_DIR)/sf_simulink_ert_rtw/sf_simulink.c
-	$(CC) $(CFLAGS) -o "$@" "$<"
-
-
-###########################################################################
-## DEPENDENCIES
-###########################################################################
-
-$(ALL_OBJS) : rtw_proj.tmw $(COMPILER_COMMAND_FILE) $(MAKEFILE)
-
-
-###########################################################################
-## MISCELLANEOUS TARGETS
-###########################################################################
-
-info : 
-	@echo "### PRODUCT = $(PRODUCT)"
-	@echo "### PRODUCT_TYPE = $(PRODUCT_TYPE)"
-	@echo "### BUILD_TYPE = $(BUILD_TYPE)"
-	@echo "### INCLUDES = $(INCLUDES)"
-	@echo "### DEFINES = $(DEFINES)"
-	@echo "### ALL_SRCS = $(ALL_SRCS)"
-	@echo "### ALL_OBJS = $(ALL_OBJS)"
-	@echo "### LIBS = $(LIBS)"
-	@echo "### MODELREF_LIBS = $(MODELREF_LIBS)"
-	@echo "### SYSTEM_LIBS = $(SYSTEM_LIBS)"
-	@echo "### TOOLCHAIN_LIBS = $(TOOLCHAIN_LIBS)"
-	@echo "### ASFLAGS = $(ASFLAGS)"
-	@echo "### CFLAGS = $(CFLAGS)"
-	@echo "### LDFLAGS = $(LDFLAGS)"
-	@echo "### SHAREDLIB_LDFLAGS = $(SHAREDLIB_LDFLAGS)"
-	@echo "### CPPFLAGS = $(CPPFLAGS)"
-	@echo "### CPP_LDFLAGS = $(CPP_LDFLAGS)"
-	@echo "### CPP_SHAREDLIB_LDFLAGS = $(CPP_SHAREDLIB_LDFLAGS)"
-	@echo "### ARFLAGS = $(ARFLAGS)"
-	@echo "### MEX_CFLAGS = $(MEX_CFLAGS)"
-	@echo "### MEX_CPPFLAGS = $(MEX_CPPFLAGS)"
-	@echo "### MEX_LDFLAGS = $(MEX_LDFLAGS)"
-	@echo "### MEX_CPPLDFLAGS = $(MEX_CPPLDFLAGS)"
-	@echo "### OBJCOPYFLAGS_BIN = $(OBJCOPYFLAGS_BIN)"
-	@echo "### OBJCOPYFLAGS_HEX = $(OBJCOPYFLAGS_HEX)"
-	@echo "### EXESIZE_FLAGS = $(EXESIZE_FLAGS)"
-	@echo "### DOWNLOAD_FLAGS = $(DOWNLOAD_FLAGS)"
-	@echo "### EXECUTE_FLAGS = $(EXECUTE_FLAGS)"
-	@echo "### MAKE_FLAGS = $(MAKE_FLAGS)"
-
-
-clean : 
-	$(ECHO) "### Deleting all derived files..."
-	$(RM) $(subst /,\,$(PRODUCT))
-	$(RM) $(subst /,\,$(ALL_OBJS))
-	$(RM) *.dep
-	$(ECHO) "### Deleted all derived files."
-
-
+$(OBJS) : $(MAKEFILE) rtw_proj.tmw

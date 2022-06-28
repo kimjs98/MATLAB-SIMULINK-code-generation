@@ -1,10 +1,2 @@
-cd .
-
-if "%1"=="" ("C:\PROGRA~1\MATLAB\R2020a\bin\win64\gmake"  -f sf_simulink.mk all) else ("C:\PROGRA~1\MATLAB\R2020a\bin\win64\gmake"  -f sf_simulink.mk %1)
-@if errorlevel 1 goto error_exit
-
-exit 0
-
-:error_exit
-echo The make command returned an error of %errorlevel%
-exit 1
+set MATLAB=C:\Program Files\MATLAB\R2020a
+"%MATLAB%\bin\win64\gmake" -f sf_simulink.mk  GENERATE_ERT_S_FUNCTION=0 GENERATE_ASAP2=0 EXTMODE_STATIC_ALLOC=0 EXTMODE_STATIC_ALLOC_SIZE=1000000 EXTMODE_TRANSPORT=0 TMW_EXTMODE_TESTING=0 OPTS="-DRT_MALLOC -DTID01EQ=0"

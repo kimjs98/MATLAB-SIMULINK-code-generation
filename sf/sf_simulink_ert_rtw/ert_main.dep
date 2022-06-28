@@ -1,0 +1,16 @@
+ert_main.o: C:/a_exhibition_2022/matlab/sf/sf_simulink_ert_rtw/ert_main.c \
+ C:/a_exhibition_2022/matlab/sf/sf_simulink_ert_rtw/sf_simulink.h \
+ C:/a_exhibition_2022/matlab/sf/sf_simulink_ert_rtw/rtwtypes.h \
+ C:/a_exhibition_2022/matlab/sf/sf_simulink_ert_rtw/sf_simulink_types.h \
+ C:/a_exhibition_2022/matlab/sf/sf_simulink_ert_rtw/rtGetInf.h \
+ C:/a_exhibition_2022/matlab/sf/sf_simulink_ert_rtw/rt_nonfinite.h
+
+C:/a_exhibition_2022/matlab/sf/sf_simulink_ert_rtw/sf_simulink.h:
+
+C:/a_exhibition_2022/matlab/sf/sf_simulink_ert_rtw/rtwtypes.h:
+
+C:/a_exhibition_2022/matlab/sf/sf_simulink_ert_rtw/sf_simulink_types.h:
+
+C:/a_exhibition_2022/matlab/sf/sf_simulink_ert_rtw/rtGetInf.h:
+
+C:/a_exhibition_2022/matlab/sf/sf_simulink_ert_rtw/rt_nonfinite.h:

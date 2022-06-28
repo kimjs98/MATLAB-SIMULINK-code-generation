@@ -1,5 +1,5 @@
-ert_main.o
-rtGetInf.o
-rtGetNaN.o
-rt_nonfinite.o
-sf_simulink.o
+ert_main.obj
+rtGetInf.obj
+rtGetNaN.obj
+rt_nonfinite.obj
+sf_simulink.obj
