@@ -1,6 +1,0 @@
-rtGetInf.o
-rtGetNaN.o
-rt_logging.o
-rt_malloc_main.o
-rt_nonfinite.o
-sf_simulink.o

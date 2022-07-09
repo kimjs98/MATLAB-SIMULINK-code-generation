@@ -42,18 +42,19 @@
       SrcLocation  ""\
     }\
     ChartData {\
-      Name         "dist_fov"\
-      Description  "ChartLocal"\
-      SFName       ""\
-      Path         "dist_fov"\
-      SrcLocation  ""\
-    }\
-    ChartData {\
       Name         "time"\
       Description  "ChartLocal"\
       SFName       ""\
       Path         "time"\
       SrcLocation  ""\
+    }\
+    ChartData {\
+      Name         "lidar_dist"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "lidar_dist"\
+      SrcLocation  ""\
+      Dimensions   [10]\
     }\
   }
   %return ChartDataElements

@@ -7,12 +7,14 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.47
+ * Model version                  : 1.62
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Tue Jun 28 19:09:48 2022
+ * C/C++ source code generated on : Sat Jul  9 21:31:40 2022
  *
  * Target selection: ert.tlc
- * Embedded hardware selection: Intel->x86-64 (Windows64)
+ * Embedded hardware selection: Intel->x86-64 (Linux 64)
+ * Emulation hardware selection:
+ *    Differs from embedded hardware (MATLAB Host)
  * Code generation objectives: Unspecified
  * Validation result: Not run
  */
@@ -33,6 +35,38 @@
 #include "rt_nonfinite.h"
 
 /* Macros for accessing real-time model data structure */
+#ifndef rtmGetBlockIO
+# define rtmGetBlockIO(rtm)            ((rtm)->blockIO)
+#endif
+
+#ifndef rtmSetBlockIO
+# define rtmSetBlockIO(rtm, val)       ((rtm)->blockIO = (val))
+#endif
+
+#ifndef rtmGetRootDWork
+# define rtmGetRootDWork(rtm)          ((rtm)->dwork)
+#endif
+
+#ifndef rtmSetRootDWork
+# define rtmSetRootDWork(rtm, val)     ((rtm)->dwork = (val))
+#endif
+
+#ifndef rtmGetU
+# define rtmGetU(rtm)                  ((rtm)->inputs)
+#endif
+
+#ifndef rtmSetU
+# define rtmSetU(rtm, val)             ((rtm)->inputs = (val))
+#endif
+
+#ifndef rtmGetY
+# define rtmGetY(rtm)                  ((rtm)->outputs)
+#endif
+
+#ifndef rtmSetY
+# define rtmSetY(rtm, val)             ((rtm)->outputs = (val))
+#endif
+
 #ifndef rtmGetErrorStatus
 # define rtmGetErrorStatus(rtm)        ((rtm)->errorStatus)
 #endif
@@ -41,29 +75,28 @@
 # define rtmSetErrorStatus(rtm, val)   ((rtm)->errorStatus = (val))
 #endif
 
+#define sf_simulink_M_TYPE             RT_MODEL_sf_simulink_T
+
 /* Block signals (default storage) */
 typedef struct {
-  real_T steering_angle;               /* '<S2>/cruser chart' */
-  real_T next_vel;                     /* '<S2>/cruser chart' */
+  uint16_T steering_angle;             /* '<S2>/cruser chart' */
+  uint16_T speed;                      /* '<S2>/cruser chart' */
   uint8_T lane_change_flag;            /* '<S2>/cruser chart' */
   uint8_T overfast_flag;               /* '<S2>/check speed chart' */
 } B_sf_simulink_T;
 
 /* Block states (default storage) for system '<Root>' */
 typedef struct {
-  real_T angle_fov;                    /* '<S2>/cruser chart' */
-  real_T angle_nfov;                   /* '<S2>/cruser chart' */
-  real_T car_check_f;                  /* '<S2>/cruser chart' */
-  real_T dist_fov;                     /* '<S2>/cruser chart' */
-  real_T dist_nfov;                    /* '<S2>/cruser chart' */
-  real_T object_angle;                 /* '<S2>/cruser chart' */
-  real_T car_check_f_f;                /* '<S2>/check speed chart' */
-  real_T dist_fov_m;                   /* '<S2>/check speed chart' */
+  real_T object_angle[10];             /* '<S2>/cruser chart' */
+  real_T lidar_angle[10];              /* '<S2>/cruser chart' */
+  real_T lidar_dist[10];               /* '<S2>/cruser chart' */
+  real_T car_check_f;                  /* '<S2>/check speed chart' */
   real_T time;                         /* '<S2>/check speed chart' */
-  uint8_T is_active_c2_sf_simulink;    /* '<S3>/acceident' */
-  uint8_T is_c2_sf_simulink;           /* '<S3>/acceident' */
+  real_T lidar_dist_b[10];             /* '<S2>/check speed chart' */
+  uint8_T is_active_c2_sf_simulink;    /* '<S2>/light on-off chart' */
   uint8_T is_active_c3_sf_simulink;    /* '<S2>/cruser chart' */
   uint8_T is_c3_sf_simulink;           /* '<S2>/cruser chart' */
+  uint8_T car_check_f_g;               /* '<S2>/cruser chart' */
   uint8_T is_active_c1_sf_simulink;    /* '<S2>/check speed chart' */
   uint8_T is_c1_sf_simulink;           /* '<S2>/check speed chart' */
   uint8_T is_calculate_the_speed;      /* '<S2>/check speed chart' */
@@ -79,11 +112,12 @@ typedef struct {
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
   OUTPUT Output;                       /* '<Root>/Output' */
+  MCU_CONTROL Output1;                 /* '<Root>/Output1' */
 } ExtY_sf_simulink_T;
 
 /* Real-time Model Data Structure */
 struct tag_RTM_sf_simulink_T {
-  const char_T * volatile errorStatus;
+  const char_T *errorStatus;
   B_sf_simulink_T *blockIO;
   ExtU_sf_simulink_T *inputs;
   ExtY_sf_simulink_T *outputs;
@@ -91,7 +125,6 @@ struct tag_RTM_sf_simulink_T {
 };
 
 /* External data declarations for dependent source files */
-extern const OUTPUT sf_simulink_rtZOUTPUT;/* OUTPUT ground */
 extern const char *RT_MEMORY_ALLOCATION_ERROR;
 
 /* Model entry point functions */
@@ -117,10 +150,9 @@ void sf_simulink_terminate(RT_MODEL_sf_simulink_T * sf_simulink_M);
  * '<Root>' : 'sf_simulink'
  * '<S1>'   : 'sf_simulink/top model of sf'
  * '<S2>'   : 'sf_simulink/top model of sf/cruser and checking speed model'
- * '<S3>'   : 'sf_simulink/top model of sf/mission model'
- * '<S4>'   : 'sf_simulink/top model of sf/cruser and checking speed model/check speed chart'
- * '<S5>'   : 'sf_simulink/top model of sf/cruser and checking speed model/cruser chart'
- * '<S6>'   : 'sf_simulink/top model of sf/mission model/acceident'
+ * '<S3>'   : 'sf_simulink/top model of sf/cruser and checking speed model/check speed chart'
+ * '<S4>'   : 'sf_simulink/top model of sf/cruser and checking speed model/cruser chart'
+ * '<S5>'   : 'sf_simulink/top model of sf/cruser and checking speed model/light on-off chart'
  */
 #endif                                 /* RTW_HEADER_sf_simulink_h_ */
 

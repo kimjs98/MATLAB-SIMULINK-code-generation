@@ -7,12 +7,14 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.47
+ * Model version                  : 1.62
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Tue Jun 28 19:09:48 2022
+ * C/C++ source code generated on : Sat Jul  9 21:31:40 2022
  *
  * Target selection: ert.tlc
- * Embedded hardware selection: Intel->x86-64 (Windows64)
+ * Embedded hardware selection: Intel->x86-64 (Linux 64)
+ * Emulation hardware selection:
+ *    Differs from embedded hardware (MATLAB Host)
  * Code generation objectives: Unspecified
  * Validation result: Not run
  */
@@ -27,10 +29,10 @@
 
 typedef struct {
   real_T line_angle;
+  real_T object_id[10];
+  real_T object_angle[10];
   uint8_T car_check_flag;
-  real_T object_angle;
   uint8_T accident_flag;
-  uint16_T accident_angle;
   uint8_T bad_lane_flag;
 } CAM;
 
@@ -40,10 +42,9 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_LIDAR_
 
 typedef struct {
-  real_T angle_fov;
-  real_T dist_fov;
-  real_T angle_nfov;
-  real_T dist_nfov;
+  real_T detected_number;
+  real_T angle[10];
+  real_T dist[10];
 } LIDAR;
 
 #endif
@@ -57,46 +58,43 @@ typedef struct {
 
 #endif
 
+#ifndef DEFINED_TYPEDEF_FOR_CHECK_
+#define DEFINED_TYPEDEF_FOR_CHECK_
+
+typedef struct {
+  real_T object_id[10];
+  real_T object_angle[10];
+  uint8_T car_check_flag;
+  real_T detected_number;
+  real_T angle[10];
+  real_T dist[10];
+} CHECK;
+
+#endif
+
 #ifndef DEFINED_TYPEDEF_FOR_OUTPUT_
 #define DEFINED_TYPEDEF_FOR_OUTPUT_
 
 typedef struct {
-  real_T steering_angle;
-  real_T next_vel;
-  real_T front_car_vel;
-  uint8_T lane_change_flag;
+  real_T front_car_speed;
   uint8_T overfast_flag;
+  uint8_T lane_change_flag;
   uint8_T bad_lane_flag;
   uint8_T accident_flag;
 } OUTPUT;
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_CHECK_
-#define DEFINED_TYPEDEF_FOR_CHECK_
+#ifndef DEFINED_TYPEDEF_FOR_MCU_CONTROL_
+#define DEFINED_TYPEDEF_FOR_MCU_CONTROL_
 
 typedef struct {
-  uint8_T car_check_flag;
-  real_T object_angle;
-  real_T angle_fov;
-  real_T dist_fov;
-  real_T angle_nfov;
-  real_T dist_nfov;
-} CHECK;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_ACCIDENT_
-#define DEFINED_TYPEDEF_FOR_ACCIDENT_
-
-typedef struct {
-  uint8_T accident_flag;
-  uint16_T accident_angle;
-  real_T angle_fov;
-  real_T dist_fov;
-  real_T angle_nfov;
-  real_T dist_nfov;
-} ACCIDENT;
+  uint16_T steering_angle;
+  uint16_T speed;
+  uint8_T blinker_onoff;
+  uint8_T blinker_dir;
+  uint8_T break_light_onoff;
+} MCU_CONTROL;
 
 #endif
 

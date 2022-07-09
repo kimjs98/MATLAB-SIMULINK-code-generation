@@ -7,7 +7,7 @@
 %endfunction
 %function ChartDataMap(block, system) void
   %createrecord ChartDataElements {\
-    NumChartData   8 \
+    NumChartData   6 \
     ChartDataDefaults {\
       RecordType   "ChartData"\
       Dimensions   []\
@@ -28,38 +28,10 @@
       SrcLocation  ""\
     }\
     ChartData {\
-      Name         "angle_fov"\
-      Description  "ChartLocal"\
-      SFName       ""\
-      Path         "angle_fov"\
-      SrcLocation  ""\
-    }\
-    ChartData {\
-      Name         "angle_nfov"\
-      Description  "ChartLocal"\
-      SFName       ""\
-      Path         "angle_nfov"\
-      SrcLocation  ""\
-    }\
-    ChartData {\
       Name         "car_check_f"\
       Description  "ChartLocal"\
       SFName       ""\
       Path         "car_check_f"\
-      SrcLocation  ""\
-    }\
-    ChartData {\
-      Name         "dist_fov"\
-      Description  "ChartLocal"\
-      SFName       ""\
-      Path         "dist_fov"\
-      SrcLocation  ""\
-    }\
-    ChartData {\
-      Name         "dist_nfov"\
-      Description  "ChartLocal"\
-      SFName       ""\
-      Path         "dist_nfov"\
       SrcLocation  ""\
     }\
     ChartData {\
@@ -68,6 +40,23 @@
       SFName       ""\
       Path         "object_angle"\
       SrcLocation  ""\
+      Dimensions   [10]\
+    }\
+    ChartData {\
+      Name         "lidar_angle"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "lidar_angle"\
+      SrcLocation  ""\
+      Dimensions   [10]\
+    }\
+    ChartData {\
+      Name         "lidar_dist"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "lidar_dist"\
+      SrcLocation  ""\
+      Dimensions   [10]\
     }\
   }
   %return ChartDataElements
