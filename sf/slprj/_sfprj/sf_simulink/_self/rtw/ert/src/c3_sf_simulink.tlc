@@ -28,35 +28,32 @@
       SrcLocation  ""\
     }\
     ChartData {\
-      Name         "car_check_f"\
+      Name         "time"\
       Description  "ChartLocal"\
       SFName       ""\
-      Path         "car_check_f"\
+      Path         "time"\
       SrcLocation  ""\
     }\
     ChartData {\
-      Name         "object_angle"\
+      Name         "save_time"\
       Description  "ChartLocal"\
       SFName       ""\
-      Path         "object_angle"\
+      Path         "save_time"\
       SrcLocation  ""\
-      Dimensions   [10]\
     }\
     ChartData {\
-      Name         "lidar_angle"\
+      Name         "save_dist"\
       Description  "ChartLocal"\
       SFName       ""\
-      Path         "lidar_angle"\
+      Path         "save_dist"\
       SrcLocation  ""\
-      Dimensions   [10]\
     }\
     ChartData {\
-      Name         "lidar_dist"\
+      Name         "dt"\
       Description  "ChartLocal"\
       SFName       ""\
-      Path         "lidar_dist"\
+      Path         "dt"\
       SrcLocation  ""\
-      Dimensions   [10]\
     }\
   }
   %return ChartDataElements

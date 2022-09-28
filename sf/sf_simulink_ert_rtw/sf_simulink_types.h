@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.62
+ * Model version                  : 1.435
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Sat Jul  9 21:31:40 2022
+ * C/C++ source code generated on : Wed Sep 28 23:09:19 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -28,12 +28,16 @@
 #define DEFINED_TYPEDEF_FOR_CAM_
 
 typedef struct {
-  real_T line_angle;
-  real_T object_id[10];
-  real_T object_angle[10];
+  int32_T line_angle;
+  uint32_T object_id[10];
+  uint32_T object_angle[10];
   uint8_T car_check_flag;
   uint8_T accident_flag;
   uint8_T bad_lane_flag;
+  uint32_T sig_violate_id[10];
+  uint8_T sig_flag;
+  real_T stop_line_dist;
+  uint8_T change_lane_dir;
 } CAM;
 
 #endif
@@ -42,8 +46,8 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_LIDAR_
 
 typedef struct {
-  real_T detected_number;
-  real_T angle[10];
+  uint8_T detected_number;
+  uint32_T angle[10];
   real_T dist[10];
 } LIDAR;
 
@@ -58,17 +62,45 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_CHECK_
-#define DEFINED_TYPEDEF_FOR_CHECK_
+#ifndef DEFINED_TYPEDEF_FOR_C_BUS_
+#define DEFINED_TYPEDEF_FOR_C_BUS_
 
 typedef struct {
-  real_T object_id[10];
-  real_T object_angle[10];
+  uint32_T object_id[10];
+  uint32_T object_angle[10];
+} C_BUS;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_OBJECT_
+#define DEFINED_TYPEDEF_FOR_OBJECT_
+
+typedef struct {
+  uint8_T who;
+  uint32_T id;
+  real_T dist;
+} OBJECT;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_CRUISER_
+#define DEFINED_TYPEDEF_FOR_CRUISER_
+
+typedef struct {
+  real_T line_angle;
   uint8_T car_check_flag;
-  real_T detected_number;
-  real_T angle[10];
-  real_T dist[10];
-} CHECK;
+} CRUISER;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_SIGNAL_
+#define DEFINED_TYPEDEF_FOR_SIGNAL_
+
+typedef struct {
+  uint32_T sig_violate_id[10];
+  uint8_T sig_flag;
+  real_T stop_line_dist;
+} SIGNAL;
 
 #endif
 
@@ -89,8 +121,8 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_MCU_CONTROL_
 
 typedef struct {
-  uint16_T steering_angle;
-  uint16_T speed;
+  int16_T steering_angle;
+  int16_T speed;
   uint8_T blinker_onoff;
   uint8_T blinker_dir;
   uint8_T break_light_onoff;
