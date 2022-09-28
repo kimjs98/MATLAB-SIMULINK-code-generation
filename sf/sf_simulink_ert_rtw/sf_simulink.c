@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.435
+ * Model version                  : 1.468
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Sep 28 23:09:19 2022
+ * C/C++ source code generated on : Thu Sep 29 00:57:19 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -23,7 +23,7 @@
 #include "sf_simulink_private.h"
 
 /* Named constants for Chart: '<S2>/cruser chart' */
-#define sf_simulink_EXTRA_SPEED        (100.0)
+#define sf_simulink_EXTRA_SPEED        (10.0)
 #define sf_simulink_IN_NO_ACTIVE_CHILD ((uint8_T)0U)
 #define sf_simulink_IN_change_lane     ((uint8_T)1U)
 #define sf_simulink_IN_init            ((uint8_T)2U)
@@ -32,7 +32,7 @@
 #define sf_simulink_TIME_UNIT          (1.0E+6)
 
 /* Named constants for Chart: '<S1>/object fetch' */
-#define sf_simulink_IN_init_a          ((uint8_T)1U)
+#define sf_simulink_DIFF_ANGLE         (3.0)
 #define sf_simulink_IN_running         ((uint8_T)2U)
 
 /* Forward declaration for local functions */
@@ -646,8 +646,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
    * */
   if (sf_simulink_DW->is_active_c1_sf_simulink == 0U) {
     sf_simulink_DW->is_active_c1_sf_simulink = 1U;
-    sf_simulink_DW->is_c1_sf_simulink = sf_simulink_IN_init_a;
-  } else if (sf_simulink_DW->is_c1_sf_simulink == sf_simulink_IN_init_a) {
+    sf_simulink_DW->is_c1_sf_simulink = 1;
+  } else if (sf_simulink_DW->is_c1_sf_simulink == 1) {
     sf_simulink_DW->is_c1_sf_simulink = sf_simulink_IN_running;
   } else {
     /* case IN_running: */
@@ -675,9 +675,9 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
            !!! used data is set minus one !!!
            data is existed, what...  */
         if ((local_angle_cam[c] >= 0.0) && (local_angle_lidar[l] >= 0.0) &&
-            (fabs(local_angle_cam[c] - (real_T)i) < 3.0) && (fabs
-             (local_angle_lidar[l] - (real_T)i) < 3.0) && ((local_angle_cam[c] +
-              local_angle_lidar[l]) / 2.0 == i)) {
+            (fabs(local_angle_cam[c] - (real_T)i) < sf_simulink_DIFF_ANGLE) &&
+            (fabs(local_angle_lidar[l] - (real_T)i) < sf_simulink_DIFF_ANGLE) &&
+            ((local_angle_cam[c] + local_angle_lidar[l]) / 2.0 == i)) {
           sf_simulink_DW->each_object.who = 3U;
           for (i_0 = 0; i_0 < 10; i_0++) {
             tmp[i_0] = sf_simulink_U->Input.object_id[i_0];
@@ -723,8 +723,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
             l = MAX_int8_T;
           }
         } else {
-          if ((local_angle_cam[c] < (real_T)i - 3.0) && (local_angle_cam[c] >=
-               0.0)) {
+          if ((local_angle_cam[c] < (real_T)i - sf_simulink_DIFF_ANGLE) &&
+              (local_angle_cam[c] >= 0.0)) {
             car_num = c;
             sf_simulink_up_count(&car_num, 10.0);
             if (car_num < 128.0) {
@@ -738,8 +738,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
             }
           }
 
-          if ((local_angle_lidar[l] < (real_T)i - 3.0) && (local_angle_lidar[l] >=
-               0.0)) {
+          if ((local_angle_lidar[l] < (real_T)i - sf_simulink_DIFF_ANGLE) &&
+              (local_angle_lidar[l] >= 0.0)) {
             car_num = l;
             sf_simulink_up_count(&car_num, 10.0);
             if (car_num < 128.0) {
@@ -770,6 +770,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
     /*  data fetch */
     sf_simulink_B->cruiser.line_angle = sf_simulink_U->Input.line_angle;
     sf_simulink_B->cruiser.car_check_flag = sf_simulink_U->Input.car_check_flag;
+    sf_simulink_B->cruiser.change_lane_dir =
+      sf_simulink_U->Input.change_lane_dir;
     sf_simulink_DW->is_c1_sf_simulink = sf_simulink_IN_running;
   }
 
@@ -800,7 +802,6 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
     }
 
     sf_simulink_B->speed = 0;
-    sf_simulink_B->lane_change_flag = 0U;
     sf_simulink_B->overfast_flag = 0U;
     sf_simulink_B->front_car_speed = 0.0;
   } else {
@@ -837,8 +838,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
         car_num = (sf_simulink_B->object[i_0].dist - sf_simulink_DW->save_dist) /
           car_num;
 
-        /*  speed unit is millimeters, relative_velovity unit is meters  */
-        sf_simulink_B->front_car_speed = (real_T)(sf_simulink_B->speed / 1000) +
+        /*  speed unit is centimeters, relative_velovity unit is meters  */
+        sf_simulink_B->front_car_speed = (real_T)(sf_simulink_B->speed / 100) +
           car_num;
         sf_simulink_check_speeding(sf_simulink_B);
 
@@ -881,26 +882,32 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
 
   /* End of Chart: '<S2>/cruser chart' */
 
+  /* Chart: '<S2>/signal violation checking chart' */
+  if (sf_simulink_DW->is_active_c4_sf_simulink == 0U) {
+    sf_simulink_DW->is_active_c4_sf_simulink = 1U;
+    sf_simulink_Y->Output.signal_violation_flag = 0U;
+  } else {
+    sf_simulink_Y->Output.signal_violation_flag = 0U;
+  }
+
+  /* End of Chart: '<S2>/signal violation checking chart' */
+
   /* BusCreator generated from: '<Root>/Output' incorporates:
    *  Inport: '<Root>/Input'
    *  Outport: '<Root>/Output'
    */
   sf_simulink_Y->Output.front_car_speed = sf_simulink_B->front_car_speed;
   sf_simulink_Y->Output.overfast_flag = sf_simulink_B->overfast_flag;
-  sf_simulink_Y->Output.lane_change_flag = sf_simulink_B->lane_change_flag;
-  sf_simulink_Y->Output.bad_lane_flag = sf_simulink_U->Input.bad_lane_flag;
-  sf_simulink_Y->Output.accident_flag = sf_simulink_U->Input.accident_flag;
+  sf_simulink_Y->Output.crack_flag = sf_simulink_U->Input.crack_flag;
 
   /* Chart: '<S2>/light on-off chart' */
   if (sf_simulink_DW->is_active_c2_sf_simulink == 0U) {
     sf_simulink_DW->is_active_c2_sf_simulink = 1U;
     sf_simulink_Y->Output1.blinker_onoff = 0U;
     sf_simulink_Y->Output1.blinker_dir = 0U;
-    sf_simulink_Y->Output1.break_light_onoff = 0U;
   } else {
     sf_simulink_Y->Output1.blinker_onoff = 0U;
     sf_simulink_Y->Output1.blinker_dir = 0U;
-    sf_simulink_Y->Output1.break_light_onoff = 0U;
   }
 
   /* End of Chart: '<S2>/light on-off chart' */
@@ -930,6 +937,7 @@ void sf_simulink_initialize(RT_MODEL_sf_simulink_T *const sf_simulink_M)
     sf_simulink_DW->each_object.dist = 0.0;
     sf_simulink_B->cruiser.line_angle = 0.0;
     sf_simulink_B->cruiser.car_check_flag = 0U;
+    sf_simulink_B->cruiser.change_lane_dir = 0U;
     struct_temp.who = 0U;
     struct_temp.id = 0U;
     struct_temp.dist = 0.0;
@@ -947,9 +955,11 @@ void sf_simulink_initialize(RT_MODEL_sf_simulink_T *const sf_simulink_M)
     sf_simulink_DW->save_dist = 0.0;
     sf_simulink_B->steering_angle = 0;
     sf_simulink_B->speed = 0;
-    sf_simulink_B->lane_change_flag = 0U;
     sf_simulink_B->overfast_flag = 0U;
     sf_simulink_B->front_car_speed = 0.0;
+
+    /* SystemInitialize for Chart: '<S2>/signal violation checking chart' */
+    sf_simulink_DW->is_active_c4_sf_simulink = 0U;
 
     /* SystemInitialize for Chart: '<S2>/light on-off chart' */
     sf_simulink_DW->is_active_c2_sf_simulink = 0U;

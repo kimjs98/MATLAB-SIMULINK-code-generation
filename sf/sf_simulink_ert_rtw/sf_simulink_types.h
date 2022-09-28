@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.435
+ * Model version                  : 1.468
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Sep 28 23:09:19 2022
+ * C/C++ source code generated on : Thu Sep 29 00:57:19 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -32,9 +32,8 @@ typedef struct {
   uint32_T object_id[10];
   uint32_T object_angle[10];
   uint8_T car_check_flag;
-  uint8_T accident_flag;
-  uint8_T bad_lane_flag;
-  uint32_T sig_violate_id[10];
+  uint8_T crack_flag;
+  uint32_T sig_violate_id;
   uint8_T sig_flag;
   real_T stop_line_dist;
   uint8_T change_lane_dir;
@@ -68,6 +67,7 @@ typedef struct {
 typedef struct {
   uint32_T object_id[10];
   uint32_T object_angle[10];
+  uint8_T change_lane_dir;
 } C_BUS;
 
 #endif
@@ -89,6 +89,7 @@ typedef struct {
 typedef struct {
   real_T line_angle;
   uint8_T car_check_flag;
+  uint8_T change_lane_dir;
 } CRUISER;
 
 #endif
@@ -97,7 +98,7 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_SIGNAL_
 
 typedef struct {
-  uint32_T sig_violate_id[10];
+  uint32_T sig_violate_id;
   uint8_T sig_flag;
   real_T stop_line_dist;
 } SIGNAL;
@@ -110,9 +111,8 @@ typedef struct {
 typedef struct {
   real_T front_car_speed;
   uint8_T overfast_flag;
-  uint8_T lane_change_flag;
-  uint8_T bad_lane_flag;
-  uint8_T accident_flag;
+  uint8_T signal_violation_flag;
+  uint8_T crack_flag;
 } OUTPUT;
 
 #endif
@@ -125,7 +125,6 @@ typedef struct {
   int16_T speed;
   uint8_T blinker_onoff;
   uint8_T blinker_dir;
-  uint8_T break_light_onoff;
 } MCU_CONTROL;
 
 #endif

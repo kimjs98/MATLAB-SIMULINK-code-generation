@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.435
+ * Model version                  : 1.468
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Sep 28 23:09:19 2022
+ * C/C++ source code generated on : Thu Sep 29 00:57:19 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -82,7 +82,6 @@ typedef struct {
   real_T front_car_speed;              /* '<S2>/cruser chart' */
   int16_T steering_angle;              /* '<S2>/cruser chart' */
   int16_T speed;                       /* '<S2>/cruser chart' */
-  uint8_T lane_change_flag;            /* '<S2>/cruser chart' */
   uint8_T overfast_flag;               /* '<S2>/cruser chart' */
 } B_sf_simulink_T;
 
@@ -94,6 +93,7 @@ typedef struct {
   real_T save_dist;                    /* '<S2>/cruser chart' */
   uint8_T is_active_c1_sf_simulink;    /* '<S1>/object fetch' */
   uint8_T is_c1_sf_simulink;           /* '<S1>/object fetch' */
+  uint8_T is_active_c4_sf_simulink; /* '<S2>/signal violation checking chart' */
   uint8_T is_active_c2_sf_simulink;    /* '<S2>/light on-off chart' */
   uint8_T is_active_c3_sf_simulink;    /* '<S2>/cruser chart' */
   uint8_T is_c3_sf_simulink;           /* '<S2>/cruser chart' */
@@ -150,6 +150,7 @@ void sf_simulink_terminate(RT_MODEL_sf_simulink_T * sf_simulink_M);
  * '<S3>'   : 'sf_simulink/top model of sf/object fetch'
  * '<S4>'   : 'sf_simulink/top model of sf/cruser and checking speed model/cruser chart'
  * '<S5>'   : 'sf_simulink/top model of sf/cruser and checking speed model/light on-off chart'
+ * '<S6>'   : 'sf_simulink/top model of sf/cruser and checking speed model/signal violation checking chart'
  */
 #endif                                 /* RTW_HEADER_sf_simulink_h_ */
 
