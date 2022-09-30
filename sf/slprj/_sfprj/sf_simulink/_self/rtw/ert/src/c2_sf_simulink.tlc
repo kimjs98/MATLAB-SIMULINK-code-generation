@@ -7,7 +7,7 @@
 %endfunction
 %function ChartDataMap(block, system) void
   %createrecord ChartDataElements {\
-    NumChartData   1 \
+    NumChartData   2 \
     ChartDataDefaults {\
       RecordType   "ChartData"\
       Dimensions   []\
@@ -16,6 +16,13 @@
     ChartData {\
       Name         "is_active_c2_sf_simulink"\
       Description  "StateIsActive"\
+      SFName       ""\
+      Path         ""\
+      SrcLocation  ""\
+    }\
+    ChartData {\
+      Name         "is_c2_sf_simulink"\
+      Description  "StateActiveChild"\
       SFName       ""\
       Path         ""\
       SrcLocation  ""\

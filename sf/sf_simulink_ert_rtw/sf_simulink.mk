@@ -2,7 +2,7 @@
 ## Makefile generated for Simulink model 'sf_simulink'. 
 ## 
 ## Makefile     : sf_simulink.mk
-## Generated on : Sun Jul 24 01:34:00 2022
+## Generated on : Fri Sep 30 02:52:18 2022
 ## MATLAB Coder version: 5.0 (R2020a)
 ## 
 ## Build Info:
@@ -227,7 +227,7 @@ DEFINES = $(DEFINES_BUILD_ARGS) $(DEFINES_CUSTOM) $(DEFINES_OPTS) $(DEFINES_STAN
 ## SOURCE FILES
 ###########################################################################
 
-SRCS = $(START_DIR)/sf_simulink_ert_rtw/sf_simulink.c
+SRCS = $(START_DIR)/sf_simulink_ert_rtw/rtGetInf.c $(START_DIR)/sf_simulink_ert_rtw/rtGetNaN.c $(START_DIR)/sf_simulink_ert_rtw/rt_nonfinite.c $(START_DIR)/sf_simulink_ert_rtw/sf_simulink.c
 
 MAIN_SRC = $(MATLAB_ROOT)/rtw/c/src/common/rt_malloc_main.c
 
@@ -237,7 +237,7 @@ ALL_SRCS = $(SRCS) $(MAIN_SRC)
 ## OBJECTS
 ###########################################################################
 
-OBJS = sf_simulink.o
+OBJS = rtGetInf.o rtGetNaN.o rt_nonfinite.o sf_simulink.o
 
 MAIN_OBJ = rt_malloc_main.o
 
@@ -547,6 +547,18 @@ $(PRODUCT) : $(OBJS) $(PREBUILT_OBJS) $(MAIN_OBJ)
 
 %.o : $(MATLAB_ROOT)/simulink/src/%.cxx
 	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+rtGetInf.o : $(START_DIR)/sf_simulink_ert_rtw/rtGetInf.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+rtGetNaN.o : $(START_DIR)/sf_simulink_ert_rtw/rtGetNaN.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+rt_nonfinite.o : $(START_DIR)/sf_simulink_ert_rtw/rt_nonfinite.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
 sf_simulink.o : $(START_DIR)/sf_simulink_ert_rtw/sf_simulink.c

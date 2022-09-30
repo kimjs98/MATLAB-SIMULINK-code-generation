@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.468
+ * Model version                  : 1.592
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Thu Sep 29 00:57:19 2022
+ * C/C++ source code generated on : Fri Sep 30 20:01:57 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -31,6 +31,8 @@
 #endif                                 /* sf_simulink_COMMON_INCLUDES_ */
 
 #include "sf_simulink_types.h"
+#include "rt_nonfinite.h"
+#include "rtGetInf.h"
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetBlockIO
@@ -78,25 +80,31 @@
 /* Block signals (default storage) */
 typedef struct {
   OBJECT object[360];                  /* '<S1>/object fetch' */
+  real_T front_car_speed;              /* '<S2>/cruser and submission chart' */
   CRUISER cruiser;                     /* '<S1>/object fetch' */
-  real_T front_car_speed;              /* '<S2>/cruser chart' */
-  int16_T steering_angle;              /* '<S2>/cruser chart' */
-  int16_T speed;                       /* '<S2>/cruser chart' */
-  uint8_T overfast_flag;               /* '<S2>/cruser chart' */
+  uint8_T blinker_onoff;               /* '<S2>/light on-off chart' */
+  uint8_T blinker_dir;                 /* '<S2>/light on-off chart' */
+  uint8_T signal_violation_flag;       /* '<S2>/cruser and submission chart' */
+  uint8_T steering_angle;              /* '<S2>/cruser and submission chart' */
+  uint8_T speed;                       /* '<S2>/cruser and submission chart' */
+  uint8_T overfast_flag;               /* '<S2>/cruser and submission chart' */
+  uint8_T change_lane_flag;            /* '<S2>/cruser and submission chart' */
 } B_sf_simulink_T;
 
 /* Block states (default storage) for system '<Root>' */
 typedef struct {
   OBJECT each_object;                  /* '<S1>/object fetch' */
-  real_T time;                         /* '<S2>/cruser chart' */
-  real_T save_time;                    /* '<S2>/cruser chart' */
-  real_T save_dist;                    /* '<S2>/cruser chart' */
+  OBJECT each_obj;                     /* '<S2>/cruser and submission chart' */
+  real_T time;                         /* '<S2>/cruser and submission chart' */
+  real_T save_time;                    /* '<S2>/cruser and submission chart' */
+  real_T dt;                           /* '<S2>/cruser and submission chart' */
   uint8_T is_active_c1_sf_simulink;    /* '<S1>/object fetch' */
   uint8_T is_c1_sf_simulink;           /* '<S1>/object fetch' */
-  uint8_T is_active_c4_sf_simulink; /* '<S2>/signal violation checking chart' */
   uint8_T is_active_c2_sf_simulink;    /* '<S2>/light on-off chart' */
-  uint8_T is_active_c3_sf_simulink;    /* '<S2>/cruser chart' */
-  uint8_T is_c3_sf_simulink;           /* '<S2>/cruser chart' */
+  uint8_T is_c2_sf_simulink;           /* '<S2>/light on-off chart' */
+  uint8_T is_active_c3_sf_simulink;    /* '<S2>/cruser and submission chart' */
+  uint8_T is_c3_sf_simulink;           /* '<S2>/cruser and submission chart' */
+  uint8_T change_lane_dir;             /* '<S2>/cruser and submission chart' */
 } DW_sf_simulink_T;
 
 /* External inputs (root inport signals with default storage) */
@@ -148,9 +156,8 @@ void sf_simulink_terminate(RT_MODEL_sf_simulink_T * sf_simulink_M);
  * '<S1>'   : 'sf_simulink/top model of sf'
  * '<S2>'   : 'sf_simulink/top model of sf/cruser and checking speed model'
  * '<S3>'   : 'sf_simulink/top model of sf/object fetch'
- * '<S4>'   : 'sf_simulink/top model of sf/cruser and checking speed model/cruser chart'
+ * '<S4>'   : 'sf_simulink/top model of sf/cruser and checking speed model/cruser and submission chart'
  * '<S5>'   : 'sf_simulink/top model of sf/cruser and checking speed model/light on-off chart'
- * '<S6>'   : 'sf_simulink/top model of sf/cruser and checking speed model/signal violation checking chart'
  */
 #endif                                 /* RTW_HEADER_sf_simulink_h_ */
 
