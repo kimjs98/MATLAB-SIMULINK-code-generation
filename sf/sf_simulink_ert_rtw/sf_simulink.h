@@ -9,7 +9,7 @@
  *
  * Model version                  : 1.593
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Tue Oct  4 00:58:02 2022
+ * C/C++ source code generated on : Tue Oct  4 01:52:34 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -67,14 +67,6 @@
 # define rtmSetY(rtm, val)             ((rtm)->outputs = (val))
 #endif
 
-#ifndef rtmGetErrorStatus
-# define rtmGetErrorStatus(rtm)        ((rtm)->errorStatus)
-#endif
-
-#ifndef rtmSetErrorStatus
-# define rtmSetErrorStatus(rtm, val)   ((rtm)->errorStatus = (val))
-#endif
-
 #define sf_simulink_M_TYPE             RT_MODEL_sf_simulink_T
 
 /* Block signals (default storage) */
@@ -122,7 +114,6 @@ typedef struct {
 
 /* Real-time Model Data Structure */
 struct tag_RTM_sf_simulink_T {
-  const char_T *errorStatus;
   B_sf_simulink_T *blockIO;
   ExtU_sf_simulink_T *inputs;
   ExtY_sf_simulink_T *outputs;
