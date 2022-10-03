@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.592
+ * Model version                  : 1.593
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Fri Sep 30 20:01:57 2022
+ * C/C++ source code generated on : Tue Oct  4 00:58:02 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -29,8 +29,8 @@
 
 typedef struct {
   uint8_T line_angle;
-  uint32_T object_id[10];
-  uint32_T object_angle[10];
+  uint8_T object_id[10];
+  uint16_T object_angle[10];
   uint8_T car_check_flag;
   uint8_T crack_flag;
   uint8_T sig_flag;
@@ -64,8 +64,8 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_C_BUS_
 
 typedef struct {
-  uint32_T object_id[10];
-  uint32_T object_angle[10];
+  uint8_T object_id[10];
+  uint16_T object_angle[10];
   uint8_T change_lane_dir;
 } C_BUS;
 
