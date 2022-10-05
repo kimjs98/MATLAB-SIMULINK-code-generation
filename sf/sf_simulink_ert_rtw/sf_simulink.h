@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.631
+ * Model version                  : 1.632
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Oct  5 22:21:36 2022
+ * C/C++ source code generated on : Wed Oct  5 22:41:46 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -125,10 +125,8 @@ RT_MODEL_sf_simulink_T *sf_simulink(void);
 void sf_simulink_initialize(RT_MODEL_sf_simulink_T *const sf_simulink_M);
 void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M);
 void sf_simulink_terminate(RT_MODEL_sf_simulink_T * sf_simulink_M);
-uint8_T sf_simulink_nonzero_front(const OBJECT x[360]);
 int32_T sf_simulink_front_ele(const OBJECT x[360]);
-
-
+uint8_T sf_simulink_nonzero_front(const OBJECT x[360]);
 /*-
  * The generated code includes comments that allow you to trace directly
  * back to the appropriate location in the model.  The basic format
