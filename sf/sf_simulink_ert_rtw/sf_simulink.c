@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.633
+ * Model version                  : 1.634
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Oct  5 22:48:55 2022
+ * C/C++ source code generated on : Wed Oct  5 22:50:38 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -354,7 +354,7 @@ static void sf_simulink_time_reprocessing(const CORE
     sf_simulink_DW->dt = (sf_simulink_TIME_UNIT - sf_simulink_DW->save_time) +
       sf_simulink_DW->time;
   } else {
-    sf_simulink_DW->dt = sf_simulink_DW->save_time - sf_simulink_DW->time;
+    sf_simulink_DW->dt = sf_simulink_DW->time - sf_simulink_DW->save_time;
   }
 
   sf_simulink_DW->dt /= sf_simulink_TIME_UNIT;
@@ -1189,8 +1189,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
 
           /*  the front car is getting closer
              If the front car is already close, can't change lane  */
-          if ((relative_velovity < 0.0) && (sf_simulink_DW->each_obj.dist > 100U))
-          {
+          if ((relative_velovity <= 0.0) && (sf_simulink_DW->each_obj.dist >
+               100U)) {
             sf_simulink_DW->change_lane_dir =
               sf_simulink_B->cruiser.change_lane_dir;
             sf_simulink_B->change_lane_flag = 1U;
@@ -1252,7 +1252,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
 
         /*  the front car is getting closer
            If the front car is already close, can't change lane  */
-        if ((relative_velovity < 0.0) && (sf_simulink_DW->each_obj.dist > 100U))
+        if ((relative_velovity <= 0.0) && (sf_simulink_DW->each_obj.dist > 100U))
         {
           sf_simulink_DW->change_lane_dir =
             sf_simulink_B->cruiser.change_lane_dir;
