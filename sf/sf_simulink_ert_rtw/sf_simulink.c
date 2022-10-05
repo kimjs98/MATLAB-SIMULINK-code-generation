@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.603
+ * Model version                  : 1.617
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Oct  5 20:51:09 2022
+ * C/C++ source code generated on : Wed Oct  5 21:16:02 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -47,20 +47,20 @@ static void sf_simulink_signal_processing(const CORE
   *BusConversion_InsertedFor_cru_l, B_sf_simulink_T *sf_simulink_B,
   DW_sf_simulink_T *sf_simulink_DW);
 static void sf_simulink_time_reprocessing(DW_sf_simulink_T *sf_simulink_DW);
-static real_T sf_simulink_nonzero_front(const OBJECT x[360]);
-static void sf_simulink_merge(int32_T idx_data[], real_T x_data[], int32_T np,
-  int32_T nq, int32_T iwork_data[], real_T xwork_data[]);
-static void sf_simulink_sort(real_T x_data[], int32_T x_size[2]);
-static real_T sf_simulink_front_ele(const OBJECT x[360]);
-static void sf_simulink_accelerator(B_sf_simulink_T *sf_simulink_B);
-static void sf_simulink_brake(B_sf_simulink_T *sf_simulink_B);
+static uint8_T sf_simulink_nonzero_front(const OBJECT x[360]);
 static void sf_simul_check_signal_violation(const SIGNAL
   *BusConversion_InsertedFor_cruse, B_sf_simulink_T *sf_simulink_B,
   DW_sf_simulink_T *sf_simulink_DW);
+static void sf_simulink_accelerator(B_sf_simulink_T *sf_simulink_B);
+static void sf_simulink_brake(B_sf_simulink_T *sf_simulink_B);
 static void sf_simulink_check_speeding(B_sf_simulink_T *sf_simulink_B);
 static void sf_simulink_up_count(int32_T *cnt, int32_T limit);
 static int32_T sf_simulink_search(const int32_T x[10], const int32_T y[10],
   int32_T val);
+static void sf_simulink_merge(int32_T idx_data[], int32_T x_data[], int32_T np,
+  int32_T nq, int32_T iwork_data[], int32_T xwork_data[]);
+static void sf_simulink_sort(int32_T x_data[], int32_T x_size[2]);
+static int32_T sf_simulink_front_ele(const OBJECT x[360]);
 
 /* Function for Chart: '<S1>/object fetch' */
 static void sf_simulink_merge_m(int32_T idx[10], int32_T x[10], int32_T np,
@@ -356,29 +356,141 @@ static void sf_simulink_time_reprocessing(DW_sf_simulink_T *sf_simulink_DW)
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
-static real_T sf_simulink_nonzero_front(const OBJECT x[360])
+static uint8_T sf_simulink_nonzero_front(const OBJECT x[360])
 {
   int32_T n;
   int32_T b_n;
   int32_T c_n;
+  uint32_T tmp;
+  uint32_T tmp_0;
   b_n = 0;
   c_n = 0;
   for (n = 0; n < 10; n++) {
-    if (x[n].id != 0U) {
+    tmp_0 = x[n].id;
+    if (x[n].id > 2147483647U) {
+      tmp_0 = 2147483647U;
+    }
+
+    tmp = x[n + 350].id;
+    if (tmp > 2147483647U) {
+      tmp = 2147483647U;
+    }
+
+    if ((int32_T)tmp_0 != 0) {
       b_n++;
     }
 
-    if (x[n + 350].id != 0U) {
+    if ((int32_T)tmp != 0) {
       c_n++;
     }
   }
 
-  return (real_T)b_n + (real_T)c_n;
+  if (b_n < 0) {
+    b_n = 0;
+  } else {
+    if (b_n > 255) {
+      b_n = 255;
+    }
+  }
+
+  if (c_n < 0) {
+    c_n = 0;
+  } else {
+    if (c_n > 255) {
+      c_n = 255;
+    }
+  }
+
+  b_n = (int32_T)((uint32_T)b_n + c_n);
+  if ((uint32_T)b_n > 255U) {
+    b_n = 255;
+  }
+
+  return (uint8_T)b_n;
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
-static void sf_simulink_merge(int32_T idx_data[], real_T x_data[], int32_T np,
-  int32_T nq, int32_T iwork_data[], real_T xwork_data[])
+static void sf_simul_check_signal_violation(const SIGNAL
+  *BusConversion_InsertedFor_cruse, B_sf_simulink_T *sf_simulink_B,
+  DW_sf_simulink_T *sf_simulink_DW)
+{
+  sf_simulink_B->signal_violation_flag = (uint8_T)
+    ((BusConversion_InsertedFor_cruse->sig_flag == 1) &&
+     (sf_simulink_DW->each_obj.dist >
+      BusConversion_InsertedFor_cruse->stop_line_dist * 100.0));
+}
+
+/* Function for Chart: '<S2>/cruser and submission chart' */
+static void sf_simulink_accelerator(B_sf_simulink_T *sf_simulink_B)
+{
+  int32_T tmp;
+  tmp = sf_simulink_B->speed + (int32_T)sf_simulink_EXTRA_SPEED;
+  if (tmp < 256) {
+    sf_simulink_B->speed = (uint8_T)tmp;
+  } else {
+    sf_simulink_B->speed = MAX_uint8_T;
+  }
+
+  if (sf_simulink_B->speed > 50) {
+    sf_simulink_B->speed = 50U;
+  }
+}
+
+/* Function for Chart: '<S2>/cruser and submission chart' */
+static void sf_simulink_brake(B_sf_simulink_T *sf_simulink_B)
+{
+  int32_T tmp;
+  tmp = sf_simulink_B->speed - (int32_T)sf_simulink_EXTRA_SPEED;
+  if (tmp >= 0) {
+    sf_simulink_B->speed = (uint8_T)tmp;
+  } else {
+    sf_simulink_B->speed = 0U;
+  }
+}
+
+/* Function for Chart: '<S2>/cruser and submission chart' */
+static void sf_simulink_check_speeding(B_sf_simulink_T *sf_simulink_B)
+{
+  /*  overfast checking  */
+  sf_simulink_B->overfast_flag = (uint8_T)(sf_simulink_B->front_car_speed > 60.0);
+}
+
+/* Function for Chart: '<S1>/object fetch' */
+static void sf_simulink_up_count(int32_T *cnt, int32_T limit)
+{
+  if (*cnt < limit) {
+    if (*cnt > 2147483646) {
+      *cnt = MAX_int32_T;
+    } else {
+      (*cnt)++;
+    }
+  }
+}
+
+/* Function for Chart: '<S1>/object fetch' */
+static int32_T sf_simulink_search(const int32_T x[10], const int32_T y[10],
+  int32_T val)
+{
+  int32_T b_ii;
+  int8_T ii_data_idx_0;
+  boolean_T exitg1;
+  b_ii = 0;
+  exitg1 = false;
+  while ((!exitg1) && (b_ii < 10)) {
+    if (x[b_ii] == val) {
+      ii_data_idx_0 = (int8_T)(b_ii + 1);
+      exitg1 = true;
+    } else {
+      b_ii++;
+    }
+  }
+
+  return y[ii_data_idx_0 - 1];
+}
+
+/* Function for Chart: '<S2>/cruser and submission chart' */
+static void sf_simulink_merge(int32_T idx_data[], int32_T x_data[], int32_T np,
+  int32_T nq, int32_T iwork_data[], int32_T xwork_data[])
 {
   int32_T p;
   int32_T q;
@@ -428,132 +540,146 @@ static void sf_simulink_merge(int32_T idx_data[], real_T x_data[], int32_T np,
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
-static void sf_simulink_sort(real_T x_data[], int32_T x_size[2])
+static void sf_simulink_sort(int32_T x_data[], int32_T x_size[2])
 {
   int32_T idx_data[10];
-  real_T b_x_data[10];
+  int32_T b_x_data[10];
   int32_T iwork_data[10];
-  real_T xwork_data[10];
-  int32_T n;
-  real_T x4[4];
+  int32_T xwork_data[10];
+  int32_T x4[4];
   int8_T idx4[4];
-  int32_T ib;
   int8_T perm[4];
-  int32_T bLen;
+  int32_T nQuartets;
+  int32_T i;
+  int32_T nLeft;
   int32_T i1;
   int32_T i2;
+  int32_T i3;
   int32_T i4;
   int32_T b_x_size[2];
-  real_T tmp;
-  real_T tmp_0;
+  int32_T tmp;
+  int32_T tmp_0;
   if (x_size[1] != 0) {
     b_x_size[1] = x_size[1];
-    n = x_size[0] * x_size[1] - 1;
-    if (0 <= n) {
-      memcpy(&b_x_data[0], &x_data[0], (n + 1) * sizeof(real_T));
+    nQuartets = x_size[0] * x_size[1] - 1;
+    if (0 <= nQuartets) {
+      memcpy(&b_x_data[0], &x_data[0], (nQuartets + 1) * sizeof(int32_T));
     }
 
-    n = x_size[1] - 1;
-    if (0 <= n) {
-      memset(&idx_data[0], 0, (n + 1) * sizeof(int32_T));
+    nQuartets = x_size[1] - 1;
+    if (0 <= nQuartets) {
+      memset(&idx_data[0], 0, (nQuartets + 1) * sizeof(int32_T));
     }
 
-    n = x_size[1] - 1;
-    x4[0] = 0.0;
+    x4[0] = 0;
     idx4[0] = 0;
-    x4[1] = 0.0;
+    x4[1] = 0;
     idx4[1] = 0;
-    x4[2] = 0.0;
+    x4[2] = 0;
     idx4[2] = 0;
-    x4[3] = 0.0;
+    x4[3] = 0;
     idx4[3] = 0;
-    ib = 0;
-    for (bLen = 0; bLen <= n; bLen++) {
-      ib++;
-      idx4[ib - 1] = (int8_T)(bLen + 1);
-      x4[ib - 1] = b_x_data[bLen];
-      if (ib == 4) {
-        if (x4[0] <= x4[1]) {
-          i1 = 1;
-          i2 = 2;
-        } else {
-          i1 = 2;
-          i2 = 1;
-        }
+    nQuartets = x_size[1] >> 2;
+    for (nLeft = 0; nLeft < nQuartets; nLeft++) {
+      i = nLeft << 2;
+      idx4[0] = (int8_T)(i + 1);
+      idx4[1] = (int8_T)(i + 2);
+      idx4[2] = (int8_T)(i + 3);
+      idx4[3] = (int8_T)(i + 4);
+      x4[0] = b_x_data[i];
+      i1 = b_x_data[i + 1];
+      x4[1] = i1;
+      i3 = b_x_data[i + 2];
+      x4[2] = i3;
+      i4 = b_x_data[i + 3];
+      x4[3] = i4;
+      if (b_x_data[i] <= i1) {
+        i1 = 1;
+        i2 = 2;
+      } else {
+        i1 = 2;
+        i2 = 1;
+      }
 
-        if (x4[2] <= x4[3]) {
-          ib = 3;
-          i4 = 4;
-        } else {
-          ib = 4;
-          i4 = 3;
-        }
+      if (i3 <= i4) {
+        i3 = 3;
+        i4 = 4;
+      } else {
+        i3 = 4;
+        i4 = 3;
+      }
 
-        tmp = x4[i1 - 1];
-        tmp_0 = x4[ib - 1];
+      tmp = x4[i1 - 1];
+      tmp_0 = x4[i3 - 1];
+      if (tmp <= tmp_0) {
+        tmp = x4[i2 - 1];
         if (tmp <= tmp_0) {
-          tmp = x4[i2 - 1];
-          if (tmp <= tmp_0) {
-            perm[0] = (int8_T)i1;
-            perm[1] = (int8_T)i2;
-            perm[2] = (int8_T)ib;
-            perm[3] = (int8_T)i4;
-          } else if (tmp <= x4[i4 - 1]) {
-            perm[0] = (int8_T)i1;
-            perm[1] = (int8_T)ib;
+          perm[0] = (int8_T)i1;
+          perm[1] = (int8_T)i2;
+          perm[2] = (int8_T)i3;
+          perm[3] = (int8_T)i4;
+        } else if (tmp <= x4[i4 - 1]) {
+          perm[0] = (int8_T)i1;
+          perm[1] = (int8_T)i3;
+          perm[2] = (int8_T)i2;
+          perm[3] = (int8_T)i4;
+        } else {
+          perm[0] = (int8_T)i1;
+          perm[1] = (int8_T)i3;
+          perm[2] = (int8_T)i4;
+          perm[3] = (int8_T)i2;
+        }
+      } else {
+        tmp_0 = x4[i4 - 1];
+        if (tmp <= tmp_0) {
+          if (x4[i2 - 1] <= tmp_0) {
+            perm[0] = (int8_T)i3;
+            perm[1] = (int8_T)i1;
             perm[2] = (int8_T)i2;
             perm[3] = (int8_T)i4;
           } else {
-            perm[0] = (int8_T)i1;
-            perm[1] = (int8_T)ib;
+            perm[0] = (int8_T)i3;
+            perm[1] = (int8_T)i1;
             perm[2] = (int8_T)i4;
             perm[3] = (int8_T)i2;
           }
         } else {
-          tmp_0 = x4[i4 - 1];
-          if (tmp <= tmp_0) {
-            if (x4[i2 - 1] <= tmp_0) {
-              perm[0] = (int8_T)ib;
-              perm[1] = (int8_T)i1;
-              perm[2] = (int8_T)i2;
-              perm[3] = (int8_T)i4;
-            } else {
-              perm[0] = (int8_T)ib;
-              perm[1] = (int8_T)i1;
-              perm[2] = (int8_T)i4;
-              perm[3] = (int8_T)i2;
-            }
-          } else {
-            perm[0] = (int8_T)ib;
-            perm[1] = (int8_T)i4;
-            perm[2] = (int8_T)i1;
-            perm[3] = (int8_T)i2;
-          }
+          perm[0] = (int8_T)i3;
+          perm[1] = (int8_T)i4;
+          perm[2] = (int8_T)i1;
+          perm[3] = (int8_T)i2;
         }
-
-        i1 = perm[0] - 1;
-        idx_data[bLen - 3] = idx4[i1];
-        i2 = perm[1] - 1;
-        idx_data[bLen - 2] = idx4[i2];
-        ib = perm[2] - 1;
-        idx_data[bLen - 1] = idx4[ib];
-        i4 = perm[3] - 1;
-        idx_data[bLen] = idx4[i4];
-        b_x_data[bLen - 3] = x4[i1];
-        b_x_data[bLen - 2] = x4[i2];
-        b_x_data[bLen - 1] = x4[ib];
-        b_x_data[bLen] = x4[i4];
-        ib = 0;
       }
+
+      i1 = perm[0] - 1;
+      idx_data[i] = idx4[i1];
+      i2 = perm[1] - 1;
+      idx_data[i + 1] = idx4[i2];
+      i3 = perm[2] - 1;
+      idx_data[i + 2] = idx4[i3];
+      i4 = perm[3] - 1;
+      idx_data[i + 3] = idx4[i4];
+      b_x_data[i] = x4[i1];
+      b_x_data[i + 1] = x4[i2];
+      b_x_data[i + 2] = x4[i3];
+      b_x_data[i + 3] = x4[i4];
     }
 
-    if (ib > 0) {
+    nQuartets <<= 2;
+    nLeft = x_size[1] - nQuartets;
+    if (nLeft > 0) {
+      for (i = 0; i < nLeft; i++) {
+        i1 = nQuartets + i;
+        idx4[i] = (int8_T)(i1 + 1);
+        x4[i] = b_x_data[i1];
+      }
+
       perm[1] = 0;
       perm[2] = 0;
       perm[3] = 0;
-      if (ib == 1) {
+      if (nLeft == 1) {
         perm[0] = 1;
-      } else if (ib == 2) {
+      } else if (nLeft == 2) {
         if (x4[0] <= x4[1]) {
           perm[0] = 1;
           perm[1] = 2;
@@ -589,286 +715,191 @@ static void sf_simulink_sort(real_T x_data[], int32_T x_size[2])
         perm[2] = 1;
       }
 
-      for (bLen = 0; bLen < ib; bLen++) {
-        i1 = perm[bLen] - 1;
-        i2 = ((n - ib) + bLen) + 1;
+      for (i = 0; i < nLeft; i++) {
+        i1 = perm[i] - 1;
+        i2 = nQuartets + i;
         idx_data[i2] = idx4[i1];
         b_x_data[i2] = x4[i1];
       }
     }
 
     if (x_size[1] > 1) {
-      n = (int8_T)x_size[1];
-      if (0 <= n - 1) {
-        memset(&xwork_data[0], 0, n * sizeof(real_T));
+      nQuartets = (int8_T)x_size[1];
+      if (0 <= nQuartets - 1) {
+        memset(&xwork_data[0], 0, nQuartets * sizeof(int32_T));
       }
 
-      n = (int8_T)x_size[1];
-      if (0 <= n - 1) {
-        memset(&iwork_data[0], 0, n * sizeof(int32_T));
+      nQuartets = (int8_T)x_size[1];
+      if (0 <= nQuartets - 1) {
+        memset(&iwork_data[0], 0, nQuartets * sizeof(int32_T));
       }
 
-      n = x_size[1] >> 2;
-      bLen = 4;
-      while (n > 1) {
-        sf_simulink_merge(idx_data, b_x_data, bLen, bLen, iwork_data, xwork_data);
-        bLen <<= 1;
-        n = 1;
-      }
-
-      if (x_size[1] > bLen) {
-        sf_simulink_merge(idx_data, b_x_data, bLen, x_size[1] - bLen, iwork_data,
+      nQuartets = x_size[1] >> 2;
+      nLeft = 4;
+      while (nQuartets > 1) {
+        sf_simulink_merge(idx_data, b_x_data, nLeft, nLeft, iwork_data,
                           xwork_data);
+        nLeft <<= 1;
+        nQuartets = 1;
+      }
+
+      if (x_size[1] > nLeft) {
+        sf_simulink_merge(idx_data, b_x_data, nLeft, x_size[1] - nLeft,
+                          iwork_data, xwork_data);
       }
     }
 
     x_size[0] = 1;
     x_size[1] = b_x_size[1];
-    n = b_x_size[1];
-    if (0 <= n - 1) {
-      memcpy(&x_data[0], &b_x_data[0], n * sizeof(real_T));
+    nQuartets = b_x_size[1];
+    if (0 <= nQuartets - 1) {
+      memcpy(&x_data[0], &b_x_data[0], nQuartets * sizeof(int32_T));
     }
   }
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
-static real_T sf_simulink_front_ele(const OBJECT x[360])
+static int32_T sf_simulink_front_ele(const OBJECT x[360])
 {
-  real_T y;
-  uint32_T id[360];
-  real_T f1_data[10];
-  real_T f2_data[10];
-  real_T mn;
-  real_T mx;
-  int8_T ii_data[10];
+  int32_T y;
+  int32_T id[360];
+  int32_T mx;
+  int32_T ii_data[10];
+  int32_T b_ii_data[10];
   boolean_T b_y;
   boolean_T b_x[2];
-  int32_T b_ii;
-  int32_T b_idx;
-  int32_T i;
-  int32_T f1_size[2];
-  int32_T f2_size[2];
+  int32_T k;
+  int32_T idx;
+  int32_T ii_size[2];
+  int32_T b_ii_size[2];
+  uint32_T tmp;
   boolean_T exitg1;
-  for (b_idx = 0; b_idx < 360; b_idx++) {
-    id[b_idx] = x[b_idx].id;
+  for (idx = 0; idx < 360; idx++) {
+    tmp = x[idx].id;
+    if (x[idx].id > 2147483647U) {
+      tmp = 2147483647U;
+    }
+
+    id[idx] = (int32_T)tmp;
   }
 
-  b_idx = 0;
-  b_ii = 0;
+  idx = 0;
+  ii_size[0] = 1;
+  mx = 0;
   exitg1 = false;
-  while ((!exitg1) && (b_ii < 10)) {
-    if (id[b_ii] != 0U) {
-      b_idx++;
-      ii_data[b_idx - 1] = (int8_T)(b_ii + 1);
-      if (b_idx >= 10) {
+  while ((!exitg1) && (mx < 10)) {
+    if (id[mx] != 0) {
+      idx++;
+      ii_data[idx - 1] = mx + 1;
+      if (idx >= 10) {
         exitg1 = true;
       } else {
-        b_ii++;
+        mx++;
       }
     } else {
-      b_ii++;
+      mx++;
     }
   }
 
-  if (1 > b_idx) {
-    b_idx = 0;
-  }
-
-  f1_size[0] = 1;
-  f1_size[1] = b_idx;
-  b_ii = b_idx - 1;
-  for (i = 0; i <= b_ii; i++) {
-    f1_data[i] = ii_data[i];
-  }
-
-  b_idx = 0;
-  b_ii = 0;
-  exitg1 = false;
-  while ((!exitg1) && (b_ii < 10)) {
-    if (id[b_ii + 350] != 0U) {
-      b_idx++;
-      ii_data[b_idx - 1] = (int8_T)(b_ii + 1);
-      if (b_idx >= 10) {
-        exitg1 = true;
-      } else {
-        b_ii++;
-      }
-    } else {
-      b_ii++;
-    }
-  }
-
-  if (1 > b_idx) {
-    b_idx = 0;
-  }
-
-  f2_size[0] = 1;
-  f2_size[1] = b_idx;
-  b_ii = b_idx - 1;
-  for (i = 0; i <= b_ii; i++) {
-    f2_data[i] = ii_data[i];
-  }
-
-  mn = 0.0;
-  mx = 0.0;
-  b_x[0] = true;
-  b_x[1] = (f1_size[1] > 0);
-  b_y = true;
-  b_ii = 0;
-  exitg1 = false;
-  while ((!exitg1) && (b_ii < 2)) {
-    if (!b_x[b_ii]) {
-      b_y = false;
-      exitg1 = true;
-    } else {
-      b_ii++;
-    }
-  }
-
-  if (b_y) {
-    sf_simulink_sort(f1_data, f1_size);
-    if (f1_size[1] <= 2) {
-      if (f1_size[1] == 1) {
-        mn = f1_data[0];
-      } else if (f1_data[0] > f1_data[1]) {
-        mn = f1_data[1];
-      } else {
-        mn = f1_data[0];
-      }
-    } else {
-      mn = f1_data[0];
-      for (b_ii = 1; b_ii < f1_size[1]; b_ii++) {
-        if (mn > f1_data[b_ii]) {
-          mn = f1_data[b_ii];
-        }
-      }
-    }
-  }
-
-  b_x[0] = true;
-  b_x[1] = (b_idx > 0);
-  b_y = true;
-  b_idx = 0;
-  exitg1 = false;
-  while ((!exitg1) && (b_idx < 2)) {
-    if (!b_x[b_idx]) {
-      b_y = false;
-      exitg1 = true;
-    } else {
-      b_idx++;
-    }
-  }
-
-  if (b_y) {
-    sf_simulink_sort(f2_data, f2_size);
-    if (f2_size[1] <= 2) {
-      if (f2_size[1] == 1) {
-        mx = f2_data[0];
-      } else if (f2_data[0] < f2_data[1]) {
-        mx = f2_data[1];
-      } else {
-        mx = f2_data[0];
-      }
-    } else {
-      mx = f2_data[0];
-      for (b_idx = 1; b_idx < f2_size[1]; b_idx++) {
-        if (mx < f2_data[b_idx]) {
-          mx = f2_data[b_idx];
-        }
-      }
-    }
-  }
-
-  if ((mn == 0.0) || (mx == 0.0)) {
-    if (mn != 0.0) {
-      y = mn - 1.0;
-    } else {
-      y = mx - 1.0;
-    }
+  if (1 > idx) {
+    ii_size[1] = 0;
   } else {
-    y = mn - 1.0;
+    ii_size[1] = idx;
+  }
+
+  idx = 0;
+  b_ii_size[0] = 1;
+  mx = 0;
+  exitg1 = false;
+  while ((!exitg1) && (mx < 10)) {
+    if (id[mx + 350] != 0) {
+      idx++;
+      b_ii_data[idx - 1] = mx + 1;
+      if (idx >= 10) {
+        exitg1 = true;
+      } else {
+        mx++;
+      }
+    } else {
+      mx++;
+    }
+  }
+
+  if (1 > idx) {
+    b_ii_size[1] = 0;
+  } else {
+    b_ii_size[1] = idx;
+  }
+
+  idx = 0;
+  mx = 0;
+  b_x[0] = true;
+  b_x[1] = (ii_size[1] > 0);
+  b_y = true;
+  k = 0;
+  exitg1 = false;
+  while ((!exitg1) && (k < 2)) {
+    if (!b_x[k]) {
+      b_y = false;
+      exitg1 = true;
+    } else {
+      k++;
+    }
+  }
+
+  if (b_y) {
+    sf_simulink_sort(ii_data, ii_size);
+    idx = ii_data[0];
+    for (k = 1; k < ii_size[1]; k++) {
+      if (idx > ii_data[k]) {
+        idx = ii_data[k];
+      }
+    }
+  }
+
+  b_x[0] = true;
+  b_x[1] = (b_ii_size[1] > 0);
+  b_y = true;
+  k = 0;
+  exitg1 = false;
+  while ((!exitg1) && (k < 2)) {
+    if (!b_x[k]) {
+      b_y = false;
+      exitg1 = true;
+    } else {
+      k++;
+    }
+  }
+
+  if (b_y) {
+    sf_simulink_sort(b_ii_data, b_ii_size);
+    mx = b_ii_data[0];
+    for (k = 1; k < b_ii_size[1]; k++) {
+      if (mx < b_ii_data[k]) {
+        mx = b_ii_data[k];
+      }
+    }
+  }
+
+  if ((idx == 0) || (mx == 0)) {
+    if (idx != 0) {
+      if (idx < -2147483647) {
+        y = MIN_int32_T;
+      } else {
+        y = idx - 1;
+      }
+    } else if (mx < -2147483647) {
+      y = MIN_int32_T;
+    } else {
+      y = mx - 1;
+    }
+  } else if (idx < -2147483647) {
+    y = MIN_int32_T;
+  } else {
+    y = idx - 1;
   }
 
   return y;
-}
-
-/* Function for Chart: '<S2>/cruser and submission chart' */
-static void sf_simulink_accelerator(B_sf_simulink_T *sf_simulink_B)
-{
-  int32_T tmp;
-  tmp = sf_simulink_B->speed + (int32_T)sf_simulink_EXTRA_SPEED;
-  if (tmp < 256) {
-    sf_simulink_B->speed = (uint8_T)tmp;
-  } else {
-    sf_simulink_B->speed = MAX_uint8_T;
-  }
-
-  if (sf_simulink_B->speed > 50) {
-    sf_simulink_B->speed = 50U;
-  }
-}
-
-/* Function for Chart: '<S2>/cruser and submission chart' */
-static void sf_simulink_brake(B_sf_simulink_T *sf_simulink_B)
-{
-  int32_T tmp;
-  tmp = sf_simulink_B->speed - (int32_T)sf_simulink_EXTRA_SPEED;
-  if (tmp >= 0) {
-    sf_simulink_B->speed = (uint8_T)tmp;
-  } else {
-    sf_simulink_B->speed = 0U;
-  }
-}
-
-/* Function for Chart: '<S2>/cruser and submission chart' */
-static void sf_simul_check_signal_violation(const SIGNAL
-  *BusConversion_InsertedFor_cruse, B_sf_simulink_T *sf_simulink_B,
-  DW_sf_simulink_T *sf_simulink_DW)
-{
-  sf_simulink_B->signal_violation_flag = (uint8_T)
-    ((BusConversion_InsertedFor_cruse->sig_flag == 1) &&
-     (sf_simulink_DW->each_obj.dist >
-      BusConversion_InsertedFor_cruse->stop_line_dist * 100.0));
-}
-
-/* Function for Chart: '<S2>/cruser and submission chart' */
-static void sf_simulink_check_speeding(B_sf_simulink_T *sf_simulink_B)
-{
-  /*  overfast checking  */
-  sf_simulink_B->overfast_flag = (uint8_T)(sf_simulink_B->front_car_speed > 60.0);
-}
-
-/* Function for Chart: '<S1>/object fetch' */
-static void sf_simulink_up_count(int32_T *cnt, int32_T limit)
-{
-  if (*cnt < limit) {
-    if (*cnt > 2147483646) {
-      *cnt = MAX_int32_T;
-    } else {
-      (*cnt)++;
-    }
-  }
-}
-
-/* Function for Chart: '<S1>/object fetch' */
-static int32_T sf_simulink_search(const int32_T x[10], const int32_T y[10],
-  int32_T val)
-{
-  int32_T b_ii;
-  int8_T ii_data_idx_0;
-  boolean_T exitg1;
-  b_ii = 0;
-  exitg1 = false;
-  while ((!exitg1) && (b_ii < 10)) {
-    if (x[b_ii] == val) {
-      ii_data_idx_0 = (int8_T)(b_ii + 1);
-      exitg1 = true;
-    } else {
-      b_ii++;
-    }
-  }
-
-  return y[ii_data_idx_0 - 1];
 }
 
 /* Model step function */
@@ -886,7 +917,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
   int8_T l;
   int16_T i;
   uint32_T save_dist;
-  real_T relative_velovity;
+  real32_T relative_velovity;
   SIGNAL BusConversion_InsertedFor_cruse;
   int32_T tmp[10];
   int32_T tmp_0[10];
@@ -1139,35 +1170,25 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
 
         /*  discover the car in front  */
         if ((sf_simulink_B->cruiser.car_check_flag == 1) &&
-            (sf_simulink_nonzero_front(sf_simulink_B->object) != 0.0)) {
+            (sf_simulink_nonzero_front(sf_simulink_B->object) != 0)) {
           save_dist = sf_simulink_DW->each_obj.dist;
-          relative_velovity = sf_simulink_front_ele(sf_simulink_B->object);
-          if (relative_velovity < 2.147483648E+9) {
-            if (relative_velovity >= -2.147483648E+9) {
-              qY_0 = (int32_T)relative_velovity;
-            } else {
-              qY_0 = MIN_int32_T;
-            }
-          } else {
-            qY_0 = MAX_int32_T;
-          }
-
-          sf_simulink_DW->each_obj = sf_simulink_B->object[qY_0];
+          sf_simulink_DW->each_obj = sf_simulink_B->object[sf_simulink_front_ele
+            (sf_simulink_B->object)];
           sf_simul_check_signal_violation(&BusConversion_InsertedFor_cruse,
             sf_simulink_B, sf_simulink_DW);
           sf_simulink_time_reprocessing(sf_simulink_DW);
-          relative_velovity = ((real_T)sf_simulink_DW->each_obj.dist - (real_T)
-                               save_dist) / sf_simulink_DW->dt;
+          relative_velovity = (real32_T)(((real_T)sf_simulink_DW->each_obj.dist
+            - (real_T)save_dist) / sf_simulink_DW->dt);
 
           /*  speed unit and relative_velovity unit is centimeters per seconds  */
-          sf_simulink_B->front_car_speed = (real_T)sf_simulink_B->speed +
+          sf_simulink_B->front_car_speed = (real32_T)sf_simulink_B->speed +
             relative_velovity;
           sf_simulink_check_speeding(sf_simulink_B);
 
           /*  the front car is getting closer
              If the front car is already close, can't change lane  */
-          if ((relative_velovity < 0.0) && (sf_simulink_DW->each_obj.dist > 100U))
-          {
+          if ((relative_velovity < 0.0F) && (sf_simulink_DW->each_obj.dist >
+               100U)) {
             sf_simulink_DW->change_lane_dir =
               sf_simulink_B->cruiser.change_lane_dir;
             sf_simulink_B->change_lane_flag = 1U;
@@ -1212,34 +1233,24 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
 
       /*  discover the car in front  */
       if ((sf_simulink_B->cruiser.car_check_flag == 1) &&
-          (sf_simulink_nonzero_front(sf_simulink_B->object) != 0.0)) {
+          (sf_simulink_nonzero_front(sf_simulink_B->object) != 0)) {
         save_dist = sf_simulink_DW->each_obj.dist;
-        relative_velovity = sf_simulink_front_ele(sf_simulink_B->object);
-        if (relative_velovity < 2.147483648E+9) {
-          if (relative_velovity >= -2.147483648E+9) {
-            qY_0 = (int32_T)relative_velovity;
-          } else {
-            qY_0 = MIN_int32_T;
-          }
-        } else {
-          qY_0 = MAX_int32_T;
-        }
-
-        sf_simulink_DW->each_obj = sf_simulink_B->object[qY_0];
+        sf_simulink_DW->each_obj = sf_simulink_B->object[sf_simulink_front_ele
+          (sf_simulink_B->object)];
         sf_simul_check_signal_violation(&BusConversion_InsertedFor_cruse,
           sf_simulink_B, sf_simulink_DW);
         sf_simulink_time_reprocessing(sf_simulink_DW);
-        relative_velovity = ((real_T)sf_simulink_DW->each_obj.dist - (real_T)
-                             save_dist) / sf_simulink_DW->dt;
+        relative_velovity = (real32_T)(((real_T)sf_simulink_DW->each_obj.dist -
+          (real_T)save_dist) / sf_simulink_DW->dt);
 
         /*  speed unit and relative_velovity unit is centimeters per seconds  */
-        sf_simulink_B->front_car_speed = (real_T)sf_simulink_B->speed +
+        sf_simulink_B->front_car_speed = (real32_T)sf_simulink_B->speed +
           relative_velovity;
         sf_simulink_check_speeding(sf_simulink_B);
 
         /*  the front car is getting closer
            If the front car is already close, can't change lane  */
-        if ((relative_velovity < 0.0) && (sf_simulink_DW->each_obj.dist > 100U))
+        if ((relative_velovity < 0.0F) && (sf_simulink_DW->each_obj.dist > 100U))
         {
           sf_simulink_DW->change_lane_dir =
             sf_simulink_B->cruiser.change_lane_dir;
