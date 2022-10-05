@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.621
+ * Model version                  : 1.622
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Oct  5 21:52:47 2022
+ * C/C++ source code generated on : Wed Oct  5 22:04:57 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -58,8 +58,8 @@ static void sf_simulink_check_speeding(B_sf_simulink_T *sf_simulink_B);
 static void sf_simulink_up_count(int32_T *cnt, int32_T limit);
 static int32_T sf_simulink_search(const int32_T x[10], const int32_T y[10],
   int32_T val);
-static void sf_simulink_merge(int32_T idx_data[], int32_T x_data[], int32_T np,
-  int32_T nq, int32_T iwork_data[], int32_T xwork_data[]);
+static void sf_simulink_merge(int32_T idx_data[], int32_T x_data[], int32_T
+  offset, int32_T np, int32_T nq, int32_T iwork_data[], int32_T xwork_data[]);
 static void sf_simulink_sort(int32_T x_data[], int32_T x_size[2]);
 static int32_T sf_simulink_front_ele(const OBJECT x[360]);
 
@@ -490,24 +490,25 @@ static int32_T sf_simulink_search(const int32_T x[10], const int32_T y[10],
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
-static void sf_simulink_merge(int32_T idx_data[], int32_T x_data[], int32_T np,
-  int32_T nq, int32_T iwork_data[], int32_T xwork_data[])
+static void sf_simulink_merge(int32_T idx_data[], int32_T x_data[], int32_T
+  offset, int32_T np, int32_T nq, int32_T iwork_data[], int32_T xwork_data[])
 {
   int32_T p;
   int32_T q;
   int32_T iout;
   int32_T offset1;
   int32_T exitg1;
-  if ((np != 0) && (nq != 0)) {
+  if (nq != 0) {
     offset1 = np + nq;
     for (p = 0; p < offset1; p++) {
-      iwork_data[p] = idx_data[p];
-      xwork_data[p] = x_data[p];
+      q = offset + p;
+      iwork_data[p] = idx_data[q];
+      xwork_data[p] = x_data[q];
     }
 
     p = 0;
     q = np;
-    iout = -1;
+    iout = offset - 1;
     do {
       exitg1 = 0;
       iout++;
@@ -543,17 +544,17 @@ static void sf_simulink_merge(int32_T idx_data[], int32_T x_data[], int32_T np,
 /* Function for Chart: '<S2>/cruser and submission chart' */
 static void sf_simulink_sort(int32_T x_data[], int32_T x_size[2])
 {
-  int32_T idx_data[10];
-  int32_T b_x_data[10];
-  int32_T iwork_data[10];
-  int32_T xwork_data[10];
+  int32_T idx_data[25];
+  int32_T b_x_data[25];
+  int32_T iwork_data[25];
+  int32_T xwork_data[25];
   int32_T x4[4];
   int8_T idx4[4];
   int8_T perm[4];
   int32_T nQuartets;
-  int32_T i;
   int32_T nLeft;
-  int32_T i1;
+  int32_T tailOffset;
+  int32_T nTail;
   int32_T i2;
   int32_T i3;
   int32_T i4;
@@ -582,23 +583,23 @@ static void sf_simulink_sort(int32_T x_data[], int32_T x_size[2])
     idx4[3] = 0;
     nQuartets = x_size[1] >> 2;
     for (nLeft = 0; nLeft < nQuartets; nLeft++) {
-      i = nLeft << 2;
-      idx4[0] = (int8_T)(i + 1);
-      idx4[1] = (int8_T)(i + 2);
-      idx4[2] = (int8_T)(i + 3);
-      idx4[3] = (int8_T)(i + 4);
-      x4[0] = b_x_data[i];
-      i1 = b_x_data[i + 1];
-      x4[1] = i1;
-      i3 = b_x_data[i + 2];
+      tailOffset = nLeft << 2;
+      idx4[0] = (int8_T)(tailOffset + 1);
+      idx4[1] = (int8_T)(tailOffset + 2);
+      idx4[2] = (int8_T)(tailOffset + 3);
+      idx4[3] = (int8_T)(tailOffset + 4);
+      x4[0] = b_x_data[tailOffset];
+      nTail = b_x_data[tailOffset + 1];
+      x4[1] = nTail;
+      i3 = b_x_data[tailOffset + 2];
       x4[2] = i3;
-      i4 = b_x_data[i + 3];
+      i4 = b_x_data[tailOffset + 3];
       x4[3] = i4;
-      if (b_x_data[i] <= i1) {
-        i1 = 1;
+      if (b_x_data[tailOffset] <= nTail) {
+        nTail = 1;
         i2 = 2;
       } else {
-        i1 = 2;
+        nTail = 2;
         i2 = 1;
       }
 
@@ -610,22 +611,22 @@ static void sf_simulink_sort(int32_T x_data[], int32_T x_size[2])
         i4 = 3;
       }
 
-      tmp = x4[i1 - 1];
+      tmp = x4[nTail - 1];
       tmp_0 = x4[i3 - 1];
       if (tmp <= tmp_0) {
         tmp = x4[i2 - 1];
         if (tmp <= tmp_0) {
-          perm[0] = (int8_T)i1;
+          perm[0] = (int8_T)nTail;
           perm[1] = (int8_T)i2;
           perm[2] = (int8_T)i3;
           perm[3] = (int8_T)i4;
         } else if (tmp <= x4[i4 - 1]) {
-          perm[0] = (int8_T)i1;
+          perm[0] = (int8_T)nTail;
           perm[1] = (int8_T)i3;
           perm[2] = (int8_T)i2;
           perm[3] = (int8_T)i4;
         } else {
-          perm[0] = (int8_T)i1;
+          perm[0] = (int8_T)nTail;
           perm[1] = (int8_T)i3;
           perm[2] = (int8_T)i4;
           perm[3] = (int8_T)i2;
@@ -635,44 +636,44 @@ static void sf_simulink_sort(int32_T x_data[], int32_T x_size[2])
         if (tmp <= tmp_0) {
           if (x4[i2 - 1] <= tmp_0) {
             perm[0] = (int8_T)i3;
-            perm[1] = (int8_T)i1;
+            perm[1] = (int8_T)nTail;
             perm[2] = (int8_T)i2;
             perm[3] = (int8_T)i4;
           } else {
             perm[0] = (int8_T)i3;
-            perm[1] = (int8_T)i1;
+            perm[1] = (int8_T)nTail;
             perm[2] = (int8_T)i4;
             perm[3] = (int8_T)i2;
           }
         } else {
           perm[0] = (int8_T)i3;
           perm[1] = (int8_T)i4;
-          perm[2] = (int8_T)i1;
+          perm[2] = (int8_T)nTail;
           perm[3] = (int8_T)i2;
         }
       }
 
-      i1 = perm[0] - 1;
-      idx_data[i] = idx4[i1];
+      nTail = perm[0] - 1;
+      idx_data[tailOffset] = idx4[nTail];
       i2 = perm[1] - 1;
-      idx_data[i + 1] = idx4[i2];
+      idx_data[tailOffset + 1] = idx4[i2];
       i3 = perm[2] - 1;
-      idx_data[i + 2] = idx4[i3];
+      idx_data[tailOffset + 2] = idx4[i3];
       i4 = perm[3] - 1;
-      idx_data[i + 3] = idx4[i4];
-      b_x_data[i] = x4[i1];
-      b_x_data[i + 1] = x4[i2];
-      b_x_data[i + 2] = x4[i3];
-      b_x_data[i + 3] = x4[i4];
+      idx_data[tailOffset + 3] = idx4[i4];
+      b_x_data[tailOffset] = x4[nTail];
+      b_x_data[tailOffset + 1] = x4[i2];
+      b_x_data[tailOffset + 2] = x4[i3];
+      b_x_data[tailOffset + 3] = x4[i4];
     }
 
     nQuartets <<= 2;
     nLeft = x_size[1] - nQuartets;
     if (nLeft > 0) {
-      for (i = 0; i < nLeft; i++) {
-        i1 = nQuartets + i;
-        idx4[i] = (int8_T)(i1 + 1);
-        x4[i] = b_x_data[i1];
+      for (tailOffset = 0; tailOffset < nLeft; tailOffset++) {
+        nTail = nQuartets + tailOffset;
+        idx4[tailOffset] = (int8_T)(nTail + 1);
+        x4[tailOffset] = b_x_data[nTail];
       }
 
       perm[1] = 0;
@@ -716,11 +717,11 @@ static void sf_simulink_sort(int32_T x_data[], int32_T x_size[2])
         perm[2] = 1;
       }
 
-      for (i = 0; i < nLeft; i++) {
-        i1 = perm[i] - 1;
-        i2 = nQuartets + i;
-        idx_data[i2] = idx4[i1];
-        b_x_data[i2] = x4[i1];
+      for (tailOffset = 0; tailOffset < nLeft; tailOffset++) {
+        nTail = perm[tailOffset] - 1;
+        i2 = nQuartets + tailOffset;
+        idx_data[i2] = idx4[nTail];
+        b_x_data[i2] = x4[nTail];
       }
     }
 
@@ -735,18 +736,32 @@ static void sf_simulink_sort(int32_T x_data[], int32_T x_size[2])
         memset(&iwork_data[0], 0, nQuartets * sizeof(int32_T));
       }
 
-      nQuartets = x_size[1] >> 2;
-      nLeft = 4;
-      while (nQuartets > 1) {
-        sf_simulink_merge(idx_data, b_x_data, nLeft, nLeft, iwork_data,
-                          xwork_data);
-        nLeft <<= 1;
-        nQuartets = 1;
+      nLeft = x_size[1] >> 2;
+      nQuartets = 4;
+      while (nLeft > 1) {
+        if ((nLeft & 1U) != 0U) {
+          nLeft--;
+          tailOffset = nQuartets * nLeft;
+          nTail = x_size[1] - tailOffset;
+          if (nTail > nQuartets) {
+            sf_simulink_merge(idx_data, b_x_data, tailOffset, nQuartets, nTail -
+                              nQuartets, iwork_data, xwork_data);
+          }
+        }
+
+        tailOffset = nQuartets << 1;
+        nLeft >>= 1;
+        for (nTail = 0; nTail < nLeft; nTail++) {
+          sf_simulink_merge(idx_data, b_x_data, nTail * tailOffset, nQuartets,
+                            nQuartets, iwork_data, xwork_data);
+        }
+
+        nQuartets = tailOffset;
       }
 
-      if (x_size[1] > nLeft) {
-        sf_simulink_merge(idx_data, b_x_data, nLeft, x_size[1] - nLeft,
-                          iwork_data, xwork_data);
+      if (x_size[1] > nQuartets) {
+        sf_simulink_merge(idx_data, b_x_data, 0, nQuartets, x_size[1] -
+                          nQuartets, iwork_data, xwork_data);
       }
     }
 
@@ -765,8 +780,8 @@ static int32_T sf_simulink_front_ele(const OBJECT x[360])
   int32_T y;
   int32_T id[360];
   int32_T mx;
-  int32_T ii_data[10];
-  int32_T b_ii_data[10];
+  int32_T ii_data[25];
+  int32_T b_ii_data[25];
   boolean_T b_y;
   boolean_T b_x[2];
   int32_T k;
@@ -788,11 +803,11 @@ static int32_T sf_simulink_front_ele(const OBJECT x[360])
   ii_size[0] = 1;
   mx = 0;
   exitg1 = false;
-  while ((!exitg1) && (mx < 10)) {
+  while ((!exitg1) && (mx < 25)) {
     if (id[mx] != 0) {
       idx++;
       ii_data[idx - 1] = mx + 1;
-      if (idx >= 10) {
+      if (idx >= 25) {
         exitg1 = true;
       } else {
         mx++;
@@ -812,11 +827,11 @@ static int32_T sf_simulink_front_ele(const OBJECT x[360])
   b_ii_size[0] = 1;
   mx = 0;
   exitg1 = false;
-  while ((!exitg1) && (mx < 10)) {
-    if (id[mx + 350] != 0) {
+  while ((!exitg1) && (mx < 25)) {
+    if (id[mx + 335] != 0) {
       idx++;
       b_ii_data[idx - 1] = mx + 1;
-      if (idx >= 10) {
+      if (idx >= 25) {
         exitg1 = true;
       } else {
         mx++;
