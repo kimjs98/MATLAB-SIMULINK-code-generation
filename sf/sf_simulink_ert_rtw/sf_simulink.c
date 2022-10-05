@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.626
+ * Model version                  : 1.631
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Oct  5 22:13:57 2022
+ * C/C++ source code generated on : Wed Oct  5 22:21:36 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -52,8 +52,8 @@ static uint8_T sf_simulink_nonzero_front(const OBJECT x[360]);
 static void sf_simul_check_signal_violation(const SIGNAL
   *BusConversion_InsertedFor_cruse, B_sf_simulink_T *sf_simulink_B,
   DW_sf_simulink_T *sf_simulink_DW);
-static void sf_simulink_brake(B_sf_simulink_T *sf_simulink_B);
 static void sf_simulink_accelerator(B_sf_simulink_T *sf_simulink_B);
+static void sf_simulink_brake(B_sf_simulink_T *sf_simulink_B);
 static void sf_simulink_check_speeding(B_sf_simulink_T *sf_simulink_B);
 static void sf_simulink_up_count(int32_T *cnt, int32_T limit);
 static int32_T sf_simulink_search(const int32_T x[10], const int32_T y[10],
@@ -359,49 +359,38 @@ static void sf_simulink_time_reprocessing(DW_sf_simulink_T *sf_simulink_DW)
 /* Function for Chart: '<S2>/cruser and submission chart' */
 static uint8_T sf_simulink_nonzero_front(const OBJECT x[360])
 {
-  int32_T id1[10];
-  int32_T id2[10];
   int32_T n;
-  int32_T k;
+  int32_T b_n;
   int32_T c_n;
   uint32_T tmp;
-  for (n = 0; n < 10; n++) {
-    id1[n] = 0;
-    id2[n] = 0;
-  }
-
+  uint32_T tmp_0;
+  b_n = 0;
+  c_n = 0;
   for (n = 0; n < 25; n++) {
-    tmp = x[n].id;
+    tmp_0 = x[n].id;
     if (x[n].id > 2147483647U) {
-      tmp = 2147483647U;
+      tmp_0 = 2147483647U;
     }
 
-    id1[n] = (int32_T)tmp;
     tmp = x[n + 335].id;
     if (tmp > 2147483647U) {
       tmp = 2147483647U;
     }
 
-    id2[n] = (int32_T)tmp;
-  }
-
-  n = 0;
-  c_n = 0;
-  for (k = 0; k < 10; k++) {
-    if (id1[k] != 0) {
-      n++;
+    if ((int32_T)tmp_0 != 0) {
+      b_n++;
     }
 
-    if (id2[k] != 0) {
+    if ((int32_T)tmp != 0) {
       c_n++;
     }
   }
 
-  if (n < 0) {
-    n = 0;
+  if (b_n < 0) {
+    b_n = 0;
   } else {
-    if (n > 255) {
-      n = 255;
+    if (b_n > 255) {
+      b_n = 255;
     }
   }
 
@@ -413,12 +402,12 @@ static uint8_T sf_simulink_nonzero_front(const OBJECT x[360])
     }
   }
 
-  n = (int32_T)((uint32_T)n + c_n);
-  if ((uint32_T)n > 255U) {
-    n = 255;
+  b_n = (int32_T)((uint32_T)b_n + c_n);
+  if ((uint32_T)b_n > 255U) {
+    b_n = 255;
   }
 
-  return (uint8_T)n;
+  return (uint8_T)b_n;
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
@@ -430,18 +419,6 @@ static void sf_simul_check_signal_violation(const SIGNAL
     ((BusConversion_InsertedFor_cruse->sig_flag == 1) &&
      (sf_simulink_DW->each_obj.dist >
       BusConversion_InsertedFor_cruse->stop_line_dist * 100.0));
-}
-
-/* Function for Chart: '<S2>/cruser and submission chart' */
-static void sf_simulink_brake(B_sf_simulink_T *sf_simulink_B)
-{
-  int32_T tmp;
-  tmp = sf_simulink_B->speed - (int32_T)sf_simulink_EXTRA_SPEED;
-  if (tmp >= 0) {
-    sf_simulink_B->speed = (uint8_T)tmp;
-  } else {
-    sf_simulink_B->speed = 0U;
-  }
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
@@ -457,6 +434,18 @@ static void sf_simulink_accelerator(B_sf_simulink_T *sf_simulink_B)
 
   if (sf_simulink_B->speed > 50) {
     sf_simulink_B->speed = 50U;
+  }
+}
+
+/* Function for Chart: '<S2>/cruser and submission chart' */
+static void sf_simulink_brake(B_sf_simulink_T *sf_simulink_B)
+{
+  int32_T tmp;
+  tmp = sf_simulink_B->speed - (int32_T)sf_simulink_EXTRA_SPEED;
+  if (tmp >= 0) {
+    sf_simulink_B->speed = (uint8_T)tmp;
+  } else {
+    sf_simulink_B->speed = 0U;
   }
 }
 
