@@ -9,7 +9,7 @@
  *
  * Model version                  : 1.594
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Oct  5 16:40:22 2022
+ * C/C++ source code generated on : Wed Oct  5 16:59:13 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -1082,7 +1082,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
         sf_simulink_DW);
       sf_simulink_time_reprocessing(sf_simulink_DW);
       if (sf_simulink_DW->dt <= 2.0) {
-        if (sf_simulink_DW->change_lane_dir == 1) {
+        if (sf_simulink_DW->change_lane_dir == 2) {
           sf_simulink_B->steering_angle = 70U;
         } else {
           sf_simulink_B->steering_angle = 110U;
