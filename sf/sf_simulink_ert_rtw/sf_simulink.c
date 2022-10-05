@@ -9,7 +9,7 @@
  *
  * Model version                  : 1.621
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Oct  5 21:38:35 2022
+ * C/C++ source code generated on : Wed Oct  5 21:52:47 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -55,9 +55,9 @@ static void sf_simul_check_signal_violation(const SIGNAL
 static void sf_simulink_accelerator(B_sf_simulink_T *sf_simulink_B);
 static void sf_simulink_brake(B_sf_simulink_T *sf_simulink_B);
 static void sf_simulink_check_speeding(B_sf_simulink_T *sf_simulink_B);
+static void sf_simulink_up_count(int32_T *cnt, int32_T limit);
 static int32_T sf_simulink_search(const int32_T x[10], const int32_T y[10],
   int32_T val);
-static void sf_simulink_up_count(int32_T *cnt, int32_T limit);
 static void sf_simulink_merge(int32_T idx_data[], int32_T x_data[], int32_T np,
   int32_T nq, int32_T iwork_data[], int32_T xwork_data[]);
 static void sf_simulink_sort(int32_T x_data[], int32_T x_size[2]);
@@ -457,6 +457,18 @@ static void sf_simulink_check_speeding(B_sf_simulink_T *sf_simulink_B)
 }
 
 /* Function for Chart: '<S1>/object fetch' */
+static void sf_simulink_up_count(int32_T *cnt, int32_T limit)
+{
+  if (*cnt < limit) {
+    if (*cnt > 2147483646) {
+      *cnt = MAX_int32_T;
+    } else {
+      (*cnt)++;
+    }
+  }
+}
+
+/* Function for Chart: '<S1>/object fetch' */
 static int32_T sf_simulink_search(const int32_T x[10], const int32_T y[10],
   int32_T val)
 {
@@ -475,18 +487,6 @@ static int32_T sf_simulink_search(const int32_T x[10], const int32_T y[10],
   }
 
   return y[ii_data_idx_0 - 1];
-}
-
-/* Function for Chart: '<S1>/object fetch' */
-static void sf_simulink_up_count(int32_T *cnt, int32_T limit)
-{
-  if (*cnt < limit) {
-    if (*cnt > 2147483646) {
-      *cnt = MAX_int32_T;
-    } else {
-      (*cnt)++;
-    }
-  }
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
@@ -927,6 +927,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
   int32_T local_angle_cam_0;
   boolean_T guard1 = false;
   boolean_T guard2 = false;
+  int32_T exitg1;
 
   /* Chart: '<S1>/object fetch' incorporates:
    *  BusCreator generated from: '<S1>/object fetch'
@@ -956,115 +957,139 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
     l = 0;
     while (i < 360) {
       /* NEW_PATTERN */
-      guard1 = false;
-      if ((c < sf_simulink_limit) || (l < sf_simulink_limit)) {
-        guard1 = true;
+      /*  each data is bigger than zero,
+         the absolute value of diff between local angles is smaller than three.
+         !!! used data is set minus one !!!
+         data is existed, what...  */
+      if ((local_angle_cam[c] >= 0) && (i < local_angle_cam[c] - MAX_int32_T)) {
+        qY_0 = MAX_int32_T;
+      } else if ((local_angle_cam[c] < 0) && (i > local_angle_cam[c] -
+                  MIN_int32_T)) {
+        qY_0 = MIN_int32_T;
       } else {
-        /*  each data is bigger than zero,
-           the absolute value of diff between local angles is smaller than three.
-           !!! used data is set minus one !!!
-           data is existed, what...  */
-        if ((local_angle_cam[c] >= 0) && (i < local_angle_cam[c] - MAX_int32_T))
-        {
+        qY_0 = local_angle_cam[c] - i;
+      }
+
+      if ((local_angle_lidar[l] >= 0) && (i < local_angle_lidar[l] - MAX_int32_T))
+      {
+        qY = MAX_int32_T;
+      } else if ((local_angle_lidar[l] < 0) && (i > local_angle_lidar[l] -
+                  MIN_int32_T)) {
+        qY = MIN_int32_T;
+      } else {
+        qY = local_angle_lidar[l] - i;
+      }
+
+      if (qY_0 < 0) {
+        if (qY_0 <= MIN_int32_T) {
           qY_0 = MAX_int32_T;
-        } else if ((local_angle_cam[c] < 0) && (i > local_angle_cam[c] -
-                    MIN_int32_T)) {
-          qY_0 = MIN_int32_T;
         } else {
-          qY_0 = local_angle_cam[c] - i;
-        }
-
-        if ((local_angle_lidar[l] >= 0) && (i < local_angle_lidar[l] -
-             MAX_int32_T)) {
-          qY = MAX_int32_T;
-        } else if ((local_angle_lidar[l] < 0) && (i > local_angle_lidar[l] -
-                    MIN_int32_T)) {
-          qY = MIN_int32_T;
-        } else {
-          qY = local_angle_lidar[l] - i;
-        }
-
-        if (qY_0 < 0) {
-          if (qY_0 <= MIN_int32_T) {
-            qY_0 = MAX_int32_T;
-          } else {
-            qY_0 = -qY_0;
-          }
-        }
-
-        if (qY < 0) {
-          if (qY <= MIN_int32_T) {
-            qY = MAX_int32_T;
-          } else {
-            qY = -qY;
-          }
-        }
-
-        if ((local_angle_cam[c] < 0) && (local_angle_lidar[l] < MIN_int32_T
-             - local_angle_cam[c])) {
-          local_angle_cam_0 = MIN_int32_T;
-        } else if ((local_angle_cam[c] > 0) && (local_angle_lidar[l] >
-                    MAX_int32_T - local_angle_cam[c])) {
-          local_angle_cam_0 = MAX_int32_T;
-        } else {
-          local_angle_cam_0 = local_angle_cam[c] + local_angle_lidar[l];
-        }
-
-        if ((local_angle_cam[c] >= 0) && (local_angle_lidar[l] >= 0) && (qY_0 <
-             sf_simulink_DIFF_ANGLE) && (qY < sf_simulink_DIFF_ANGLE) &&
-            (local_angle_cam_0 / 2 == i)) {
-          sf_simulink_DW->each_object.who = 3U;
-          for (qY_0 = 0; qY_0 < 10; qY_0++) {
-            tmp[qY_0] = sf_simulink_U->Input.object_angle[qY_0];
-            tmp_0[qY_0] = sf_simulink_U->Input.object_id[qY_0];
-          }
-
-          qY_0 = sf_simulink_search(tmp, tmp_0, local_angle_cam[c]);
-          if (qY_0 < 0) {
-            qY_0 = 0;
-          }
-
-          sf_simulink_DW->each_object.id = (uint32_T)qY_0;
-          for (qY_0 = 0; qY_0 < 10; qY_0++) {
-            tmp[qY_0] = sf_simulink_U->Input1.angle[qY_0];
-            tmp_0[qY_0] = sf_simulink_U->Input1.dist[qY_0];
-          }
-
-          qY_0 = sf_simulink_search(tmp, tmp_0, local_angle_lidar[l]);
-          if (qY_0 < 0) {
-            qY_0 = 0;
-          }
-
-          sf_simulink_DW->each_object.dist = (uint32_T)qY_0;
-          sf_simulink_B->object[i] = sf_simulink_DW->each_object;
-          qY_0 = c;
-          sf_simulink_up_count(&qY_0, sf_simulink_limit);
-          if (qY_0 > 127) {
-            qY_0 = 127;
-          } else {
-            if (qY_0 < -128) {
-              qY_0 = -128;
-            }
-          }
-
-          c = (int8_T)qY_0;
-          qY_0 = l;
-          sf_simulink_up_count(&qY_0, sf_simulink_limit);
-          if (qY_0 > 127) {
-            qY_0 = 127;
-          } else {
-            if (qY_0 < -128) {
-              qY_0 = -128;
-            }
-          }
-
-          l = (int8_T)qY_0;
-        } else {
-          guard1 = true;
+          qY_0 = -qY_0;
         }
       }
 
-      if (guard1) {
+      if (qY < 0) {
+        if (qY <= MIN_int32_T) {
+          qY = MAX_int32_T;
+        } else {
+          qY = -qY;
+        }
+      }
+
+      if ((local_angle_cam[c] < 0) && (local_angle_lidar[l] < MIN_int32_T
+           - local_angle_cam[c])) {
+        local_angle_cam_0 = MIN_int32_T;
+      } else if ((local_angle_cam[c] > 0) && (local_angle_lidar[l] > MAX_int32_T
+                  - local_angle_cam[c])) {
+        local_angle_cam_0 = MAX_int32_T;
+      } else {
+        local_angle_cam_0 = local_angle_cam[c] + local_angle_lidar[l];
+      }
+
+      if ((local_angle_cam[c] >= 0) && (local_angle_lidar[l] >= 0) && (qY_0 <
+           sf_simulink_DIFF_ANGLE) && (qY < sf_simulink_DIFF_ANGLE) &&
+          (local_angle_cam_0 / 2 == i)) {
+        sf_simulink_DW->each_object.who = 3U;
+        for (qY_0 = 0; qY_0 < 10; qY_0++) {
+          tmp[qY_0] = sf_simulink_U->Input.object_angle[qY_0];
+          tmp_0[qY_0] = sf_simulink_U->Input.object_id[qY_0];
+        }
+
+        qY_0 = sf_simulink_search(tmp, tmp_0, local_angle_cam[c]);
+        if (qY_0 < 0) {
+          qY_0 = 0;
+        }
+
+        sf_simulink_DW->each_object.id = (uint32_T)qY_0;
+        for (qY_0 = 0; qY_0 < 10; qY_0++) {
+          tmp[qY_0] = sf_simulink_U->Input1.angle[qY_0];
+          tmp_0[qY_0] = sf_simulink_U->Input1.dist[qY_0];
+        }
+
+        qY_0 = sf_simulink_search(tmp, tmp_0, local_angle_lidar[l]);
+        if (qY_0 < 0) {
+          qY_0 = 0;
+        }
+
+        sf_simulink_DW->each_object.dist = (uint32_T)qY_0;
+        sf_simulink_B->object[i] = sf_simulink_DW->each_object;
+        qY_0 = c;
+        sf_simulink_up_count(&qY_0, sf_simulink_limit);
+        if (qY_0 > 127) {
+          qY_0 = 127;
+        } else {
+          if (qY_0 < -128) {
+            qY_0 = -128;
+          }
+        }
+
+        c = (int8_T)qY_0;
+        qY_0 = l;
+        sf_simulink_up_count(&qY_0, sf_simulink_limit);
+        if (qY_0 > 127) {
+          qY_0 = 127;
+        } else {
+          if (qY_0 < -128) {
+            qY_0 = -128;
+          }
+        }
+
+        l = (int8_T)qY_0;
+      } else {
+        do {
+          exitg1 = 0;
+          qY_0 = i - 3;
+          if ((local_angle_cam[c] < qY_0) && (c < sf_simulink_limit)) {
+            qY_0 = c;
+            sf_simulink_up_count(&qY_0, sf_simulink_limit);
+            if (qY_0 > 127) {
+              qY_0 = 127;
+            } else {
+              if (qY_0 < -128) {
+                qY_0 = -128;
+              }
+            }
+
+            c = (int8_T)qY_0;
+          } else {
+            exitg1 = 1;
+          }
+        } while (exitg1 == 0);
+
+        while ((local_angle_lidar[l] < qY_0) && (l < sf_simulink_limit)) {
+          qY = l;
+          sf_simulink_up_count(&qY, sf_simulink_limit);
+          if (qY > 127) {
+            qY = 127;
+          } else {
+            if (qY < -128) {
+              qY = -128;
+            }
+          }
+
+          l = (int8_T)qY;
+        }
+
         sf_simulink_DW->each_object.who = 0U;
         sf_simulink_DW->each_object.id = 0U;
         sf_simulink_DW->each_object.dist = 0U;
