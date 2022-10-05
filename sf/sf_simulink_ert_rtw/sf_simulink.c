@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.635
+ * Model version                  : 1.643
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Oct  5 22:52:11 2022
+ * C/C++ source code generated on : Wed Oct  5 22:59:14 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -44,11 +44,12 @@ static void sf_simulink_merge_m(int32_T idx[10], int32_T x[10], int32_T np,
   int32_T nq, int32_T iwork[10], int32_T xwork[10]);
 static void sf_simulink_sort_k(int32_T x[10]);
 static void sf_simulink_qsort(const int32_T x[10], int32_T y[10]);
-static void sf_simulink_time_reprocessing(const CORE
-  *BusConversion_InsertedFor_cru_l, DW_sf_simulink_T *sf_simulink_DW);
 static void sf_simulink_signal_processing(const CORE
-  *BusConversion_InsertedFor_cru_l, B_sf_simulink_T *sf_simulink_B,
-  DW_sf_simulink_T *sf_simulink_DW);
+  *BusConversion_InsertedFor_cru_l, real_T *save_time, B_sf_simulink_T
+  *sf_simulink_B, DW_sf_simulink_T *sf_simulink_DW);
+static void sf_simulink_time_reprocessing(const CORE
+  *BusConversion_InsertedFor_cru_l, real_T *save_time, B_sf_simulink_T
+  *sf_simulink_B, DW_sf_simulink_T *sf_simulink_DW);
 static uint8_T sf_simulink_nonzero_front(const OBJECT x[360]);
 static void sf_simul_check_signal_violation(const SIGNAL
   *BusConversion_InsertedFor_cruse, B_sf_simulink_T *sf_simulink_B,
@@ -332,32 +333,34 @@ static void sf_simulink_qsort(const int32_T x[10], int32_T y[10])
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
-static void sf_simulink_time_reprocessing(const CORE
-  *BusConversion_InsertedFor_cru_l, DW_sf_simulink_T *sf_simulink_DW)
-{
-  sf_simulink_DW->time = BusConversion_InsertedFor_cru_l->time;
-
-  /*  time is mircoseconds.
-     range is 0 ~ 999999 */
-  if (sf_simulink_DW->time < sf_simulink_DW->save_time) {
-    sf_simulink_DW->dt = (sf_simulink_TIME_UNIT - sf_simulink_DW->save_time) +
-      sf_simulink_DW->time;
-  } else {
-    sf_simulink_DW->dt = sf_simulink_DW->time - sf_simulink_DW->save_time;
-  }
-
-  sf_simulink_DW->dt /= sf_simulink_TIME_UNIT;
-}
-
-/* Function for Chart: '<S2>/cruser and submission chart' */
 static void sf_simulink_signal_processing(const CORE
-  *BusConversion_InsertedFor_cru_l, B_sf_simulink_T *sf_simulink_B,
-  DW_sf_simulink_T *sf_simulink_DW)
+  *BusConversion_InsertedFor_cru_l, real_T *save_time, B_sf_simulink_T
+  *sf_simulink_B, DW_sf_simulink_T *sf_simulink_DW)
 {
   /*  yellow or red signal  */
   sf_simulink_B->steering_angle = sf_simulink_B->cruiser.line_angle;
-  sf_simulink_DW->save_time = sf_simulink_DW->time;
+  *save_time = sf_simulink_DW->time;
   sf_simulink_DW->time = BusConversion_InsertedFor_cru_l->time;
+}
+
+/* Function for Chart: '<S2>/cruser and submission chart' */
+static void sf_simulink_time_reprocessing(const CORE
+  *BusConversion_InsertedFor_cru_l, real_T *save_time, B_sf_simulink_T
+  *sf_simulink_B, DW_sf_simulink_T *sf_simulink_DW)
+{
+  real_T tmp;
+  sf_simulink_signal_processing(BusConversion_InsertedFor_cru_l, save_time,
+    sf_simulink_B, sf_simulink_DW);
+
+  /*  time is mircoseconds.
+     range is 0 ~ 999999 */
+  if (sf_simulink_DW->time < *save_time) {
+    tmp = sf_simulink_TIME_UNIT - (sf_simulink_DW->time - *save_time);
+  } else {
+    tmp = sf_simulink_DW->time - *save_time;
+  }
+
+  sf_simulink_DW->dt += tmp / sf_simulink_TIME_UNIT;
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
@@ -929,8 +932,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
   int8_T l;
   int16_T i;
   uint32_T save_dist;
-  real_T relative_velovity;
   SIGNAL BusConversion_InsertedFor_cruse;
+  real_T save_time;
   int32_T tmp[10];
   int32_T tmp_0[10];
   int32_T qY;
@@ -1135,8 +1138,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
     sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_init;
 
     /* local */
-    sf_simulink_DW->save_time = 0.0;
     sf_simulink_DW->time = sf_simulink_U->Input2.time;
+    sf_simulink_DW->dt = 0.0;
 
     /* output */
     sf_simulink_B->steering_angle = sf_simulink_B->cruiser.line_angle;
@@ -1150,7 +1153,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
     guard2 = false;
     switch (sf_simulink_DW->is_c3_sf_simulink) {
      case sf_simulink_IN_change_lane:
-      sf_simulink_time_reprocessing(&sf_simulink_U->Input2, sf_simulink_DW);
+      sf_simulink_time_reprocessing(&sf_simulink_U->Input2, &save_time,
+        sf_simulink_B, sf_simulink_DW);
       if (sf_simulink_DW->dt <= 2.0) {
         if (sf_simulink_DW->change_lane_dir == 2) {
           sf_simulink_B->steering_angle = 70U;
@@ -1176,19 +1180,20 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
             (sf_simulink_B->object)];
           sf_simul_check_signal_violation(&BusConversion_InsertedFor_cruse,
             sf_simulink_B, sf_simulink_DW);
-          sf_simulink_time_reprocessing(&sf_simulink_U->Input2, sf_simulink_DW);
-          relative_velovity = ((real_T)sf_simulink_DW->each_obj.dist - (real_T)
-                               save_dist) / sf_simulink_DW->dt;
+          sf_simulink_DW->dt = 0.0;
+          sf_simulink_time_reprocessing(&sf_simulink_U->Input2, &save_time,
+            sf_simulink_B, sf_simulink_DW);
+          save_time = ((real_T)sf_simulink_DW->each_obj.dist - (real_T)save_dist)
+            / sf_simulink_DW->dt;
 
           /*  speed unit and relative_velovity unit is centimeters per seconds  */
           sf_simulink_B->front_car_speed = (real_T)sf_simulink_B->speed +
-            relative_velovity;
+            save_time;
           sf_simulink_check_speeding(sf_simulink_B);
 
           /*  the front car is getting closer
              If the front car is already close, can't change lane  */
-          if ((relative_velovity <= 0.0) && (sf_simulink_DW->each_obj.dist >
-               100U)) {
+          if ((save_time <= 0.0) && (sf_simulink_DW->each_obj.dist > 100U)) {
             sf_simulink_DW->change_lane_dir =
               sf_simulink_B->cruiser.change_lane_dir;
             sf_simulink_B->change_lane_flag = 1U;
@@ -1228,8 +1233,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
 
      default:
       /* case IN_normal_running: */
-      sf_simulink_signal_processing(&sf_simulink_U->Input2, sf_simulink_B,
-        sf_simulink_DW);
+      sf_simulink_signal_processing(&sf_simulink_U->Input2, &save_time,
+        sf_simulink_B, sf_simulink_DW);
 
       /*  discover the car in front  */
       if ((sf_simulink_B->cruiser.car_check_flag == 1) &&
@@ -1239,19 +1244,20 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
           (sf_simulink_B->object)];
         sf_simul_check_signal_violation(&BusConversion_InsertedFor_cruse,
           sf_simulink_B, sf_simulink_DW);
-        sf_simulink_time_reprocessing(&sf_simulink_U->Input2, sf_simulink_DW);
-        relative_velovity = ((real_T)sf_simulink_DW->each_obj.dist - (real_T)
-                             save_dist) / sf_simulink_DW->dt;
+        sf_simulink_DW->dt = 0.0;
+        sf_simulink_time_reprocessing(&sf_simulink_U->Input2, &save_time,
+          sf_simulink_B, sf_simulink_DW);
+        save_time = ((real_T)sf_simulink_DW->each_obj.dist - (real_T)save_dist) /
+          sf_simulink_DW->dt;
 
         /*  speed unit and relative_velovity unit is centimeters per seconds  */
         sf_simulink_B->front_car_speed = (real_T)sf_simulink_B->speed +
-          relative_velovity;
+          save_time;
         sf_simulink_check_speeding(sf_simulink_B);
 
         /*  the front car is getting closer
            If the front car is already close, can't change lane  */
-        if ((relative_velovity <= 0.0) && (sf_simulink_DW->each_obj.dist > 100U))
-        {
+        if ((save_time <= 0.0) && (sf_simulink_DW->each_obj.dist > 100U)) {
           sf_simulink_DW->change_lane_dir =
             sf_simulink_B->cruiser.change_lane_dir;
           sf_simulink_B->change_lane_flag = 1U;
@@ -1396,7 +1402,6 @@ void sf_simulink_initialize(RT_MODEL_sf_simulink_T *const sf_simulink_M)
     sf_simulink_DW->is_active_c3_sf_simulink = 0U;
     sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_NO_ACTIVE_CHILD;
     sf_simulink_DW->time = 0.0;
-    sf_simulink_DW->save_time = 0.0;
     sf_simulink_DW->each_obj.who = 0U;
     sf_simulink_DW->each_obj.id = 0U;
     sf_simulink_DW->each_obj.dist = 0U;
