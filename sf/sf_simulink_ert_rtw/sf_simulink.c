@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.602
+ * Model version                  : 1.603
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Oct  5 20:39:29 2022
+ * C/C++ source code generated on : Wed Oct  5 20:51:09 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -39,9 +39,9 @@
 #define sf_simulink_DIFF_ANGLE         (3)
 
 /* Forward declaration for local functions */
-static void sf_simulink_merge_m(int32_T idx[10], real_T x[10], int32_T np,
-  int32_T nq, int32_T iwork[10], real_T xwork[10]);
-static void sf_simulink_sort_k(real_T x[10]);
+static void sf_simulink_merge_m(int32_T idx[10], int32_T x[10], int32_T np,
+  int32_T nq, int32_T iwork[10], int32_T xwork[10]);
+static void sf_simulink_sort_k(int32_T x[10]);
 static void sf_simulink_qsort(const int32_T x[10], int32_T y[10]);
 static void sf_simulink_signal_processing(const CORE
   *BusConversion_InsertedFor_cru_l, B_sf_simulink_T *sf_simulink_B,
@@ -63,8 +63,8 @@ static int32_T sf_simulink_search(const int32_T x[10], const int32_T y[10],
   int32_T val);
 
 /* Function for Chart: '<S1>/object fetch' */
-static void sf_simulink_merge_m(int32_T idx[10], real_T x[10], int32_T np,
-  int32_T nq, int32_T iwork[10], real_T xwork[10])
+static void sf_simulink_merge_m(int32_T idx[10], int32_T x[10], int32_T np,
+  int32_T nq, int32_T iwork[10], int32_T xwork[10])
 {
   int32_T p;
   int32_T q;
@@ -114,209 +114,218 @@ static void sf_simulink_merge_m(int32_T idx[10], real_T x[10], int32_T np,
 }
 
 /* Function for Chart: '<S1>/object fetch' */
-static void sf_simulink_sort_k(real_T x[10])
+static void sf_simulink_sort_k(int32_T x[10])
 {
   int32_T idx[10];
   int32_T iwork[10];
-  real_T xwork[10];
-  real_T x4[4];
+  int32_T xwork[10];
+  int32_T x4[4];
   int8_T idx4[4];
-  int32_T ib;
-  int8_T perm[4];
   int32_T i1;
   int32_T i2;
+  int32_T i3;
   int32_T i4;
-  int32_T i;
-  real_T tmp;
-  real_T tmp_0;
-  x4[0] = 0.0;
-  idx4[0] = 0;
-  x4[1] = 0.0;
-  idx4[1] = 0;
-  x4[2] = 0.0;
-  idx4[2] = 0;
-  x4[3] = 0.0;
-  idx4[3] = 0;
-  ib = 0;
-  for (i = 0; i < 10; i++) {
-    idx[i] = 0;
-    ib++;
-    idx4[ib - 1] = (int8_T)(i + 1);
-    x4[ib - 1] = x[i];
-    if (ib == 4) {
-      if (x4[0] <= x4[1]) {
-        i1 = 1;
-        i2 = 2;
-      } else {
-        i1 = 2;
-        i2 = 1;
-      }
-
-      if (x4[2] <= x4[3]) {
-        ib = 3;
-        i4 = 4;
-      } else {
-        ib = 4;
-        i4 = 3;
-      }
-
-      tmp = x4[i1 - 1];
-      tmp_0 = x4[ib - 1];
-      if (tmp <= tmp_0) {
-        tmp = x4[i2 - 1];
-        if (tmp <= tmp_0) {
-          perm[0] = (int8_T)i1;
-          perm[1] = (int8_T)i2;
-          perm[2] = (int8_T)ib;
-          perm[3] = (int8_T)i4;
-        } else if (tmp <= x4[i4 - 1]) {
-          perm[0] = (int8_T)i1;
-          perm[1] = (int8_T)ib;
-          perm[2] = (int8_T)i2;
-          perm[3] = (int8_T)i4;
-        } else {
-          perm[0] = (int8_T)i1;
-          perm[1] = (int8_T)ib;
-          perm[2] = (int8_T)i4;
-          perm[3] = (int8_T)i2;
-        }
-      } else {
-        tmp_0 = x4[i4 - 1];
-        if (tmp <= tmp_0) {
-          if (x4[i2 - 1] <= tmp_0) {
-            perm[0] = (int8_T)ib;
-            perm[1] = (int8_T)i1;
-            perm[2] = (int8_T)i2;
-            perm[3] = (int8_T)i4;
-          } else {
-            perm[0] = (int8_T)ib;
-            perm[1] = (int8_T)i1;
-            perm[2] = (int8_T)i4;
-            perm[3] = (int8_T)i2;
-          }
-        } else {
-          perm[0] = (int8_T)ib;
-          perm[1] = (int8_T)i4;
-          perm[2] = (int8_T)i1;
-          perm[3] = (int8_T)i2;
-        }
-      }
-
-      i1 = perm[0] - 1;
-      idx[i - 3] = idx4[i1];
-      i2 = perm[1] - 1;
-      idx[i - 2] = idx4[i2];
-      ib = perm[2] - 1;
-      idx[i - 1] = idx4[ib];
-      i4 = perm[3] - 1;
-      idx[i] = idx4[i4];
-      x[i - 3] = x4[i1];
-      x[i - 2] = x4[i2];
-      x[i - 1] = x4[ib];
-      x[i] = x4[i4];
-      ib = 0;
-    }
+  int8_T perm_idx_1;
+  int8_T perm_idx_0;
+  int8_T perm_idx_2;
+  int8_T perm_idx_3;
+  int32_T tmp;
+  int32_T tmp_0;
+  idx4[0] = 1;
+  idx4[1] = 2;
+  idx4[2] = 3;
+  idx4[3] = 4;
+  x4[0] = x[0];
+  x4[1] = x[1];
+  x4[2] = x[2];
+  x4[3] = x[3];
+  if (x[0] <= x[1]) {
+    i1 = 1;
+    i2 = 2;
+  } else {
+    i1 = 2;
+    i2 = 1;
   }
 
-  if (ib > 0) {
-    perm[1] = 0;
-    perm[2] = 0;
-    perm[3] = 0;
-    if (ib == 1) {
-      perm[0] = 1;
-    } else if (ib == 2) {
-      if (x4[0] <= x4[1]) {
-        perm[0] = 1;
-        perm[1] = 2;
-      } else {
-        perm[0] = 2;
-        perm[1] = 1;
-      }
-    } else if (x4[0] <= x4[1]) {
-      if (x4[1] <= x4[2]) {
-        perm[0] = 1;
-        perm[1] = 2;
-        perm[2] = 3;
-      } else if (x4[0] <= x4[2]) {
-        perm[0] = 1;
-        perm[1] = 3;
-        perm[2] = 2;
-      } else {
-        perm[0] = 3;
-        perm[1] = 1;
-        perm[2] = 2;
-      }
-    } else if (x4[0] <= x4[2]) {
-      perm[0] = 2;
-      perm[1] = 1;
-      perm[2] = 3;
-    } else if (x4[1] <= x4[2]) {
-      perm[0] = 2;
-      perm[1] = 3;
-      perm[2] = 1;
+  if (x[2] <= x[3]) {
+    i3 = 3;
+    i4 = 4;
+  } else {
+    i3 = 4;
+    i4 = 3;
+  }
+
+  tmp = x4[i1 - 1];
+  tmp_0 = x4[i3 - 1];
+  if (tmp <= tmp_0) {
+    tmp = x4[i2 - 1];
+    if (tmp <= tmp_0) {
+      perm_idx_0 = (int8_T)i1;
+      perm_idx_1 = (int8_T)i2;
+      perm_idx_2 = (int8_T)i3;
+      perm_idx_3 = (int8_T)i4;
+    } else if (tmp <= x4[i4 - 1]) {
+      perm_idx_0 = (int8_T)i1;
+      perm_idx_1 = (int8_T)i3;
+      perm_idx_2 = (int8_T)i2;
+      perm_idx_3 = (int8_T)i4;
     } else {
-      perm[0] = 3;
-      perm[1] = 2;
-      perm[2] = 1;
+      perm_idx_0 = (int8_T)i1;
+      perm_idx_1 = (int8_T)i3;
+      perm_idx_2 = (int8_T)i4;
+      perm_idx_3 = (int8_T)i2;
     }
-
-    for (i = 0; i < ib; i++) {
-      i1 = perm[i] - 1;
-      i2 = (i - ib) + 10;
-      idx[i2] = idx4[i1];
-      x[i2] = x4[i1];
+  } else {
+    tmp_0 = x4[i4 - 1];
+    if (tmp <= tmp_0) {
+      if (x4[i2 - 1] <= tmp_0) {
+        perm_idx_0 = (int8_T)i3;
+        perm_idx_1 = (int8_T)i1;
+        perm_idx_2 = (int8_T)i2;
+        perm_idx_3 = (int8_T)i4;
+      } else {
+        perm_idx_0 = (int8_T)i3;
+        perm_idx_1 = (int8_T)i1;
+        perm_idx_2 = (int8_T)i4;
+        perm_idx_3 = (int8_T)i2;
+      }
+    } else {
+      perm_idx_0 = (int8_T)i3;
+      perm_idx_1 = (int8_T)i4;
+      perm_idx_2 = (int8_T)i1;
+      perm_idx_3 = (int8_T)i2;
     }
   }
 
-  memset(&xwork[0], 0, 10U * sizeof(real_T));
-  for (i = 0; i < 10; i++) {
-    iwork[i] = 0;
+  i1 = perm_idx_0 - 1;
+  idx[0] = idx4[i1];
+  i2 = perm_idx_1 - 1;
+  idx[1] = idx4[i2];
+  i3 = perm_idx_2 - 1;
+  idx[2] = idx4[i3];
+  i4 = perm_idx_3 - 1;
+  idx[3] = idx4[i4];
+  x[0] = x4[i1];
+  x[1] = x4[i2];
+  x[2] = x4[i3];
+  x[3] = x4[i4];
+  idx4[0] = 5;
+  idx4[1] = 6;
+  idx4[2] = 7;
+  idx4[3] = 8;
+  x4[0] = x[4];
+  x4[1] = x[5];
+  x4[2] = x[6];
+  x4[3] = x[7];
+  if (x[4] <= x[5]) {
+    i1 = 1;
+    i2 = 2;
+  } else {
+    i1 = 2;
+    i2 = 1;
+  }
+
+  if (x[6] <= x[7]) {
+    i3 = 3;
+    i4 = 4;
+  } else {
+    i3 = 4;
+    i4 = 3;
+  }
+
+  tmp = x4[i1 - 1];
+  tmp_0 = x4[i3 - 1];
+  if (tmp <= tmp_0) {
+    tmp = x4[i2 - 1];
+    if (tmp <= tmp_0) {
+      perm_idx_0 = (int8_T)i1;
+      perm_idx_1 = (int8_T)i2;
+      perm_idx_2 = (int8_T)i3;
+      perm_idx_3 = (int8_T)i4;
+    } else if (tmp <= x4[i4 - 1]) {
+      perm_idx_0 = (int8_T)i1;
+      perm_idx_1 = (int8_T)i3;
+      perm_idx_2 = (int8_T)i2;
+      perm_idx_3 = (int8_T)i4;
+    } else {
+      perm_idx_0 = (int8_T)i1;
+      perm_idx_1 = (int8_T)i3;
+      perm_idx_2 = (int8_T)i4;
+      perm_idx_3 = (int8_T)i2;
+    }
+  } else {
+    tmp_0 = x4[i4 - 1];
+    if (tmp <= tmp_0) {
+      if (x4[i2 - 1] <= tmp_0) {
+        perm_idx_0 = (int8_T)i3;
+        perm_idx_1 = (int8_T)i1;
+        perm_idx_2 = (int8_T)i2;
+        perm_idx_3 = (int8_T)i4;
+      } else {
+        perm_idx_0 = (int8_T)i3;
+        perm_idx_1 = (int8_T)i1;
+        perm_idx_2 = (int8_T)i4;
+        perm_idx_3 = (int8_T)i2;
+      }
+    } else {
+      perm_idx_0 = (int8_T)i3;
+      perm_idx_1 = (int8_T)i4;
+      perm_idx_2 = (int8_T)i1;
+      perm_idx_3 = (int8_T)i2;
+    }
+  }
+
+  i1 = perm_idx_0 - 1;
+  idx[4] = idx4[i1];
+  i2 = perm_idx_1 - 1;
+  idx[5] = idx4[i2];
+  i3 = perm_idx_2 - 1;
+  idx[6] = idx4[i3];
+  i4 = perm_idx_3 - 1;
+  idx[7] = idx4[i4];
+  x[4] = x4[i1];
+  x[5] = x4[i2];
+  x[6] = x4[i3];
+  x[7] = x4[i4];
+  idx4[0] = 9;
+  x4[0] = x[8];
+  idx4[1] = 10;
+  x4[1] = x[9];
+  if (x[8] <= x[9]) {
+    perm_idx_0 = 1;
+    perm_idx_1 = 2;
+  } else {
+    perm_idx_0 = 2;
+    perm_idx_1 = 1;
+  }
+
+  i1 = perm_idx_0 - 1;
+  idx[8] = idx4[i1];
+  x[8] = x4[i1];
+  i1 = perm_idx_1 - 1;
+  idx[9] = idx4[i1];
+  x[9] = x4[i1];
+  for (i1 = 0; i1 < 10; i1++) {
+    xwork[i1] = 0;
+    iwork[i1] = 0;
   }
 
   sf_simulink_merge_m(idx, x, 4, 4, iwork, xwork);
   sf_simulink_merge_m(idx, x, 8, 2, iwork, xwork);
 }
 
-real_T rt_roundd_snf(real_T u)
-{
-  real_T y;
-  if (fabs(u) < 4.503599627370496E+15) {
-    if (u >= 0.5) {
-      y = floor(u + 0.5);
-    } else if (u > -0.5) {
-      y = u * 0.0;
-    } else {
-      y = ceil(u - 0.5);
-    }
-  } else {
-    y = u;
-  }
-
-  return y;
-}
-
 /* Function for Chart: '<S1>/object fetch' */
 static void sf_simulink_qsort(const int32_T x[10], int32_T y[10])
 {
-  real_T input[10];
+  int32_T input[10];
   int32_T n;
-  real_T tmp;
   for (n = 0; n < 10; n++) {
     input[n] = x[n];
   }
 
   sf_simulink_sort_k(input);
   for (n = 0; n < 10; n++) {
-    tmp = rt_roundd_snf(input[n]);
-    if (tmp < 2.147483648E+9) {
-      if (tmp >= -2.147483648E+9) {
-        y[n] = (int32_T)tmp;
-      } else {
-        y[n] = MIN_int32_T;
-      }
-    } else {
-      y[n] = MAX_int32_T;
-    }
+    y[n] = input[n];
   }
 }
 
