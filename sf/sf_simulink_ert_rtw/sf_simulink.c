@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.634
+ * Model version                  : 1.635
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Oct  5 22:50:38 2022
+ * C/C++ source code generated on : Wed Oct  5 22:52:11 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -44,17 +44,17 @@ static void sf_simulink_merge_m(int32_T idx[10], int32_T x[10], int32_T np,
   int32_T nq, int32_T iwork[10], int32_T xwork[10]);
 static void sf_simulink_sort_k(int32_T x[10]);
 static void sf_simulink_qsort(const int32_T x[10], int32_T y[10]);
+static void sf_simulink_time_reprocessing(const CORE
+  *BusConversion_InsertedFor_cru_l, DW_sf_simulink_T *sf_simulink_DW);
 static void sf_simulink_signal_processing(const CORE
   *BusConversion_InsertedFor_cru_l, B_sf_simulink_T *sf_simulink_B,
   DW_sf_simulink_T *sf_simulink_DW);
-static void sf_simulink_time_reprocessing(const CORE
-  *BusConversion_InsertedFor_cru_l, DW_sf_simulink_T *sf_simulink_DW);
 static uint8_T sf_simulink_nonzero_front(const OBJECT x[360]);
 static void sf_simul_check_signal_violation(const SIGNAL
   *BusConversion_InsertedFor_cruse, B_sf_simulink_T *sf_simulink_B,
   DW_sf_simulink_T *sf_simulink_DW);
-static void sf_simulink_accelerator(B_sf_simulink_T *sf_simulink_B);
 static void sf_simulink_brake(B_sf_simulink_T *sf_simulink_B);
+static void sf_simulink_accelerator(B_sf_simulink_T *sf_simulink_B);
 static void sf_simulink_check_speeding(B_sf_simulink_T *sf_simulink_B);
 static void sf_simulink_up_count(int32_T *cnt, int32_T limit);
 static int32_T sf_simulink_search(const int32_T x[10], const int32_T y[10],
@@ -332,17 +332,6 @@ static void sf_simulink_qsort(const int32_T x[10], int32_T y[10])
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
-static void sf_simulink_signal_processing(const CORE
-  *BusConversion_InsertedFor_cru_l, B_sf_simulink_T *sf_simulink_B,
-  DW_sf_simulink_T *sf_simulink_DW)
-{
-  /*  yellow or red signal  */
-  sf_simulink_B->steering_angle = sf_simulink_B->cruiser.line_angle;
-  sf_simulink_DW->save_time = sf_simulink_DW->time;
-  sf_simulink_DW->time = BusConversion_InsertedFor_cru_l->time;
-}
-
-/* Function for Chart: '<S2>/cruser and submission chart' */
 static void sf_simulink_time_reprocessing(const CORE
   *BusConversion_InsertedFor_cru_l, DW_sf_simulink_T *sf_simulink_DW)
 {
@@ -358,6 +347,17 @@ static void sf_simulink_time_reprocessing(const CORE
   }
 
   sf_simulink_DW->dt /= sf_simulink_TIME_UNIT;
+}
+
+/* Function for Chart: '<S2>/cruser and submission chart' */
+static void sf_simulink_signal_processing(const CORE
+  *BusConversion_InsertedFor_cru_l, B_sf_simulink_T *sf_simulink_B,
+  DW_sf_simulink_T *sf_simulink_DW)
+{
+  /*  yellow or red signal  */
+  sf_simulink_B->steering_angle = sf_simulink_B->cruiser.line_angle;
+  sf_simulink_DW->save_time = sf_simulink_DW->time;
+  sf_simulink_DW->time = BusConversion_InsertedFor_cru_l->time;
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
@@ -426,6 +426,18 @@ static void sf_simul_check_signal_violation(const SIGNAL
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
+static void sf_simulink_brake(B_sf_simulink_T *sf_simulink_B)
+{
+  int32_T tmp;
+  tmp = sf_simulink_B->speed - (int32_T)sf_simulink_EXTRA_SPEED;
+  if (tmp >= 0) {
+    sf_simulink_B->speed = (uint8_T)tmp;
+  } else {
+    sf_simulink_B->speed = 0U;
+  }
+}
+
+/* Function for Chart: '<S2>/cruser and submission chart' */
 static void sf_simulink_accelerator(B_sf_simulink_T *sf_simulink_B)
 {
   int32_T tmp;
@@ -438,18 +450,6 @@ static void sf_simulink_accelerator(B_sf_simulink_T *sf_simulink_B)
 
   if (sf_simulink_B->speed > 50) {
     sf_simulink_B->speed = 50U;
-  }
-}
-
-/* Function for Chart: '<S2>/cruser and submission chart' */
-static void sf_simulink_brake(B_sf_simulink_T *sf_simulink_B)
-{
-  int32_T tmp;
-  tmp = sf_simulink_B->speed - (int32_T)sf_simulink_EXTRA_SPEED;
-  if (tmp >= 0) {
-    sf_simulink_B->speed = (uint8_T)tmp;
-  } else {
-    sf_simulink_B->speed = 0U;
   }
 }
 
@@ -1150,8 +1150,6 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
     guard2 = false;
     switch (sf_simulink_DW->is_c3_sf_simulink) {
      case sf_simulink_IN_change_lane:
-      sf_simulink_signal_processing(&sf_simulink_U->Input2, sf_simulink_B,
-        sf_simulink_DW);
       sf_simulink_time_reprocessing(&sf_simulink_U->Input2, sf_simulink_DW);
       if (sf_simulink_DW->dt <= 2.0) {
         if (sf_simulink_DW->change_lane_dir == 2) {
