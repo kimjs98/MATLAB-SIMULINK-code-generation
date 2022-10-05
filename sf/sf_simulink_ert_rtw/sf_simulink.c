@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.617
+ * Model version                  : 1.621
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Oct  5 21:16:02 2022
+ * C/C++ source code generated on : Wed Oct  5 21:38:35 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -37,6 +37,7 @@
 
 /* Named constants for Chart: '<S1>/object fetch' */
 #define sf_simulink_DIFF_ANGLE         (3)
+#define sf_simulink_limit              (9)
 
 /* Forward declaration for local functions */
 static void sf_simulink_merge_m(int32_T idx[10], int32_T x[10], int32_T np,
@@ -54,9 +55,9 @@ static void sf_simul_check_signal_violation(const SIGNAL
 static void sf_simulink_accelerator(B_sf_simulink_T *sf_simulink_B);
 static void sf_simulink_brake(B_sf_simulink_T *sf_simulink_B);
 static void sf_simulink_check_speeding(B_sf_simulink_T *sf_simulink_B);
-static void sf_simulink_up_count(int32_T *cnt, int32_T limit);
 static int32_T sf_simulink_search(const int32_T x[10], const int32_T y[10],
   int32_T val);
+static void sf_simulink_up_count(int32_T *cnt, int32_T limit);
 static void sf_simulink_merge(int32_T idx_data[], int32_T x_data[], int32_T np,
   int32_T nq, int32_T iwork_data[], int32_T xwork_data[]);
 static void sf_simulink_sort(int32_T x_data[], int32_T x_size[2]);
@@ -456,18 +457,6 @@ static void sf_simulink_check_speeding(B_sf_simulink_T *sf_simulink_B)
 }
 
 /* Function for Chart: '<S1>/object fetch' */
-static void sf_simulink_up_count(int32_T *cnt, int32_T limit)
-{
-  if (*cnt < limit) {
-    if (*cnt > 2147483646) {
-      *cnt = MAX_int32_T;
-    } else {
-      (*cnt)++;
-    }
-  }
-}
-
-/* Function for Chart: '<S1>/object fetch' */
 static int32_T sf_simulink_search(const int32_T x[10], const int32_T y[10],
   int32_T val)
 {
@@ -486,6 +475,18 @@ static int32_T sf_simulink_search(const int32_T x[10], const int32_T y[10],
   }
 
   return y[ii_data_idx_0 - 1];
+}
+
+/* Function for Chart: '<S1>/object fetch' */
+static void sf_simulink_up_count(int32_T *cnt, int32_T limit)
+{
+  if (*cnt < limit) {
+    if (*cnt > 2147483646) {
+      *cnt = MAX_int32_T;
+    } else {
+      (*cnt)++;
+    }
+  }
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
@@ -917,7 +918,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
   int8_T l;
   int16_T i;
   uint32_T save_dist;
-  real32_T relative_velovity;
+  real_T relative_velovity;
   SIGNAL BusConversion_InsertedFor_cruse;
   int32_T tmp[10];
   int32_T tmp_0[10];
@@ -926,7 +927,6 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
   int32_T local_angle_cam_0;
   boolean_T guard1 = false;
   boolean_T guard2 = false;
-  int32_T exitg1;
 
   /* Chart: '<S1>/object fetch' incorporates:
    *  BusCreator generated from: '<S1>/object fetch'
@@ -957,7 +957,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
     while (i < 360) {
       /* NEW_PATTERN */
       guard1 = false;
-      if ((c >= 10) && (l >= 10)) {
+      if ((c < sf_simulink_limit) || (l < sf_simulink_limit)) {
         guard1 = true;
       } else {
         /*  each data is bigger than zero,
@@ -1038,7 +1038,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
           sf_simulink_DW->each_object.dist = (uint32_T)qY_0;
           sf_simulink_B->object[i] = sf_simulink_DW->each_object;
           qY_0 = c;
-          sf_simulink_up_count(&qY_0, 10);
+          sf_simulink_up_count(&qY_0, sf_simulink_limit);
           if (qY_0 > 127) {
             qY_0 = 127;
           } else {
@@ -1049,7 +1049,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
 
           c = (int8_T)qY_0;
           qY_0 = l;
-          sf_simulink_up_count(&qY_0, 10);
+          sf_simulink_up_count(&qY_0, sf_simulink_limit);
           if (qY_0 > 127) {
             qY_0 = 127;
           } else {
@@ -1060,40 +1060,6 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
 
           l = (int8_T)qY_0;
         } else {
-          do {
-            exitg1 = 0;
-            qY_0 = i - 3;
-            if (local_angle_cam[c] < qY_0) {
-              qY_0 = c;
-              sf_simulink_up_count(&qY_0, 10);
-              if (qY_0 > 127) {
-                qY_0 = 127;
-              } else {
-                if (qY_0 < -128) {
-                  qY_0 = -128;
-                }
-              }
-
-              c = (int8_T)qY_0;
-            } else {
-              exitg1 = 1;
-            }
-          } while (exitg1 == 0);
-
-          while (local_angle_lidar[l] < qY_0) {
-            qY = l;
-            sf_simulink_up_count(&qY, 10);
-            if (qY > 127) {
-              qY = 127;
-            } else {
-              if (qY < -128) {
-                qY = -128;
-              }
-            }
-
-            l = (int8_T)qY;
-          }
-
           guard1 = true;
         }
       }
@@ -1177,18 +1143,18 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
           sf_simul_check_signal_violation(&BusConversion_InsertedFor_cruse,
             sf_simulink_B, sf_simulink_DW);
           sf_simulink_time_reprocessing(sf_simulink_DW);
-          relative_velovity = (real32_T)(((real_T)sf_simulink_DW->each_obj.dist
-            - (real_T)save_dist) / sf_simulink_DW->dt);
+          relative_velovity = ((real_T)sf_simulink_DW->each_obj.dist - (real_T)
+                               save_dist) / sf_simulink_DW->dt;
 
           /*  speed unit and relative_velovity unit is centimeters per seconds  */
-          sf_simulink_B->front_car_speed = (real32_T)sf_simulink_B->speed +
+          sf_simulink_B->front_car_speed = (real_T)sf_simulink_B->speed +
             relative_velovity;
           sf_simulink_check_speeding(sf_simulink_B);
 
           /*  the front car is getting closer
              If the front car is already close, can't change lane  */
-          if ((relative_velovity < 0.0F) && (sf_simulink_DW->each_obj.dist >
-               100U)) {
+          if ((relative_velovity < 0.0) && (sf_simulink_DW->each_obj.dist > 100U))
+          {
             sf_simulink_DW->change_lane_dir =
               sf_simulink_B->cruiser.change_lane_dir;
             sf_simulink_B->change_lane_flag = 1U;
@@ -1240,17 +1206,17 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
         sf_simul_check_signal_violation(&BusConversion_InsertedFor_cruse,
           sf_simulink_B, sf_simulink_DW);
         sf_simulink_time_reprocessing(sf_simulink_DW);
-        relative_velovity = (real32_T)(((real_T)sf_simulink_DW->each_obj.dist -
-          (real_T)save_dist) / sf_simulink_DW->dt);
+        relative_velovity = ((real_T)sf_simulink_DW->each_obj.dist - (real_T)
+                             save_dist) / sf_simulink_DW->dt;
 
         /*  speed unit and relative_velovity unit is centimeters per seconds  */
-        sf_simulink_B->front_car_speed = (real32_T)sf_simulink_B->speed +
+        sf_simulink_B->front_car_speed = (real_T)sf_simulink_B->speed +
           relative_velovity;
         sf_simulink_check_speeding(sf_simulink_B);
 
         /*  the front car is getting closer
            If the front car is already close, can't change lane  */
-        if ((relative_velovity < 0.0F) && (sf_simulink_DW->each_obj.dist > 100U))
+        if ((relative_velovity < 0.0) && (sf_simulink_DW->each_obj.dist > 100U))
         {
           sf_simulink_DW->change_lane_dir =
             sf_simulink_B->cruiser.change_lane_dir;
