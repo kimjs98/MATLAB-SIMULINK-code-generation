@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.599
+ * Model version                  : 1.601
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Oct  5 20:06:22 2022
+ * C/C++ source code generated on : Wed Oct  5 20:27:05 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -36,7 +36,7 @@
 #define sf_simulink_IN_running         ((uint8_T)2U)
 
 /* Named constants for Chart: '<S1>/object fetch' */
-#define sf_simulink_DIFF_ANGLE         (3.0)
+#define sf_simulink_DIFF_ANGLE         (3)
 
 /* Forward declaration for local functions */
 static void sf_simulink_merge_m(int32_T idx[10], real_T x[10], int32_T offset,
@@ -57,8 +57,8 @@ static void sf_simulink_brake(B_sf_simulink_T *sf_simulink_B);
 static void sf_simul_check_signal_violation(const SIGNAL
   *BusConversion_InsertedFor_cruse, B_sf_simulink_T *sf_simulink_B,
   DW_sf_simulink_T *sf_simulink_DW);
-static void sf_simulink_up_count(real_T *cnt, real_T limit);
 static void sf_simulink_check_speeding(B_sf_simulink_T *sf_simulink_B);
+static void sf_simulink_up_count(real_T *cnt, real_T limit);
 static real_T sf_simulink_search(const real_T x[10], const real_T y[10], real_T
   val);
 
@@ -839,19 +839,19 @@ static void sf_simul_check_signal_violation(const SIGNAL
       BusConversion_InsertedFor_cruse->stop_line_dist * 100.0));
 }
 
+/* Function for Chart: '<S2>/cruser and submission chart' */
+static void sf_simulink_check_speeding(B_sf_simulink_T *sf_simulink_B)
+{
+  /*  overfast checking  */
+  sf_simulink_B->overfast_flag = (uint8_T)(sf_simulink_B->front_car_speed > 60.0);
+}
+
 /* Function for Chart: '<S1>/object fetch' */
 static void sf_simulink_up_count(real_T *cnt, real_T limit)
 {
   if (*cnt < limit) {
     (*cnt)++;
   }
-}
-
-/* Function for Chart: '<S2>/cruser and submission chart' */
-static void sf_simulink_check_speeding(B_sf_simulink_T *sf_simulink_B)
-{
-  /*  overfast checking  */
-  sf_simulink_B->overfast_flag = (uint8_T)(sf_simulink_B->front_car_speed > 60.0);
 }
 
 /* Function for Chart: '<S1>/object fetch' */
@@ -884,8 +884,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
     sf_simulink_M->inputs;
   ExtY_sf_simulink_T *sf_simulink_Y = (ExtY_sf_simulink_T *)
     sf_simulink_M->outputs;
-  real_T local_angle_cam[10];
-  real_T local_angle_lidar[10];
+  int32_T local_angle_cam[10];
+  int32_T local_angle_lidar[10];
   int8_T c;
   int8_T l;
   int16_T i;
@@ -896,8 +896,11 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
   real_T local_angle_lidar_tmp[10];
   int32_T i_0;
   real_T tmp[10];
+  int32_T qY;
+  int32_T local_angle_cam_0;
   boolean_T guard1 = false;
   boolean_T guard2 = false;
+  int32_T exitg1;
 
   /* Chart: '<S1>/object fetch' incorporates:
    *  BusCreator generated from: '<S1>/object fetch'
@@ -914,11 +917,36 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
     /*  local data qsort  */
     for (i_0 = 0; i_0 < 10; i_0++) {
       local_angle_cam_tmp[i_0] = sf_simulink_U->Input.object_angle[i_0];
+    }
+
+    sf_simulink_qsort(local_angle_cam_tmp, tmp);
+    for (i_0 = 0; i_0 < 10; i_0++) {
+      if (tmp[i_0] < 2.147483648E+9) {
+        if (tmp[i_0] >= -2.147483648E+9) {
+          local_angle_cam[i_0] = (int32_T)tmp[i_0];
+        } else {
+          local_angle_cam[i_0] = MIN_int32_T;
+        }
+      } else {
+        local_angle_cam[i_0] = MAX_int32_T;
+      }
+
       local_angle_lidar_tmp[i_0] = sf_simulink_U->Input1.angle[i_0];
     }
 
-    sf_simulink_qsort(local_angle_cam_tmp, local_angle_cam);
-    sf_simulink_qsort(local_angle_lidar_tmp, local_angle_lidar);
+    sf_simulink_qsort(local_angle_lidar_tmp, tmp);
+    for (i_0 = 0; i_0 < 10; i_0++) {
+      if (tmp[i_0] < 2.147483648E+9) {
+        if (tmp[i_0] >= -2.147483648E+9) {
+          local_angle_lidar[i_0] = (int32_T)tmp[i_0];
+        } else {
+          local_angle_lidar[i_0] = MIN_int32_T;
+        }
+      } else {
+        local_angle_lidar[i_0] = MAX_int32_T;
+      }
+    }
+
     i = 0;
     c = 0;
     l = 0;
@@ -932,17 +960,62 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
            the absolute value of diff between local angles is smaller than three.
            !!! used data is set minus one !!!
            data is existed, what...  */
-        if ((local_angle_cam[c] >= 0.0) && (local_angle_lidar[l] >= 0.0) &&
-            (fabs(local_angle_cam[c] - (real_T)i) < sf_simulink_DIFF_ANGLE) &&
-            (fabs(local_angle_lidar[l] - (real_T)i) < sf_simulink_DIFF_ANGLE) &&
-            ((local_angle_cam[c] + local_angle_lidar[l]) / 2.0 == i)) {
+        if ((local_angle_cam[c] >= 0) && (i < local_angle_cam[c] - MAX_int32_T))
+        {
+          i_0 = MAX_int32_T;
+        } else if ((local_angle_cam[c] < 0) && (i > local_angle_cam[c] -
+                    MIN_int32_T)) {
+          i_0 = MIN_int32_T;
+        } else {
+          i_0 = local_angle_cam[c] - i;
+        }
+
+        if ((local_angle_lidar[l] >= 0) && (i < local_angle_lidar[l] -
+             MAX_int32_T)) {
+          qY = MAX_int32_T;
+        } else if ((local_angle_lidar[l] < 0) && (i > local_angle_lidar[l] -
+                    MIN_int32_T)) {
+          qY = MIN_int32_T;
+        } else {
+          qY = local_angle_lidar[l] - i;
+        }
+
+        if (i_0 < 0) {
+          if (i_0 <= MIN_int32_T) {
+            i_0 = MAX_int32_T;
+          } else {
+            i_0 = -i_0;
+          }
+        }
+
+        if (qY < 0) {
+          if (qY <= MIN_int32_T) {
+            qY = MAX_int32_T;
+          } else {
+            qY = -qY;
+          }
+        }
+
+        if ((local_angle_cam[c] < 0) && (local_angle_lidar[l] < MIN_int32_T
+             - local_angle_cam[c])) {
+          local_angle_cam_0 = MIN_int32_T;
+        } else if ((local_angle_cam[c] > 0) && (local_angle_lidar[l] >
+                    MAX_int32_T - local_angle_cam[c])) {
+          local_angle_cam_0 = MAX_int32_T;
+        } else {
+          local_angle_cam_0 = local_angle_cam[c] + local_angle_lidar[l];
+        }
+
+        if ((local_angle_cam[c] >= 0) && (local_angle_lidar[l] >= 0) && (i_0 <
+             sf_simulink_DIFF_ANGLE) && (qY < sf_simulink_DIFF_ANGLE) &&
+            (local_angle_cam_0 / 2 == i)) {
           sf_simulink_DW->each_object.who = 3U;
           for (i_0 = 0; i_0 < 10; i_0++) {
             tmp[i_0] = sf_simulink_U->Input.object_id[i_0];
           }
 
           relative_velovity = sf_simulink_search(local_angle_cam_tmp, tmp,
-            local_angle_cam[c]);
+            (real_T)local_angle_cam[c]);
           if (relative_velovity < 4.294967296E+9) {
             if (relative_velovity >= 0.0) {
               sf_simulink_DW->each_object.id = (uint32_T)relative_velovity;
@@ -958,7 +1031,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
           }
 
           relative_velovity = sf_simulink_search(local_angle_lidar_tmp, tmp,
-            local_angle_lidar[l]);
+            (real_T)local_angle_lidar[l]);
           if (relative_velovity < 4.294967296E+9) {
             if (relative_velovity >= 0.0) {
               sf_simulink_DW->each_object.dist = (uint32_T)relative_velovity;
@@ -994,23 +1067,27 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
             l = MAX_int8_T;
           }
         } else {
-          while ((local_angle_cam[c] < (real_T)i - sf_simulink_DIFF_ANGLE) &&
-                 (local_angle_cam[c] >= 0.0)) {
-            relative_velovity = c;
-            sf_simulink_up_count(&relative_velovity, 10.0);
-            if (relative_velovity < 128.0) {
-              if (relative_velovity >= -128.0) {
-                c = (int8_T)relative_velovity;
+          do {
+            exitg1 = 0;
+            i_0 = i - 3;
+            if (local_angle_cam[c] < i_0) {
+              relative_velovity = c;
+              sf_simulink_up_count(&relative_velovity, 10.0);
+              if (relative_velovity < 128.0) {
+                if (relative_velovity >= -128.0) {
+                  c = (int8_T)relative_velovity;
+                } else {
+                  c = MIN_int8_T;
+                }
               } else {
-                c = MIN_int8_T;
+                c = MAX_int8_T;
               }
             } else {
-              c = MAX_int8_T;
+              exitg1 = 1;
             }
-          }
+          } while (exitg1 == 0);
 
-          while ((local_angle_lidar[l] < (real_T)i - sf_simulink_DIFF_ANGLE) &&
-                 (local_angle_lidar[l] >= 0.0)) {
+          while (local_angle_lidar[l] < i_0) {
             relative_velovity = l;
             sf_simulink_up_count(&relative_velovity, 10.0);
             if (relative_velovity < 128.0) {
