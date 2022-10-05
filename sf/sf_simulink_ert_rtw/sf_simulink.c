@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.646
+ * Model version                  : 1.647
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Oct  5 23:04:16 2022
+ * C/C++ source code generated on : Wed Oct  5 23:10:26 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -349,8 +349,8 @@ static void sf_simulink_time_reprocessing(DW_sf_simulink_T *sf_simulink_DW)
   /*  time is mircoseconds.
      range is 0 ~ 999999 */
   if (sf_simulink_DW->time < sf_simulink_DW->save_time) {
-    tmp = sf_simulink_TIME_UNIT - (sf_simulink_DW->time -
-      sf_simulink_DW->save_time);
+    tmp = (sf_simulink_TIME_UNIT - sf_simulink_DW->save_time) +
+      sf_simulink_DW->time;
   } else {
     tmp = sf_simulink_DW->time - sf_simulink_DW->save_time;
   }
