@@ -125,6 +125,9 @@ RT_MODEL_sf_simulink_T *sf_simulink(void);
 void sf_simulink_initialize(RT_MODEL_sf_simulink_T *const sf_simulink_M);
 void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M);
 void sf_simulink_terminate(RT_MODEL_sf_simulink_T * sf_simulink_M);
+uint8_T sf_simulink_nonzero_front(const OBJECT x[360]);
+int32_T sf_simulink_front_ele(const OBJECT x[360]);
+
 
 /*-
  * The generated code includes comments that allow you to trace directly

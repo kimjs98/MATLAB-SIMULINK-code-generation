@@ -48,7 +48,7 @@ static void sf_simulink_signal_processing(const CORE
   *BusConversion_InsertedFor_cru_l, B_sf_simulink_T *sf_simulink_B,
   DW_sf_simulink_T *sf_simulink_DW);
 static void sf_simulink_time_reprocessing(DW_sf_simulink_T *sf_simulink_DW);
-static uint8_T sf_simulink_nonzero_front(const OBJECT x[360]);
+
 static void sf_simul_check_signal_violation(const SIGNAL
   *BusConversion_InsertedFor_cruse, B_sf_simulink_T *sf_simulink_B,
   DW_sf_simulink_T *sf_simulink_DW);
@@ -61,7 +61,7 @@ static int32_T sf_simulink_search(const int32_T x[10], const int32_T y[10],
 static void sf_simulink_merge(int32_T idx_data[], int32_T x_data[], int32_T
   offset, int32_T np, int32_T nq, int32_T iwork_data[], int32_T xwork_data[]);
 static void sf_simulink_sort(int32_T x_data[], int32_T x_size[2]);
-static int32_T sf_simulink_front_ele(const OBJECT x[360]);
+
 
 /* Function for Chart: '<S1>/object fetch' */
 static void sf_simulink_merge_m(int32_T idx[10], int32_T x[10], int32_T np,
@@ -357,7 +357,7 @@ static void sf_simulink_time_reprocessing(DW_sf_simulink_T *sf_simulink_DW)
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
-static uint8_T sf_simulink_nonzero_front(const OBJECT x[360])
+uint8_T sf_simulink_nonzero_front(const OBJECT x[360])
 {
   int32_T n;
   int32_T b_n;
@@ -775,7 +775,7 @@ static void sf_simulink_sort(int32_T x_data[], int32_T x_size[2])
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
-static int32_T sf_simulink_front_ele(const OBJECT x[360])
+int32_T sf_simulink_front_ele(const OBJECT x[360])
 {
   int32_T y;
   int32_T id[360];
