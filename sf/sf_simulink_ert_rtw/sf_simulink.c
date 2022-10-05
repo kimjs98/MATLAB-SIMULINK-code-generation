@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.632
+ * Model version                  : 1.633
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Oct  5 22:41:46 2022
+ * C/C++ source code generated on : Wed Oct  5 22:48:55 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -47,8 +47,9 @@ static void sf_simulink_qsort(const int32_T x[10], int32_T y[10]);
 static void sf_simulink_signal_processing(const CORE
   *BusConversion_InsertedFor_cru_l, B_sf_simulink_T *sf_simulink_B,
   DW_sf_simulink_T *sf_simulink_DW);
-static void sf_simulink_time_reprocessing(DW_sf_simulink_T *sf_simulink_DW);
-
+static void sf_simulink_time_reprocessing(const CORE
+  *BusConversion_InsertedFor_cru_l, DW_sf_simulink_T *sf_simulink_DW);
+static uint8_T sf_simulink_nonzero_front(const OBJECT x[360]);
 static void sf_simul_check_signal_violation(const SIGNAL
   *BusConversion_InsertedFor_cruse, B_sf_simulink_T *sf_simulink_B,
   DW_sf_simulink_T *sf_simulink_DW);
@@ -61,6 +62,7 @@ static int32_T sf_simulink_search(const int32_T x[10], const int32_T y[10],
 static void sf_simulink_merge(int32_T idx_data[], int32_T x_data[], int32_T
   offset, int32_T np, int32_T nq, int32_T iwork_data[], int32_T xwork_data[]);
 static void sf_simulink_sort(int32_T x_data[], int32_T x_size[2]);
+static int32_T sf_simulink_front_ele(const OBJECT x[360]);
 
 /* Function for Chart: '<S1>/object fetch' */
 static void sf_simulink_merge_m(int32_T idx[10], int32_T x[10], int32_T np,
@@ -341,8 +343,11 @@ static void sf_simulink_signal_processing(const CORE
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
-static void sf_simulink_time_reprocessing(DW_sf_simulink_T *sf_simulink_DW)
+static void sf_simulink_time_reprocessing(const CORE
+  *BusConversion_InsertedFor_cru_l, DW_sf_simulink_T *sf_simulink_DW)
 {
+  sf_simulink_DW->time = BusConversion_InsertedFor_cru_l->time;
+
   /*  time is mircoseconds.
      range is 0 ~ 999999 */
   if (sf_simulink_DW->time < sf_simulink_DW->save_time) {
@@ -356,7 +361,7 @@ static void sf_simulink_time_reprocessing(DW_sf_simulink_T *sf_simulink_DW)
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
-uint8_T sf_simulink_nonzero_front(const OBJECT x[360])
+static uint8_T sf_simulink_nonzero_front(const OBJECT x[360])
 {
   int32_T n;
   int32_T b_n;
@@ -774,7 +779,7 @@ static void sf_simulink_sort(int32_T x_data[], int32_T x_size[2])
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
-int32_T sf_simulink_front_ele(const OBJECT x[360])
+static int32_T sf_simulink_front_ele(const OBJECT x[360])
 {
   int32_T y;
   int32_T id[360];
@@ -1147,7 +1152,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
      case sf_simulink_IN_change_lane:
       sf_simulink_signal_processing(&sf_simulink_U->Input2, sf_simulink_B,
         sf_simulink_DW);
-      sf_simulink_time_reprocessing(sf_simulink_DW);
+      sf_simulink_time_reprocessing(&sf_simulink_U->Input2, sf_simulink_DW);
       if (sf_simulink_DW->dt <= 2.0) {
         if (sf_simulink_DW->change_lane_dir == 2) {
           sf_simulink_B->steering_angle = 70U;
@@ -1173,7 +1178,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
             (sf_simulink_B->object)];
           sf_simul_check_signal_violation(&BusConversion_InsertedFor_cruse,
             sf_simulink_B, sf_simulink_DW);
-          sf_simulink_time_reprocessing(sf_simulink_DW);
+          sf_simulink_time_reprocessing(&sf_simulink_U->Input2, sf_simulink_DW);
           relative_velovity = ((real_T)sf_simulink_DW->each_obj.dist - (real_T)
                                save_dist) / sf_simulink_DW->dt;
 
@@ -1236,7 +1241,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
           (sf_simulink_B->object)];
         sf_simul_check_signal_violation(&BusConversion_InsertedFor_cruse,
           sf_simulink_B, sf_simulink_DW);
-        sf_simulink_time_reprocessing(sf_simulink_DW);
+        sf_simulink_time_reprocessing(&sf_simulink_U->Input2, sf_simulink_DW);
         relative_velovity = ((real_T)sf_simulink_DW->each_obj.dist - (real_T)
                              save_dist) / sf_simulink_DW->dt;
 
