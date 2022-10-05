@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.598
+ * Model version                  : 1.599
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Oct  5 19:20:36 2022
+ * C/C++ source code generated on : Wed Oct  5 19:44:28 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -994,7 +994,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
             l = MAX_int8_T;
           }
         } else {
-          if ((local_angle_cam[c] < (real_T)i - sf_simulink_DIFF_ANGLE) &&
+          if ((local_angle_cam[c] > (real_T)i + sf_simulink_DIFF_ANGLE) &&
               (local_angle_cam[c] >= 0.0)) {
             relative_velovity = c;
             sf_simulink_up_count(&relative_velovity, 10.0);
@@ -1009,7 +1009,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
             }
           }
 
-          if ((local_angle_lidar[l] < (real_T)i - sf_simulink_DIFF_ANGLE) &&
+          if ((local_angle_lidar[l] > (real_T)i + sf_simulink_DIFF_ANGLE) &&
               (local_angle_lidar[l] >= 0.0)) {
             relative_velovity = l;
             sf_simulink_up_count(&relative_velovity, 10.0);
