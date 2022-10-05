@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.601
+ * Model version                  : 1.602
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Oct  5 20:27:05 2022
+ * C/C++ source code generated on : Wed Oct  5 20:39:29 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -21,6 +21,7 @@
 
 #ifndef RTW_HEADER_sf_simulink_h_
 #define RTW_HEADER_sf_simulink_h_
+#include <math.h>
 #include <string.h>
 #include <stddef.h>
 #ifndef sf_simulink_COMMON_INCLUDES_
@@ -30,8 +31,6 @@
 #endif                                 /* sf_simulink_COMMON_INCLUDES_ */
 
 #include "sf_simulink_types.h"
-#include "rt_nonfinite.h"
-#include "rtGetInf.h"
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetBlockIO
