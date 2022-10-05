@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.622
+ * Model version                  : 1.623
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Oct  5 22:04:57 2022
+ * C/C++ source code generated on : Wed Oct  5 22:08:33 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -779,13 +779,12 @@ static int32_T sf_simulink_front_ele(const OBJECT x[360])
 {
   int32_T y;
   int32_T id[360];
-  int32_T mx;
   int32_T ii_data[25];
   int32_T b_ii_data[25];
   boolean_T b_y;
   boolean_T b_x[2];
-  int32_T k;
   int32_T idx;
+  int32_T c_ii;
   int32_T ii_size[2];
   int32_T b_ii_size[2];
   uint32_T tmp;
@@ -801,19 +800,19 @@ static int32_T sf_simulink_front_ele(const OBJECT x[360])
 
   idx = 0;
   ii_size[0] = 1;
-  mx = 0;
+  c_ii = 0;
   exitg1 = false;
-  while ((!exitg1) && (mx < 25)) {
-    if (id[mx] != 0) {
+  while ((!exitg1) && (c_ii < 25)) {
+    if (id[c_ii] != 0) {
       idx++;
-      ii_data[idx - 1] = mx + 1;
+      ii_data[idx - 1] = c_ii + 1;
       if (idx >= 25) {
         exitg1 = true;
       } else {
-        mx++;
+        c_ii++;
       }
     } else {
-      mx++;
+      c_ii++;
     }
   }
 
@@ -825,19 +824,19 @@ static int32_T sf_simulink_front_ele(const OBJECT x[360])
 
   idx = 0;
   b_ii_size[0] = 1;
-  mx = 0;
+  c_ii = 0;
   exitg1 = false;
-  while ((!exitg1) && (mx < 25)) {
-    if (id[mx + 335] != 0) {
+  while ((!exitg1) && (c_ii < 25)) {
+    if (id[c_ii + 335] != 0) {
       idx++;
-      b_ii_data[idx - 1] = mx + 1;
+      b_ii_data[idx - 1] = c_ii + 1;
       if (idx >= 25) {
         exitg1 = true;
       } else {
-        mx++;
+        c_ii++;
       }
     } else {
-      mx++;
+      c_ii++;
     }
   }
 
@@ -847,28 +846,28 @@ static int32_T sf_simulink_front_ele(const OBJECT x[360])
     b_ii_size[1] = idx;
   }
 
+  y = 0;
   idx = 0;
-  mx = 0;
   b_x[0] = true;
   b_x[1] = (ii_size[1] > 0);
   b_y = true;
-  k = 0;
+  c_ii = 0;
   exitg1 = false;
-  while ((!exitg1) && (k < 2)) {
-    if (!b_x[k]) {
+  while ((!exitg1) && (c_ii < 2)) {
+    if (!b_x[c_ii]) {
       b_y = false;
       exitg1 = true;
     } else {
-      k++;
+      c_ii++;
     }
   }
 
   if (b_y) {
     sf_simulink_sort(ii_data, ii_size);
-    idx = ii_data[0];
-    for (k = 1; k < ii_size[1]; k++) {
-      if (idx > ii_data[k]) {
-        idx = ii_data[k];
+    y = ii_data[0];
+    for (c_ii = 1; c_ii < ii_size[1]; c_ii++) {
+      if (y > ii_data[c_ii]) {
+        y = ii_data[c_ii];
       }
     }
   }
@@ -876,43 +875,29 @@ static int32_T sf_simulink_front_ele(const OBJECT x[360])
   b_x[0] = true;
   b_x[1] = (b_ii_size[1] > 0);
   b_y = true;
-  k = 0;
+  c_ii = 0;
   exitg1 = false;
-  while ((!exitg1) && (k < 2)) {
-    if (!b_x[k]) {
+  while ((!exitg1) && (c_ii < 2)) {
+    if (!b_x[c_ii]) {
       b_y = false;
       exitg1 = true;
     } else {
-      k++;
+      c_ii++;
     }
   }
 
   if (b_y) {
     sf_simulink_sort(b_ii_data, b_ii_size);
-    mx = b_ii_data[0];
-    for (k = 1; k < b_ii_size[1]; k++) {
-      if (mx < b_ii_data[k]) {
-        mx = b_ii_data[k];
+    idx = b_ii_data[0];
+    for (c_ii = 1; c_ii < b_ii_size[1]; c_ii++) {
+      if (idx < b_ii_data[c_ii]) {
+        idx = b_ii_data[c_ii];
       }
     }
   }
 
-  if ((idx == 0) || (mx == 0)) {
-    if (idx != 0) {
-      if (idx < -2147483647) {
-        y = MIN_int32_T;
-      } else {
-        y = idx - 1;
-      }
-    } else if (mx < -2147483647) {
-      y = MIN_int32_T;
-    } else {
-      y = mx - 1;
-    }
-  } else if (idx < -2147483647) {
-    y = MIN_int32_T;
-  } else {
-    y = idx - 1;
+  if (((y == 0) || (idx == 0)) && (y == 0)) {
+    y = idx;
   }
 
   return y;
