@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.594
+ * Model version                  : 1.598
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Oct  5 16:59:13 2022
+ * C/C++ source code generated on : Wed Oct  5 19:20:36 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -1146,7 +1146,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
         } else {
           /*  undiscover the car in front  */
           /*  signal light color isn't yellow or red  */
-          if (sf_simulink_U->Input.sig_flag == 0) {
+          if (sf_simulink_U->Input.sig_flag != 1) {
             sf_simulink_accelerator(sf_simulink_B);
             sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_normal_running;
           } else {
@@ -1219,7 +1219,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
       } else {
         /*  undiscover the car in front  */
         /*  signal light color isn't yellow or red  */
-        if (sf_simulink_U->Input.sig_flag == 0) {
+        if (sf_simulink_U->Input.sig_flag != 1) {
           sf_simulink_accelerator(sf_simulink_B);
           sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_normal_running;
         } else {
