@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.697
+ * Model version                  : 1.698
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Fri Oct  7 00:57:56 2022
+ * C/C++ source code generated on : Fri Oct  7 04:37:16 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -28,7 +28,7 @@
 #define sf_simulink_IN_init            ((uint8_T)2U)
 #define sf_simulink_IN_normal_running  ((uint8_T)3U)
 #define sf_simulink_TIME_UNIT          (1000000)
-#define sf_simulink_limit              (400)
+#define sf_simulink_limit              (300)
 
 /* Named constants for Chart: '<S2>/light on-off chart' */
 #define sf_simulink_IN_init_l          ((uint8_T)1U)
@@ -1268,7 +1268,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
           } else {
             /*  the front car is close
                if it insisted accelerate */
-            if (sf_simulink_DW->each_obj.dist < 400U) {
+            if (sf_simulink_DW->each_obj.dist < 300U) {
               guard4 = true;
             } else {
               guard2 = true;
@@ -1276,7 +1276,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
           }
         } else {
           /*  undiscover the car in front  */
-          if (sf_simulink_lidar_ele(sf_simulink_U->Input1.dist, 200) == 1) {
+          if (sf_simulink_lidar_ele(sf_simulink_U->Input1.dist, 150) == 1) {
             guard4 = true;
           } else {
             /*  signal light color isn't yellow or red  */
@@ -1360,7 +1360,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
         } else {
           /*  the front car is close
              if it insisted accelerate */
-          if (sf_simulink_DW->each_obj.dist < 400U) {
+          if (sf_simulink_DW->each_obj.dist < 300U) {
             guard3 = true;
           } else {
             guard1 = true;
@@ -1368,7 +1368,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
         }
       } else {
         /*  undiscover the car in front  */
-        if (sf_simulink_lidar_ele(sf_simulink_U->Input1.dist, 200) == 1) {
+        if (sf_simulink_lidar_ele(sf_simulink_U->Input1.dist, 150) == 1) {
           guard3 = true;
         } else {
           /*  signal light color isn't yellow or red  */
