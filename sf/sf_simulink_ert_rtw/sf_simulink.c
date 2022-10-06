@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.670
+ * Model version                  : 1.671
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Thu Oct  6 13:56:06 2022
+ * C/C++ source code generated on : Thu Oct  6 13:58:04 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -419,7 +419,7 @@ static int32_T sf_simulink_lidar_ele(const uint16_T x[10])
   int32_T n;
   y = 0;
   for (n = 0; n < 10; n++) {
-    if (x[n] <= 20) {
+    if ((x[n] <= 20) && (15 <= x[n])) {
       y = 1;
     }
   }
