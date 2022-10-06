@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.691
+ * Model version                  : 1.693
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Fri Oct  7 00:21:30 2022
+ * C/C++ source code generated on : Fri Oct  7 00:28:05 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -84,8 +84,8 @@ typedef struct {
 typedef struct {
   OBJECT each_object;                  /* '<S1>/object fetch' */
   OBJECT each_obj;                     /* '<S2>/cruser and submission chart' */
-  real_T time;                         /* '<S2>/cruser and submission chart' */
-  real_T dt;                           /* '<S2>/cruser and submission chart' */
+  real32_T dt;                         /* '<S2>/cruser and submission chart' */
+  int32_T time;                        /* '<S2>/cruser and submission chart' */
   int32_T save_time;                   /* '<S2>/cruser and submission chart' */
   int32_T local_speed;                 /* '<S2>/cruser and submission chart' */
   uint8_T is_active_c1_sf_simulink;    /* '<S1>/object fetch' */
