@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.698
+ * Model version                  : 1.699
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Fri Oct  7 04:37:16 2022
+ * C/C++ source code generated on : Fri Oct  7 06:16:52 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -28,7 +28,6 @@
 #define sf_simulink_IN_init            ((uint8_T)2U)
 #define sf_simulink_IN_normal_running  ((uint8_T)3U)
 #define sf_simulink_TIME_UNIT          (1000000)
-#define sf_simulink_limit              (300)
 
 /* Named constants for Chart: '<S2>/light on-off chart' */
 #define sf_simulink_IN_init_l          ((uint8_T)1U)
@@ -36,7 +35,7 @@
 
 /* Named constants for Chart: '<S1>/object fetch' */
 #define sf_simulink_DIFF_ANGLE         (3)
-#define sf_simulink_limit_a            (9)
+#define sf_simulink_limit              (9)
 
 /* Forward declaration for local functions */
 static void sf_simulink_merge_m(int32_T idx[10], int32_T x[10], int32_T np,
@@ -475,8 +474,8 @@ static void sf_simulink_accelerator(DW_sf_simulink_T *sf_simulink_DW)
     sf_simulink_DW->local_speed += 10;
   }
 
-  if (sf_simulink_DW->local_speed > sf_simulink_limit) {
-    sf_simulink_DW->local_speed = sf_simulink_limit;
+  if (sf_simulink_DW->local_speed > 180) {
+    sf_simulink_DW->local_speed = 180;
   }
 }
 
@@ -1090,7 +1089,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
         sf_simulink_DW->each_object.dist = (uint32_T)qY_1;
         sf_simulink_B->object[i] = sf_simulink_DW->each_object;
         qY_1 = c;
-        sf_simulink_up_count(&qY_1, sf_simulink_limit_a);
+        sf_simulink_up_count(&qY_1, sf_simulink_limit);
         if (qY_1 > 127) {
           qY_1 = 127;
         } else {
@@ -1101,7 +1100,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
 
         c = (int8_T)qY_1;
         qY_1 = l;
-        sf_simulink_up_count(&qY_1, sf_simulink_limit_a);
+        sf_simulink_up_count(&qY_1, sf_simulink_limit);
         if (qY_1 > 127) {
           qY_1 = 127;
         } else {
@@ -1115,9 +1114,9 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
         do {
           exitg1 = 0;
           qY_1 = i - 3;
-          if ((local_angle_cam[c] < qY_1) && (c < sf_simulink_limit_a)) {
+          if ((local_angle_cam[c] < qY_1) && (c < sf_simulink_limit)) {
             qY_1 = c;
-            sf_simulink_up_count(&qY_1, sf_simulink_limit_a);
+            sf_simulink_up_count(&qY_1, sf_simulink_limit);
             if (qY_1 > 127) {
               qY_1 = 127;
             } else {
@@ -1132,9 +1131,9 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
           }
         } while (exitg1 == 0);
 
-        while ((local_angle_lidar[l] < qY_1) && (l < sf_simulink_limit_a)) {
+        while ((local_angle_lidar[l] < qY_1) && (l < sf_simulink_limit)) {
           qY_0 = l;
-          sf_simulink_up_count(&qY_0, sf_simulink_limit_a);
+          sf_simulink_up_count(&qY_0, sf_simulink_limit);
           if (qY_0 > 127) {
             qY_0 = 127;
           } else {
