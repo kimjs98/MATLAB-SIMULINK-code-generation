@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.647
+ * Model version                  : 1.655
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Oct  5 23:10:26 2022
+ * C/C++ source code generated on : Thu Oct  6 09:35:55 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -335,7 +335,6 @@ static void sf_simulink_signal_processing(const CORE
   *BusConversion_InsertedFor_cru_l, B_sf_simulink_T *sf_simulink_B,
   DW_sf_simulink_T *sf_simulink_DW)
 {
-  /*  yellow or red signal  */
   sf_simulink_B->steering_angle = sf_simulink_B->cruiser.line_angle;
   sf_simulink_DW->save_time = sf_simulink_DW->time;
   sf_simulink_DW->time = BusConversion_InsertedFor_cru_l->time;
@@ -434,8 +433,8 @@ static void sf_simulink_accelerator(B_sf_simulink_T *sf_simulink_B)
     sf_simulink_B->speed = MAX_uint8_T;
   }
 
-  if (sf_simulink_B->speed > 50) {
-    sf_simulink_B->speed = 50U;
+  if (sf_simulink_B->speed > 40) {
+    sf_simulink_B->speed = 40U;
   }
 }
 
@@ -1154,15 +1153,9 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
       sf_simulink_time_reprocessing(sf_simulink_DW);
       if (sf_simulink_DW->dt <= 2.0) {
         if (sf_simulink_DW->change_lane_dir == 2) {
-          sf_simulink_B->steering_angle = 70U;
+          sf_simulink_B->steering_angle = 80U;
         } else {
-          sf_simulink_B->steering_angle = 110U;
-        }
-
-        if (sf_simulink_DW->each_obj.dist > 50U) {
-          sf_simulink_B->speed = 25U;
-        } else {
-          sf_simulink_brake(sf_simulink_B);
+          sf_simulink_B->steering_angle = 100U;
         }
 
         sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_change_lane;
@@ -1194,7 +1187,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
             sf_simulink_DW->change_lane_dir =
               sf_simulink_B->cruiser.change_lane_dir;
             sf_simulink_B->change_lane_flag = 1U;
-            sf_simulink_B->speed = 25U;
+            sf_simulink_B->speed = 20U;
             sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_change_lane;
           } else {
             /*  the front car is close
@@ -1213,8 +1206,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
             sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_normal_running;
           } else {
             /*  stop line is close  */
-            if (sf_simulink_U->Input.stop_line_dist < sf_simulink_STOP_DISTANCE)
-            {
+            if ((sf_simulink_U->Input.stop_line_dist < sf_simulink_STOP_DISTANCE)
+                && (sf_simulink_U->Input.sig_flag == 1)) {
               guard2 = true;
             } else {
               sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_normal_running;
@@ -1258,7 +1251,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
           sf_simulink_DW->change_lane_dir =
             sf_simulink_B->cruiser.change_lane_dir;
           sf_simulink_B->change_lane_flag = 1U;
-          sf_simulink_B->speed = 25U;
+          sf_simulink_B->speed = 20U;
           sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_change_lane;
         } else {
           /*  the front car is close
@@ -1277,7 +1270,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
           sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_normal_running;
         } else {
           /*  stop line is close  */
-          if (sf_simulink_U->Input.stop_line_dist < sf_simulink_STOP_DISTANCE) {
+          if ((sf_simulink_U->Input.stop_line_dist < sf_simulink_STOP_DISTANCE) &&
+              (sf_simulink_U->Input.sig_flag == 1)) {
             guard1 = true;
           } else {
             sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_normal_running;
@@ -1329,7 +1323,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
       } else {
         guard2 = true;
       }
-    } else {
+    } else if (sf_simulink_U->Input.sig_flag == 3) {
       /*  turn left  */
       if (sf_simulink_B->cruiser.line_angle > 100) {
         guard2 = true;
@@ -1341,6 +1335,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
           sf_simulink_B->blinker_onoff = 0U;
         }
       }
+    } else {
+      sf_simulink_B->blinker_onoff = 0U;
     }
 
     if (guard2) {
