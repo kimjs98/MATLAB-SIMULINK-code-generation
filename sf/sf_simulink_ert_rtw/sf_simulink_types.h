@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.677
+ * Model version                  : 1.679
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Thu Oct  6 18:49:36 2022
+ * C/C++ source code generated on : Thu Oct  6 19:32:13 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -107,7 +107,7 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_OUTPUT_
 
 typedef struct {
-  real_T front_car_speed;
+  int32_T front_car_speed;
   uint8_T overfast_flag;
   uint8_T signal_violation_flag;
   uint8_T crack_flag;

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.677
+ * Model version                  : 1.679
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Thu Oct  6 18:49:36 2022
+ * C/C++ source code generated on : Thu Oct  6 19:32:13 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -50,11 +50,11 @@ static void sf_simulink_signal_processing(const CORE
 static void sf_simulink_time_reprocessing(DW_sf_simulink_T *sf_simulink_DW);
 static uint8_T sf_simulink_nonzero_front(const OBJECT x[360]);
 static int32_T sf_simulink_lidar_ele(const uint16_T x[10]);
+static void sf_simulink_brake(B_sf_simulink_T *sf_simulink_B);
+static void sf_simulink_accelerator(B_sf_simulink_T *sf_simulink_B);
 static void sf_simul_check_signal_violation(const SIGNAL
   *BusConversion_InsertedFor_cru_a, B_sf_simulink_T *sf_simulink_B,
   DW_sf_simulink_T *sf_simulink_DW);
-static void sf_simulink_brake(B_sf_simulink_T *sf_simulink_B);
-static void sf_simulink_accelerator(B_sf_simulink_T *sf_simulink_B);
 static void sf_simulink_check_speeding(B_sf_simulink_T *sf_simulink_B);
 static void sf_simulink_up_count(int32_T *cnt, int32_T limit);
 static int32_T sf_simulink_search(const int32_T x[10], const int32_T y[10],
@@ -337,7 +337,16 @@ static void sf_simulink_signal_processing(const CORE
   DW_sf_simulink_T *sf_simulink_DW)
 {
   sf_simulink_B->steering_angle = sf_simulink_B->cruiser.line_angle;
-  sf_simulink_DW->save_time = sf_simulink_DW->time;
+  if (sf_simulink_DW->time < 2.147483648E+9) {
+    if (sf_simulink_DW->time >= -2.147483648E+9) {
+      sf_simulink_DW->save_time = (int32_T)sf_simulink_DW->time;
+    } else {
+      sf_simulink_DW->save_time = MIN_int32_T;
+    }
+  } else {
+    sf_simulink_DW->save_time = MAX_int32_T;
+  }
+
   sf_simulink_DW->time = BusConversion_InsertedFor_cru_l->time;
 }
 
@@ -349,10 +358,10 @@ static void sf_simulink_time_reprocessing(DW_sf_simulink_T *sf_simulink_DW)
   /*  time is mircoseconds.
      range is 0 ~ 999999 */
   if (sf_simulink_DW->time < sf_simulink_DW->save_time) {
-    tmp = (sf_simulink_TIME_UNIT - sf_simulink_DW->save_time) +
+    tmp = (sf_simulink_TIME_UNIT - (real_T)sf_simulink_DW->save_time) +
       sf_simulink_DW->time;
   } else {
-    tmp = sf_simulink_DW->time - sf_simulink_DW->save_time;
+    tmp = sf_simulink_DW->time - (real_T)sf_simulink_DW->save_time;
   }
 
   sf_simulink_DW->dt += tmp / sf_simulink_TIME_UNIT;
@@ -428,17 +437,6 @@ static int32_T sf_simulink_lidar_ele(const uint16_T x[10])
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
-static void sf_simul_check_signal_violation(const SIGNAL
-  *BusConversion_InsertedFor_cru_a, B_sf_simulink_T *sf_simulink_B,
-  DW_sf_simulink_T *sf_simulink_DW)
-{
-  sf_simulink_B->signal_violation_flag = (uint8_T)
-    ((BusConversion_InsertedFor_cru_a->sig_flag == 1) &&
-     (sf_simulink_DW->each_obj.dist >
-      BusConversion_InsertedFor_cru_a->stop_line_dist * 1000.0));
-}
-
-/* Function for Chart: '<S2>/cruser and submission chart' */
 static void sf_simulink_brake(B_sf_simulink_T *sf_simulink_B)
 {
   int32_T tmp;
@@ -463,11 +461,21 @@ static void sf_simulink_accelerator(B_sf_simulink_T *sf_simulink_B)
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
+static void sf_simul_check_signal_violation(const SIGNAL
+  *BusConversion_InsertedFor_cru_a, B_sf_simulink_T *sf_simulink_B,
+  DW_sf_simulink_T *sf_simulink_DW)
+{
+  sf_simulink_B->signal_violation_flag = (uint8_T)
+    ((BusConversion_InsertedFor_cru_a->sig_flag == 1) &&
+     (sf_simulink_DW->each_obj.dist >
+      BusConversion_InsertedFor_cru_a->stop_line_dist * 1000.0));
+}
+
+/* Function for Chart: '<S2>/cruser and submission chart' */
 static void sf_simulink_check_speeding(B_sf_simulink_T *sf_simulink_B)
 {
   /*  overfast checking  */
-  sf_simulink_B->overfast_flag = (uint8_T)(sf_simulink_B->front_car_speed >
-    600.0);
+  sf_simulink_B->overfast_flag = (uint8_T)(sf_simulink_B->front_car_speed > 600);
 }
 
 /* Function for Chart: '<S1>/object fetch' */
@@ -938,13 +946,13 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
   int8_T c;
   int8_T l;
   int16_T i;
-  uint32_T save_dist;
-  real_T relative_velovity;
   SIGNAL BusConversion_InsertedFor_cru_a;
   int32_T tmp[10];
   int32_T tmp_0[10];
-  int32_T qY;
+  real_T tmp_1;
+  uint32_T qY;
   int32_T qY_0;
+  int32_T qY_1;
   int32_T local_angle_cam_0;
   boolean_T guard1 = false;
   boolean_T guard2 = false;
@@ -965,13 +973,13 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
   } else {
     /* case IN_running: */
     /*  local data qsort  */
-    for (qY_0 = 0; qY_0 < 10; qY_0++) {
-      tmp[qY_0] = sf_simulink_U->Input.object_angle[qY_0];
+    for (qY_1 = 0; qY_1 < 10; qY_1++) {
+      tmp[qY_1] = sf_simulink_U->Input.object_angle[qY_1];
     }
 
     sf_simulink_qsort(tmp, local_angle_cam);
-    for (qY_0 = 0; qY_0 < 10; qY_0++) {
-      tmp[qY_0] = sf_simulink_U->Input1.angle[qY_0];
+    for (qY_1 = 0; qY_1 < 10; qY_1++) {
+      tmp[qY_1] = sf_simulink_U->Input1.angle[qY_1];
     }
 
     sf_simulink_qsort(tmp, local_angle_lidar);
@@ -985,22 +993,30 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
          !!! used data is set minus one !!!
          data is existed, what...  */
       if ((local_angle_cam[c] >= 0) && (i < local_angle_cam[c] - MAX_int32_T)) {
-        qY_0 = MAX_int32_T;
+        qY_1 = MAX_int32_T;
       } else if ((local_angle_cam[c] < 0) && (i > local_angle_cam[c] -
                   MIN_int32_T)) {
-        qY_0 = MIN_int32_T;
+        qY_1 = MIN_int32_T;
       } else {
-        qY_0 = local_angle_cam[c] - i;
+        qY_1 = local_angle_cam[c] - i;
       }
 
       if ((local_angle_lidar[l] >= 0) && (i < local_angle_lidar[l] - MAX_int32_T))
       {
-        qY = MAX_int32_T;
+        qY_0 = MAX_int32_T;
       } else if ((local_angle_lidar[l] < 0) && (i > local_angle_lidar[l] -
                   MIN_int32_T)) {
-        qY = MIN_int32_T;
+        qY_0 = MIN_int32_T;
       } else {
-        qY = local_angle_lidar[l] - i;
+        qY_0 = local_angle_lidar[l] - i;
+      }
+
+      if (qY_1 < 0) {
+        if (qY_1 <= MIN_int32_T) {
+          qY_1 = MAX_int32_T;
+        } else {
+          qY_1 = -qY_1;
+        }
       }
 
       if (qY_0 < 0) {
@@ -1008,14 +1024,6 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
           qY_0 = MAX_int32_T;
         } else {
           qY_0 = -qY_0;
-        }
-      }
-
-      if (qY < 0) {
-        if (qY <= MIN_int32_T) {
-          qY = MAX_int32_T;
-        } else {
-          qY = -qY;
         }
       }
 
@@ -1029,88 +1037,88 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
         local_angle_cam_0 = local_angle_cam[c] + local_angle_lidar[l];
       }
 
-      if ((local_angle_cam[c] >= 0) && (local_angle_lidar[l] >= 0) && (qY_0 <
-           sf_simulink_DIFF_ANGLE) && (qY < sf_simulink_DIFF_ANGLE) &&
+      if ((local_angle_cam[c] >= 0) && (local_angle_lidar[l] >= 0) && (qY_1 <
+           sf_simulink_DIFF_ANGLE) && (qY_0 < sf_simulink_DIFF_ANGLE) &&
           (local_angle_cam_0 / 2 == i)) {
         sf_simulink_DW->each_object.who = 3U;
-        for (qY_0 = 0; qY_0 < 10; qY_0++) {
-          tmp[qY_0] = sf_simulink_U->Input.object_angle[qY_0];
-          tmp_0[qY_0] = sf_simulink_U->Input.object_id[qY_0];
+        for (qY_1 = 0; qY_1 < 10; qY_1++) {
+          tmp[qY_1] = sf_simulink_U->Input.object_angle[qY_1];
+          tmp_0[qY_1] = sf_simulink_U->Input.object_id[qY_1];
         }
 
-        qY_0 = sf_simulink_search(tmp, tmp_0, local_angle_cam[c]);
-        if (qY_0 < 0) {
-          qY_0 = 0;
+        qY_1 = sf_simulink_search(tmp, tmp_0, local_angle_cam[c]);
+        if (qY_1 < 0) {
+          qY_1 = 0;
         }
 
-        sf_simulink_DW->each_object.id = (uint32_T)qY_0;
-        for (qY_0 = 0; qY_0 < 10; qY_0++) {
-          tmp[qY_0] = sf_simulink_U->Input1.angle[qY_0];
-          tmp_0[qY_0] = sf_simulink_U->Input1.dist[qY_0];
+        sf_simulink_DW->each_object.id = (uint32_T)qY_1;
+        for (qY_1 = 0; qY_1 < 10; qY_1++) {
+          tmp[qY_1] = sf_simulink_U->Input1.angle[qY_1];
+          tmp_0[qY_1] = sf_simulink_U->Input1.dist[qY_1];
         }
 
-        qY_0 = sf_simulink_search(tmp, tmp_0, local_angle_lidar[l]);
-        if (qY_0 < 0) {
-          qY_0 = 0;
+        qY_1 = sf_simulink_search(tmp, tmp_0, local_angle_lidar[l]);
+        if (qY_1 < 0) {
+          qY_1 = 0;
         }
 
-        sf_simulink_DW->each_object.dist = (uint32_T)qY_0;
+        sf_simulink_DW->each_object.dist = (uint32_T)qY_1;
         sf_simulink_B->object[i] = sf_simulink_DW->each_object;
-        qY_0 = c;
-        sf_simulink_up_count(&qY_0, sf_simulink_limit);
-        if (qY_0 > 127) {
-          qY_0 = 127;
+        qY_1 = c;
+        sf_simulink_up_count(&qY_1, sf_simulink_limit);
+        if (qY_1 > 127) {
+          qY_1 = 127;
         } else {
-          if (qY_0 < -128) {
-            qY_0 = -128;
+          if (qY_1 < -128) {
+            qY_1 = -128;
           }
         }
 
-        c = (int8_T)qY_0;
-        qY_0 = l;
-        sf_simulink_up_count(&qY_0, sf_simulink_limit);
-        if (qY_0 > 127) {
-          qY_0 = 127;
+        c = (int8_T)qY_1;
+        qY_1 = l;
+        sf_simulink_up_count(&qY_1, sf_simulink_limit);
+        if (qY_1 > 127) {
+          qY_1 = 127;
         } else {
-          if (qY_0 < -128) {
-            qY_0 = -128;
+          if (qY_1 < -128) {
+            qY_1 = -128;
           }
         }
 
-        l = (int8_T)qY_0;
+        l = (int8_T)qY_1;
       } else {
         do {
           exitg1 = 0;
-          qY_0 = i - 3;
-          if ((local_angle_cam[c] < qY_0) && (c < sf_simulink_limit)) {
-            qY_0 = c;
-            sf_simulink_up_count(&qY_0, sf_simulink_limit);
-            if (qY_0 > 127) {
-              qY_0 = 127;
+          qY_1 = i - 3;
+          if ((local_angle_cam[c] < qY_1) && (c < sf_simulink_limit)) {
+            qY_1 = c;
+            sf_simulink_up_count(&qY_1, sf_simulink_limit);
+            if (qY_1 > 127) {
+              qY_1 = 127;
             } else {
-              if (qY_0 < -128) {
-                qY_0 = -128;
+              if (qY_1 < -128) {
+                qY_1 = -128;
               }
             }
 
-            c = (int8_T)qY_0;
+            c = (int8_T)qY_1;
           } else {
             exitg1 = 1;
           }
         } while (exitg1 == 0);
 
-        while ((local_angle_lidar[l] < qY_0) && (l < sf_simulink_limit)) {
-          qY = l;
-          sf_simulink_up_count(&qY, sf_simulink_limit);
-          if (qY > 127) {
-            qY = 127;
+        while ((local_angle_lidar[l] < qY_1) && (l < sf_simulink_limit)) {
+          qY_0 = l;
+          sf_simulink_up_count(&qY_0, sf_simulink_limit);
+          if (qY_0 > 127) {
+            qY_0 = 127;
           } else {
-            if (qY < -128) {
-              qY = -128;
+            if (qY_0 < -128) {
+              qY_0 = -128;
             }
           }
 
-          l = (int8_T)qY;
+          l = (int8_T)qY_0;
         }
 
         sf_simulink_DW->each_object.who = 0U;
@@ -1147,14 +1155,14 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
     sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_init;
 
     /* local */
-    sf_simulink_DW->save_time = 0.0;
+    sf_simulink_DW->save_time = 0;
     sf_simulink_DW->time = sf_simulink_U->Input2.time;
     sf_simulink_DW->dt = 0.0;
 
     /* output */
     sf_simulink_B->steering_angle = 90U;
     sf_simulink_B->speed = 0U;
-    sf_simulink_B->front_car_speed = 0.0;
+    sf_simulink_B->front_car_speed = 0;
     sf_simulink_B->overfast_flag = 0U;
     sf_simulink_B->signal_violation_flag = 0U;
     sf_simulink_B->change_lane_flag = 0U;
@@ -1182,25 +1190,45 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
         /*  discover the car in front  */
         if ((sf_simulink_B->cruiser.car_check_flag == 1) &&
             (sf_simulink_nonzero_front(sf_simulink_B->object) != 0)) {
-          save_dist = sf_simulink_DW->each_obj.dist;
+          qY = sf_simulink_DW->each_obj.dist;
+          if (sf_simulink_DW->each_obj.dist > 2147483647U) {
+            qY = 2147483647U;
+          }
+
           sf_simulink_DW->each_obj = sf_simulink_B->object[sf_simulink_front_ele
             (sf_simulink_B->object)];
           sf_simul_check_signal_violation(&BusConversion_InsertedFor_cru_a,
             sf_simulink_B, sf_simulink_DW);
           sf_simulink_DW->dt = 0.0;
           sf_simulink_time_reprocessing(sf_simulink_DW);
-          relative_velovity = ((real_T)sf_simulink_DW->each_obj.dist - (real_T)
-                               save_dist) / sf_simulink_DW->dt;
+          qY = sf_simulink_DW->each_obj.dist - /*MW:OvSatOk*/ qY;
+          if (qY > sf_simulink_DW->each_obj.dist) {
+            qY = 0U;
+          }
+
+          tmp_1 = (real_T)qY / sf_simulink_DW->dt;
+          if (tmp_1 < 2.147483648E+9) {
+            if (tmp_1 >= -2.147483648E+9) {
+              qY_1 = (int32_T)tmp_1;
+            } else {
+              qY_1 = MIN_int32_T;
+            }
+          } else {
+            qY_1 = MAX_int32_T;
+          }
 
           /*  speed unit and relative_velovity unit is millimeters per seconds  */
-          sf_simulink_B->front_car_speed = (real_T)sf_simulink_B->speed +
-            relative_velovity;
+          if (qY_1 > MAX_int32_T - sf_simulink_B->speed) {
+            sf_simulink_B->front_car_speed = MAX_int32_T;
+          } else {
+            sf_simulink_B->front_car_speed = sf_simulink_B->speed + qY_1;
+          }
+
           sf_simulink_check_speeding(sf_simulink_B);
 
           /*  the front car is getting closer
              If the front car is already close, can't change lane  */
-          if ((relative_velovity <= 0.0) && (sf_simulink_DW->each_obj.dist >
-               1000U)) {
+          if ((qY_1 <= 0) && (sf_simulink_DW->each_obj.dist > 1000U)) {
             sf_simulink_DW->change_lane_dir =
               sf_simulink_B->cruiser.change_lane_dir;
             sf_simulink_B->change_lane_flag = 1U;
@@ -1251,25 +1279,45 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
       /*  discover the car in front  */
       if ((sf_simulink_B->cruiser.car_check_flag == 1) &&
           (sf_simulink_nonzero_front(sf_simulink_B->object) != 0)) {
-        save_dist = sf_simulink_DW->each_obj.dist;
+        qY = sf_simulink_DW->each_obj.dist;
+        if (sf_simulink_DW->each_obj.dist > 2147483647U) {
+          qY = 2147483647U;
+        }
+
         sf_simulink_DW->each_obj = sf_simulink_B->object[sf_simulink_front_ele
           (sf_simulink_B->object)];
         sf_simul_check_signal_violation(&BusConversion_InsertedFor_cru_a,
           sf_simulink_B, sf_simulink_DW);
         sf_simulink_DW->dt = 0.0;
         sf_simulink_time_reprocessing(sf_simulink_DW);
-        relative_velovity = ((real_T)sf_simulink_DW->each_obj.dist - (real_T)
-                             save_dist) / sf_simulink_DW->dt;
+        qY = sf_simulink_DW->each_obj.dist - /*MW:OvSatOk*/ qY;
+        if (qY > sf_simulink_DW->each_obj.dist) {
+          qY = 0U;
+        }
+
+        tmp_1 = (real_T)qY / sf_simulink_DW->dt;
+        if (tmp_1 < 2.147483648E+9) {
+          if (tmp_1 >= -2.147483648E+9) {
+            qY_1 = (int32_T)tmp_1;
+          } else {
+            qY_1 = MIN_int32_T;
+          }
+        } else {
+          qY_1 = MAX_int32_T;
+        }
 
         /*  speed unit and relative_velovity unit is millimeters per seconds  */
-        sf_simulink_B->front_car_speed = (real_T)sf_simulink_B->speed +
-          relative_velovity;
+        if (qY_1 > MAX_int32_T - sf_simulink_B->speed) {
+          sf_simulink_B->front_car_speed = MAX_int32_T;
+        } else {
+          sf_simulink_B->front_car_speed = sf_simulink_B->speed + qY_1;
+        }
+
         sf_simulink_check_speeding(sf_simulink_B);
 
         /*  the front car is getting closer
            If the front car is already close, can't change lane  */
-        if ((relative_velovity <= 0.0) && (sf_simulink_DW->each_obj.dist > 1000U))
-        {
+        if ((qY_1 <= 0) && (sf_simulink_DW->each_obj.dist > 1000U)) {
           sf_simulink_DW->change_lane_dir =
             sf_simulink_B->cruiser.change_lane_dir;
           sf_simulink_B->change_lane_flag = 1U;
@@ -1431,7 +1479,7 @@ void sf_simulink_initialize(RT_MODEL_sf_simulink_T *const sf_simulink_M)
     sf_simulink_DW->is_active_c3_sf_simulink = 0U;
     sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_NO_ACTIVE_CHILD;
     sf_simulink_DW->time = 0.0;
-    sf_simulink_DW->save_time = 0.0;
+    sf_simulink_DW->save_time = 0;
     sf_simulink_DW->each_obj.who = 0U;
     sf_simulink_DW->each_obj.id = 0U;
     sf_simulink_DW->each_obj.dist = 0U;
@@ -1441,7 +1489,7 @@ void sf_simulink_initialize(RT_MODEL_sf_simulink_T *const sf_simulink_M)
     sf_simulink_B->steering_angle = 0U;
     sf_simulink_B->speed = 0U;
     sf_simulink_B->overfast_flag = 0U;
-    sf_simulink_B->front_car_speed = 0.0;
+    sf_simulink_B->front_car_speed = 0;
     sf_simulink_B->change_lane_flag = 0U;
 
     /* SystemInitialize for Chart: '<S2>/light on-off chart' */
