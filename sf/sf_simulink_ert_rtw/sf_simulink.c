@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.687
+ * Model version                  : 1.691
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Thu Oct  6 23:45:35 2022
+ * C/C++ source code generated on : Fri Oct  7 00:21:30 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -28,7 +28,6 @@
 #define sf_simulink_IN_change_lane     ((uint8_T)1U)
 #define sf_simulink_IN_init            ((uint8_T)2U)
 #define sf_simulink_IN_normal_running  ((uint8_T)3U)
-#define sf_simulink_STOP_DISTANCE      (0.3)
 #define sf_simulink_TIME_UNIT          (1.0E+6)
 #define sf_simulink_limit              (400)
 
@@ -474,10 +473,25 @@ static void sf_simul_check_signal_violation(const SIGNAL
   *BusConversion_InsertedFor_cru_a, B_sf_simulink_T *sf_simulink_B,
   DW_sf_simulink_T *sf_simulink_DW)
 {
+  int64_T tmp;
+  int32_T tmp_0;
+  tmp = BusConversion_InsertedFor_cru_a->stop_line_dist * 1000LL;
+  if (tmp > 2147483647LL) {
+    tmp = 2147483647LL;
+  } else {
+    if (tmp < -2147483648LL) {
+      tmp = -2147483648LL;
+    }
+  }
+
+  tmp_0 = (int32_T)tmp;
+  if (tmp_0 < 0) {
+    tmp_0 = 0;
+  }
+
   sf_simulink_B->signal_violation_flag = (uint8_T)
     ((BusConversion_InsertedFor_cru_a->sig_flag == 1) &&
-     (sf_simulink_DW->each_obj.dist >
-      BusConversion_InsertedFor_cru_a->stop_line_dist * 1000.0));
+     (sf_simulink_DW->each_obj.dist > (uint32_T)tmp_0));
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
@@ -1259,7 +1273,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
           }
         } else {
           /*  undiscover the car in front  */
-          if (sf_simulink_lidar_ele(sf_simulink_U->Input1.dist, 400.0) == 1) {
+          if (sf_simulink_lidar_ele(sf_simulink_U->Input1.dist, 200.0) == 1) {
             guard4 = true;
           } else {
             /*  signal light color isn't yellow or red  */
@@ -1268,9 +1282,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
               guard2 = true;
             } else {
               /*  stop line is close  */
-              if ((sf_simulink_U->Input.stop_line_dist <
-                   sf_simulink_STOP_DISTANCE) &&
-                  (sf_simulink_U->Input.stop_line_dist > 0.0) &&
+              if ((sf_simulink_U->Input.stop_line_dist < 300) &&
+                  (sf_simulink_U->Input.stop_line_dist > 0) &&
                   (sf_simulink_U->Input.sig_flag == 1)) {
                 guard4 = true;
               } else {
@@ -1353,7 +1366,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
         }
       } else {
         /*  undiscover the car in front  */
-        if (sf_simulink_lidar_ele(sf_simulink_U->Input1.dist, 400.0) == 1) {
+        if (sf_simulink_lidar_ele(sf_simulink_U->Input1.dist, 200.0) == 1) {
           guard3 = true;
         } else {
           /*  signal light color isn't yellow or red  */
@@ -1362,8 +1375,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
             guard1 = true;
           } else {
             /*  stop line is close  */
-            if ((sf_simulink_U->Input.stop_line_dist < sf_simulink_STOP_DISTANCE)
-                && (sf_simulink_U->Input.stop_line_dist > 0.0) &&
+            if ((sf_simulink_U->Input.stop_line_dist < 300) &&
+                (sf_simulink_U->Input.stop_line_dist > 0) &&
                 (sf_simulink_U->Input.sig_flag == 1)) {
               guard3 = true;
             } else {

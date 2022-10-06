@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.687
+ * Model version                  : 1.691
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Thu Oct  6 23:45:35 2022
+ * C/C++ source code generated on : Fri Oct  7 00:21:30 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -34,7 +34,7 @@ typedef struct {
   uint8_T car_check_flag;
   uint8_T crack_flag;
   uint8_T sig_flag;
-  real_T stop_line_dist;
+  int32_T stop_line_dist;
   uint8_T change_lane_dir;
 } CAM;
 
@@ -98,7 +98,7 @@ typedef struct {
 
 typedef struct {
   uint8_T sig_flag;
-  real_T stop_line_dist;
+  int32_T stop_line_dist;
 } SIGNAL;
 
 #endif
