@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.686
+ * Model version                  : 1.687
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Thu Oct  6 22:05:36 2022
+ * C/C++ source code generated on : Thu Oct  6 23:45:35 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -1269,8 +1269,9 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
             } else {
               /*  stop line is close  */
               if ((sf_simulink_U->Input.stop_line_dist <
-                   sf_simulink_STOP_DISTANCE) && (sf_simulink_U->Input.sig_flag ==
-                   1)) {
+                   sf_simulink_STOP_DISTANCE) &&
+                  (sf_simulink_U->Input.stop_line_dist > 0.0) &&
+                  (sf_simulink_U->Input.sig_flag == 1)) {
                 guard4 = true;
               } else {
                 guard2 = true;
@@ -1362,7 +1363,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
           } else {
             /*  stop line is close  */
             if ((sf_simulink_U->Input.stop_line_dist < sf_simulink_STOP_DISTANCE)
-                && (sf_simulink_U->Input.sig_flag == 1)) {
+                && (sf_simulink_U->Input.stop_line_dist > 0.0) &&
+                (sf_simulink_U->Input.sig_flag == 1)) {
               guard3 = true;
             } else {
               guard1 = true;
