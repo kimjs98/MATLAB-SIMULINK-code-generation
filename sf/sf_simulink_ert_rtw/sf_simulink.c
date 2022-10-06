@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.671
+ * Model version                  : 1.672
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Thu Oct  6 13:58:04 2022
+ * C/C++ source code generated on : Thu Oct  6 16:57:05 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -1153,7 +1153,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
     sf_simulink_DW->dt = 0.0;
 
     /* output */
-    sf_simulink_B->steering_angle = sf_simulink_B->cruiser.line_angle;
+    sf_simulink_B->steering_angle = 90U;
     sf_simulink_B->speed = 0U;
     sf_simulink_B->front_car_speed = 0.0;
     sf_simulink_B->overfast_flag = 0U;
