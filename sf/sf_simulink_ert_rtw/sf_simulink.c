@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.685
+ * Model version                  : 1.686
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Thu Oct  6 20:31:18 2022
+ * C/C++ source code generated on : Thu Oct  6 22:05:36 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -30,6 +30,7 @@
 #define sf_simulink_IN_normal_running  ((uint8_T)3U)
 #define sf_simulink_STOP_DISTANCE      (0.3)
 #define sf_simulink_TIME_UNIT          (1.0E+6)
+#define sf_simulink_limit              (400)
 
 /* Named constants for Chart: '<S2>/light on-off chart' */
 #define sf_simulink_IN_init_l          ((uint8_T)1U)
@@ -37,7 +38,7 @@
 
 /* Named constants for Chart: '<S1>/object fetch' */
 #define sf_simulink_DIFF_ANGLE         (3)
-#define sf_simulink_limit              (9)
+#define sf_simulink_limit_a            (9)
 
 /* Forward declaration for local functions */
 static void sf_simulink_merge_m(int32_T idx[10], int32_T x[10], int32_T np,
@@ -49,7 +50,7 @@ static void sf_simulink_signal_processing(const CORE
   DW_sf_simulink_T *sf_simulink_DW);
 static void sf_simulink_time_reprocessing(DW_sf_simulink_T *sf_simulink_DW);
 static uint8_T sf_simulink_nonzero_front(const OBJECT x[360]);
-static int32_T sf_simulink_lidar_ele(const uint16_T x[10]);
+static int32_T sf_simulink_lidar_ele(const uint16_T x[10], real_T l);
 static void sf_simulink_brake(DW_sf_simulink_T *sf_simulink_DW);
 static void sf_simulink_accelerator(DW_sf_simulink_T *sf_simulink_DW);
 static void sf_simul_check_signal_violation(const SIGNAL
@@ -422,13 +423,13 @@ static uint8_T sf_simulink_nonzero_front(const OBJECT x[360])
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
-static int32_T sf_simulink_lidar_ele(const uint16_T x[10])
+static int32_T sf_simulink_lidar_ele(const uint16_T x[10], real_T l)
 {
   int32_T y;
   int32_T n;
   y = 0;
   for (n = 0; n < 10; n++) {
-    if ((x[n] <= 300) && (x[n] > 0)) {
+    if ((x[n] <= l) && (x[n] > 0)) {
       y = 1;
     }
   }
@@ -463,8 +464,8 @@ static void sf_simulink_accelerator(DW_sf_simulink_T *sf_simulink_DW)
     sf_simulink_DW->local_speed = MAX_int32_T;
   }
 
-  if (sf_simulink_DW->local_speed > 400) {
-    sf_simulink_DW->local_speed = 400;
+  if (sf_simulink_DW->local_speed > sf_simulink_limit) {
+    sf_simulink_DW->local_speed = sf_simulink_limit;
   }
 }
 
@@ -1073,7 +1074,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
         sf_simulink_DW->each_object.dist = (uint32_T)qY_1;
         sf_simulink_B->object[i] = sf_simulink_DW->each_object;
         qY_1 = c;
-        sf_simulink_up_count(&qY_1, sf_simulink_limit);
+        sf_simulink_up_count(&qY_1, sf_simulink_limit_a);
         if (qY_1 > 127) {
           qY_1 = 127;
         } else {
@@ -1084,7 +1085,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
 
         c = (int8_T)qY_1;
         qY_1 = l;
-        sf_simulink_up_count(&qY_1, sf_simulink_limit);
+        sf_simulink_up_count(&qY_1, sf_simulink_limit_a);
         if (qY_1 > 127) {
           qY_1 = 127;
         } else {
@@ -1098,9 +1099,9 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
         do {
           exitg1 = 0;
           qY_1 = i - 3;
-          if ((local_angle_cam[c] < qY_1) && (c < sf_simulink_limit)) {
+          if ((local_angle_cam[c] < qY_1) && (c < sf_simulink_limit_a)) {
             qY_1 = c;
-            sf_simulink_up_count(&qY_1, sf_simulink_limit);
+            sf_simulink_up_count(&qY_1, sf_simulink_limit_a);
             if (qY_1 > 127) {
               qY_1 = 127;
             } else {
@@ -1115,9 +1116,9 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
           }
         } while (exitg1 == 0);
 
-        while ((local_angle_lidar[l] < qY_1) && (l < sf_simulink_limit)) {
+        while ((local_angle_lidar[l] < qY_1) && (l < sf_simulink_limit_a)) {
           qY_0 = l;
-          sf_simulink_up_count(&qY_0, sf_simulink_limit);
+          sf_simulink_up_count(&qY_0, sf_simulink_limit_a);
           if (qY_0 > 127) {
             qY_0 = 127;
           } else {
@@ -1250,7 +1251,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
           } else {
             /*  the front car is close
                if it insisted accelerate */
-            if (sf_simulink_DW->each_obj.dist < 300U) {
+            if (sf_simulink_DW->each_obj.dist < 400U) {
               guard4 = true;
             } else {
               guard2 = true;
@@ -1258,7 +1259,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
           }
         } else {
           /*  undiscover the car in front  */
-          if (sf_simulink_lidar_ele(sf_simulink_U->Input1.dist) == 1) {
+          if (sf_simulink_lidar_ele(sf_simulink_U->Input1.dist, 400.0) == 1) {
             guard4 = true;
           } else {
             /*  signal light color isn't yellow or red  */
@@ -1343,7 +1344,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
         } else {
           /*  the front car is close
              if it insisted accelerate */
-          if (sf_simulink_DW->each_obj.dist < 300U) {
+          if (sf_simulink_DW->each_obj.dist < 400U) {
             guard3 = true;
           } else {
             guard1 = true;
@@ -1351,7 +1352,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
         }
       } else {
         /*  undiscover the car in front  */
-        if (sf_simulink_lidar_ele(sf_simulink_U->Input1.dist) == 1) {
+        if (sf_simulink_lidar_ele(sf_simulink_U->Input1.dist, 400.0) == 1) {
           guard3 = true;
         } else {
           /*  signal light color isn't yellow or red  */
