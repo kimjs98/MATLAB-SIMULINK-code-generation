@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.672
+ * Model version                  : 1.677
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Thu Oct  6 16:57:05 2022
+ * C/C++ source code generated on : Thu Oct  6 18:49:36 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -23,7 +23,7 @@
 #include "sf_simulink_private.h"
 
 /* Named constants for Chart: '<S2>/cruser and submission chart' */
-#define sf_simulink_EXTRA_SPEED        (5.0)
+#define sf_simulink_EXTRA_SPEED        (10.0)
 #define sf_simulink_IN_NO_ACTIVE_CHILD ((uint8_T)0U)
 #define sf_simulink_IN_change_lane     ((uint8_T)1U)
 #define sf_simulink_IN_init            ((uint8_T)2U)
@@ -419,7 +419,7 @@ static int32_T sf_simulink_lidar_ele(const uint16_T x[10])
   int32_T n;
   y = 0;
   for (n = 0; n < 10; n++) {
-    if ((x[n] <= 20) && (15 <= x[n])) {
+    if ((x[n] < 300) && (150 <= x[n])) {
       y = 1;
     }
   }
@@ -435,7 +435,7 @@ static void sf_simul_check_signal_violation(const SIGNAL
   sf_simulink_B->signal_violation_flag = (uint8_T)
     ((BusConversion_InsertedFor_cru_a->sig_flag == 1) &&
      (sf_simulink_DW->each_obj.dist >
-      BusConversion_InsertedFor_cru_a->stop_line_dist * 100.0));
+      BusConversion_InsertedFor_cru_a->stop_line_dist * 1000.0));
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
@@ -460,17 +460,14 @@ static void sf_simulink_accelerator(B_sf_simulink_T *sf_simulink_B)
   } else {
     sf_simulink_B->speed = MAX_uint8_T;
   }
-
-  if (sf_simulink_B->speed > 40) {
-    sf_simulink_B->speed = 40U;
-  }
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
 static void sf_simulink_check_speeding(B_sf_simulink_T *sf_simulink_B)
 {
   /*  overfast checking  */
-  sf_simulink_B->overfast_flag = (uint8_T)(sf_simulink_B->front_car_speed > 60.0);
+  sf_simulink_B->overfast_flag = (uint8_T)(sf_simulink_B->front_car_speed >
+    600.0);
 }
 
 /* Function for Chart: '<S1>/object fetch' */
@@ -951,6 +948,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
   int32_T local_angle_cam_0;
   boolean_T guard1 = false;
   boolean_T guard2 = false;
+  boolean_T guard3 = false;
+  boolean_T guard4 = false;
   int32_T exitg1;
 
   /* Chart: '<S1>/object fetch' incorporates:
@@ -1162,6 +1161,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
   } else {
     guard1 = false;
     guard2 = false;
+    guard3 = false;
+    guard4 = false;
     switch (sf_simulink_DW->is_c3_sf_simulink) {
      case sf_simulink_IN_change_lane:
       sf_simulink_signal_processing(&sf_simulink_U->Input2, sf_simulink_B,
@@ -1191,7 +1192,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
           relative_velovity = ((real_T)sf_simulink_DW->each_obj.dist - (real_T)
                                save_dist) / sf_simulink_DW->dt;
 
-          /*  speed unit and relative_velovity unit is centimeters per seconds  */
+          /*  speed unit and relative_velovity unit is millimeters per seconds  */
           sf_simulink_B->front_car_speed = (real_T)sf_simulink_B->speed +
             relative_velovity;
           sf_simulink_check_speeding(sf_simulink_B);
@@ -1199,39 +1200,38 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
           /*  the front car is getting closer
              If the front car is already close, can't change lane  */
           if ((relative_velovity <= 0.0) && (sf_simulink_DW->each_obj.dist >
-               100U)) {
+               1000U)) {
             sf_simulink_DW->change_lane_dir =
               sf_simulink_B->cruiser.change_lane_dir;
             sf_simulink_B->change_lane_flag = 1U;
-            sf_simulink_B->speed = 20U;
+            sf_simulink_B->speed = 200U;
             sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_change_lane;
           } else {
             /*  the front car is close
                if it insisted accelerate */
-            if (sf_simulink_DW->each_obj.dist < 30U) {
-              guard2 = true;
+            if (sf_simulink_DW->each_obj.dist < 300U) {
+              guard4 = true;
             } else {
-              sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_normal_running;
+              guard2 = true;
             }
           }
         } else {
           /*  undiscover the car in front  */
           if (sf_simulink_lidar_ele(sf_simulink_U->Input1.dist) == 1) {
-            guard2 = true;
+            guard4 = true;
           } else {
             /*  signal light color isn't yellow or red  */
             if (sf_simulink_U->Input.sig_flag != 1) {
               sf_simulink_accelerator(sf_simulink_B);
-              sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_normal_running;
+              guard2 = true;
             } else {
               /*  stop line is close  */
               if ((sf_simulink_U->Input.stop_line_dist <
                    sf_simulink_STOP_DISTANCE) && (sf_simulink_U->Input.sig_flag ==
                    1)) {
-                guard2 = true;
+                guard4 = true;
               } else {
-                sf_simulink_DW->is_c3_sf_simulink =
-                  sf_simulink_IN_normal_running;
+                guard2 = true;
               }
             }
           }
@@ -1261,45 +1261,45 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
         relative_velovity = ((real_T)sf_simulink_DW->each_obj.dist - (real_T)
                              save_dist) / sf_simulink_DW->dt;
 
-        /*  speed unit and relative_velovity unit is centimeters per seconds  */
+        /*  speed unit and relative_velovity unit is millimeters per seconds  */
         sf_simulink_B->front_car_speed = (real_T)sf_simulink_B->speed +
           relative_velovity;
         sf_simulink_check_speeding(sf_simulink_B);
 
         /*  the front car is getting closer
            If the front car is already close, can't change lane  */
-        if ((relative_velovity <= 0.0) && (sf_simulink_DW->each_obj.dist > 100U))
+        if ((relative_velovity <= 0.0) && (sf_simulink_DW->each_obj.dist > 1000U))
         {
           sf_simulink_DW->change_lane_dir =
             sf_simulink_B->cruiser.change_lane_dir;
           sf_simulink_B->change_lane_flag = 1U;
-          sf_simulink_B->speed = 20U;
+          sf_simulink_B->speed = 200U;
           sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_change_lane;
         } else {
           /*  the front car is close
              if it insisted accelerate */
-          if (sf_simulink_DW->each_obj.dist < 30U) {
-            guard1 = true;
+          if (sf_simulink_DW->each_obj.dist < 300U) {
+            guard3 = true;
           } else {
-            sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_normal_running;
+            guard1 = true;
           }
         }
       } else {
         /*  undiscover the car in front  */
         if (sf_simulink_lidar_ele(sf_simulink_U->Input1.dist) == 1) {
-          guard1 = true;
+          guard3 = true;
         } else {
           /*  signal light color isn't yellow or red  */
           if (sf_simulink_U->Input.sig_flag != 1) {
             sf_simulink_accelerator(sf_simulink_B);
-            sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_normal_running;
+            guard1 = true;
           } else {
             /*  stop line is close  */
             if ((sf_simulink_U->Input.stop_line_dist < sf_simulink_STOP_DISTANCE)
                 && (sf_simulink_U->Input.sig_flag == 1)) {
-              guard1 = true;
+              guard3 = true;
             } else {
-              sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_normal_running;
+              guard1 = true;
             }
           }
         }
@@ -1307,13 +1307,23 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
       break;
     }
 
-    if (guard2) {
+    if (guard4) {
       sf_simulink_brake(sf_simulink_B);
+      guard2 = true;
+    }
+
+    if (guard3) {
+      sf_simulink_brake(sf_simulink_B);
+      guard1 = true;
+    }
+
+    if (guard2) {
+      sf_simulink_B->speed = (uint8_T)(sf_simulink_B->speed / 10U);
       sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_normal_running;
     }
 
     if (guard1) {
-      sf_simulink_brake(sf_simulink_B);
+      sf_simulink_B->speed = (uint8_T)(sf_simulink_B->speed / 10U);
       sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_normal_running;
     }
   }
