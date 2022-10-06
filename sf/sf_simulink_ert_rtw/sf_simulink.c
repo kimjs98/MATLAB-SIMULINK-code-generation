@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'sf_simulink'.
  *
- * Model version                  : 1.693
+ * Model version                  : 1.697
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Fri Oct  7 00:28:05 2022
+ * C/C++ source code generated on : Fri Oct  7 00:57:56 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -44,7 +44,8 @@ static void sf_simulink_merge_m(int32_T idx[10], int32_T x[10], int32_T np,
 static void sf_simulink_sort_k(int32_T x[10]);
 static void sf_simulink_qsort(const int32_T x[10], int32_T y[10]);
 static void sf_simulink_signal_processing(const CORE
-  *BusConversion_InsertedFor_cru_l, B_sf_simulink_T *sf_simulink_B,
+  *BusConversion_InsertedFor_cru_l, const SIGNAL
+  *BusConversion_InsertedFor_cru_a, B_sf_simulink_T *sf_simulink_B,
   DW_sf_simulink_T *sf_simulink_DW);
 static void sf_simulink_time_reprocessing(DW_sf_simulink_T *sf_simulink_DW);
 static uint8_T sf_simulink_nonzero_front(const OBJECT x[360]);
@@ -332,12 +333,20 @@ static void sf_simulink_qsort(const int32_T x[10], int32_T y[10])
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
 static void sf_simulink_signal_processing(const CORE
-  *BusConversion_InsertedFor_cru_l, B_sf_simulink_T *sf_simulink_B,
+  *BusConversion_InsertedFor_cru_l, const SIGNAL
+  *BusConversion_InsertedFor_cru_a, B_sf_simulink_T *sf_simulink_B,
   DW_sf_simulink_T *sf_simulink_DW)
 {
   sf_simulink_B->steering_angle = sf_simulink_B->cruiser.line_angle;
   sf_simulink_DW->save_time = sf_simulink_DW->time;
   sf_simulink_DW->time = BusConversion_InsertedFor_cru_l->time;
+  if ((BusConversion_InsertedFor_cru_a->sig_flag == 1) &&
+      (BusConversion_InsertedFor_cru_a->stop_line_dist > 0)) {
+    sf_simulink_DW->save_stop_dist =
+      BusConversion_InsertedFor_cru_a->stop_line_dist;
+  } else {
+    sf_simulink_DW->save_stop_dist = -1;
+  }
 }
 
 /* Function for Chart: '<S2>/cruser and submission chart' */
@@ -1171,6 +1180,7 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
     sf_simulink_DW->is_c3_sf_simulink = sf_simulink_IN_init;
 
     /* local */
+    sf_simulink_DW->save_stop_dist = -1;
     sf_simulink_DW->save_time = 0;
     sf_simulink_DW->time = sf_simulink_U->Input2.time;
     sf_simulink_DW->dt = 0.0F;
@@ -1190,8 +1200,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
     guard4 = false;
     switch (sf_simulink_DW->is_c3_sf_simulink) {
      case sf_simulink_IN_change_lane:
-      sf_simulink_signal_processing(&sf_simulink_U->Input2, sf_simulink_B,
-        sf_simulink_DW);
+      sf_simulink_signal_processing(&sf_simulink_U->Input2,
+        &BusConversion_InsertedFor_cru_a, sf_simulink_B, sf_simulink_DW);
       sf_simulink_time_reprocessing(sf_simulink_DW);
       if (sf_simulink_DW->dt <= 2.0F) {
         if (sf_simulink_DW->change_lane_dir == 2) {
@@ -1275,8 +1285,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
               guard2 = true;
             } else {
               /*  stop line is close  */
-              if ((sf_simulink_U->Input.stop_line_dist < 300) &&
-                  (sf_simulink_U->Input.stop_line_dist > 0)) {
+              if ((sf_simulink_DW->save_stop_dist < 300) &&
+                  (sf_simulink_DW->save_stop_dist > 0)) {
                 guard4 = true;
               } else {
                 guard2 = true;
@@ -1293,8 +1303,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
 
      default:
       /* case IN_normal_running: */
-      sf_simulink_signal_processing(&sf_simulink_U->Input2, sf_simulink_B,
-        sf_simulink_DW);
+      sf_simulink_signal_processing(&sf_simulink_U->Input2,
+        &BusConversion_InsertedFor_cru_a, sf_simulink_B, sf_simulink_DW);
 
       /*  discover the car in front  */
       if ((sf_simulink_B->cruiser.car_check_flag == 1) &&
@@ -1367,8 +1377,8 @@ void sf_simulink_step(RT_MODEL_sf_simulink_T *const sf_simulink_M)
             guard1 = true;
           } else {
             /*  stop line is close  */
-            if ((sf_simulink_U->Input.stop_line_dist < 300) &&
-                (sf_simulink_U->Input.stop_line_dist > 0)) {
+            if ((sf_simulink_DW->save_stop_dist < 300) &&
+                (sf_simulink_DW->save_stop_dist > 0)) {
               guard3 = true;
             } else {
               guard1 = true;
@@ -1528,6 +1538,7 @@ void sf_simulink_initialize(RT_MODEL_sf_simulink_T *const sf_simulink_M)
     sf_simulink_DW->dt = 0.0F;
     sf_simulink_DW->change_lane_dir = 0U;
     sf_simulink_DW->local_speed = 0;
+    sf_simulink_DW->save_stop_dist = 0;
     sf_simulink_B->signal_violation_flag = 0U;
     sf_simulink_B->steering_angle = 0U;
     sf_simulink_B->speed = 0U;
